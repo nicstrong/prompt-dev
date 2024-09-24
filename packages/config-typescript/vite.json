@@ -5,12 +5,19 @@
     "useDefineForClassFields": true,
     "module": "ESNext",
     "lib": ["ESNext", "DOM", "DOM.Iterable"],
-    "sourceMap": true,
-    "resolveJsonModule": true,
     "noEmit": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "noImplicitReturns": true
+
+
+    "sourceMap": true,
+    "resolveJsonModule": true,
+
+    "jsx": "react-jsx",
+
+    "moduleDetection": "force",
+    "allowImportingTsExtensions": true
+
   },
   "exclude": ["node_modules"]
 }
