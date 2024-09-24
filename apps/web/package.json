@@ -15,8 +15,6 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.9.0",
-    "@repo/eslint-config": "workspace:*",
-    "@repo/typescript-config": "workspace:*",
     "@types/node": "^22.6.1",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
@@ -28,6 +26,7 @@
     "eslint-plugin-react-hooks": "5.1.0-rc-fb9a90fa48-20240614",
     "eslint-plugin-react-refresh": "^0.4.12",
     "globals": "^15.9.0",
+    "sass-embedded": "^1.79.3",
     "typescript": "^5.5.3",
     "typescript-eslint": "^8.0.1",
     "vite": "^5.4.1"
