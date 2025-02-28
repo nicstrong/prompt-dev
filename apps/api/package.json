@@ -1,5 +1,5 @@
 {
-  "name": "@repo/api",
+  "name": "@prompt-dev/api",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -18,20 +18,20 @@
     "@trpc/server": "^10.45.2",
     "body-parser": "^1.20.3",
     "cors": "^2.8.5",
-    "dotenv": "^16.4.5",
-    "express": "^4.21.0",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
     "morgan": "^1.10.0"
   },
   "devDependencies": {
-    "@repo/typescript-config": "workspace:*",
-    "@repo/prettier-config": "workspace:*",
+    "@prompt-dev/prettier-config": "workspace:*",
+    "@prompt-dev/typescript-config": "workspace:*",
     "@types/body-parser": "^1.19.5",
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.0",
     "@types/morgan": "^1.9.9",
-    "@types/node": "^22.7.3",
-    "prettier": "^3.2.5",
-    "tsup": "^8.3.0",
-    "typescript": "^5.6.2"
+    "@types/node": "^22.13.7",
+    "prettier": "^3.5.2",
+    "tsup": "^8.4.0",
+    "typescript": "^5.8.2"
   }
 }

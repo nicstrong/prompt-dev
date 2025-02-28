@@ -1,5 +1,6 @@
 {
   "private": true,
+  "name": "promt-dev-repo",
   "scripts": {
     "build": "turbo build",
     "dev": "turbo dev",
@@ -7,11 +8,10 @@
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
   "devDependencies": {
-    "eslint": "^8.57.0",
-    "prettier": "^3.2.5",
+    "eslint": "^9.21.0",
+    "prettier": "^3.5.2",
     "prettier-config-custom": "*",
-    "turbo": "^2.1.2"
+    "turbo": "^2.4.4"
   },
-  "packageManager": "pnpm@9.11.0",
-  "name": "with-vite"
+  "packageManager": "pnpm@9.14.0"
 }

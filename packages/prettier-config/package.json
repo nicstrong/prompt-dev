@@ -1,5 +1,5 @@
 {
-	"name": "@repo/prettier-config",
+	"name": "@prompt-dev/prettier-config",
 	"version": "0.0.0",
 	"license": "MIT",
 	"private": true,

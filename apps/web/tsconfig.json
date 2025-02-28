@@ -8,7 +8,7 @@
     "baseUrl": ".",
     "paths": {
       "@ui/*": ["../../packages/ui/src/*"],
-      "@repo/api/trpc": ["../api/src/trpc"]
+      "@prompt-dev/api/trpc": ["../api/src/trpc"]
     },
 
     /* Bundler mode */
