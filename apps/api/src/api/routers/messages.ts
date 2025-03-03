@@ -1,5 +1,5 @@
 import {z } from 'zod'
-import { createTRPCRouter, publicProcedure } from '../trpc';
+import { createTRPCRouter, publicProcedure } from '../trpc.js';
 
 
 export const messagesRouter = createTRPCRouter({

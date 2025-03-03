@@ -7,8 +7,7 @@
     "skipLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@ui/*": ["../../packages/ui/src/*"],
-      "@prompt-dev/api/api": ["../api/src/api"],
+      "@prompt-dev/trpc-api": ["../../packages/trpc-api/src"],
       "~/*": ["./src/*"]
     },
 

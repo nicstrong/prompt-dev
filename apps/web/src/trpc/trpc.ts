@@ -1,4 +1,5 @@
-import { AppRouter } from '@prompt-dev/api/api';
+import { AppRouter } from '@prompt-dev/trpc-api';
+
 import { createTRPCContext } from '@trpc/tanstack-react-query';
  
 export const { TRPCProvider, useTRPC, useTRPCClient } = createTRPCContext<AppRouter>();

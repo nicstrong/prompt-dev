@@ -1,0 +1,16 @@
+{
+  "extends": "@prompt-dev/typescript-config/base.json",
+    "compilerOptions": {
+      "outDir": "./dist",
+      "composite": true,
+      "noEmit": false,
+      "baseUrl": ".",
+    "paths": {
+      "@prompt-dev/api": ["../../apps/api/src/api"],
+      "@prompt-dev/api/*": ["../../apps/api/src/api/*"],
+      "~/*": ["./src/*"]
+    },
+  },
+    "include": ["src/index.ts"],
+    "exclude": ["node_modules", "dist"]
+  }

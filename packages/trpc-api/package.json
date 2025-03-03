@@ -1,0 +1,22 @@
+{
+  "name": "@prompt-dev/trpc-api",
+  "version": "0.0.1",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsup src/index.ts --format cjs,esm --dts",
+    "dev": "tsup src/index.ts --format cjs,esm --dts --watch",
+    "clean": "rm -rf dist"
+  },
+  "devDependencies": {
+    "tsup": "^8.4.0",
+    "typescript": "^5.7.3"
+  },
+  "dependencies": {
+    "@trpc/server": "11.0.0-rc.819",
+    "zod": "^3.24.2",
+    "@prompt-dev/typescript-config": "workspace:*",
+    "@prompt-dev/prettier-config": "workspace:*"
+  }
+}

@@ -1,5 +1,4 @@
-import { type AppRouter } from "./root";
+import { type AppRouter } from "./root.js";
 export type { AppRouter };
 
-import { createTRPCContext } from './trpc';
-export { createTRPCRouter };
+export { createTRPCRouter } from './trpc.js';

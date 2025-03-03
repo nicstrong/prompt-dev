@@ -16,6 +16,7 @@
     "@trpc/client": "11.0.0-rc.819",
     "@trpc/tanstack-react-query": "11.0.0-rc.819",
     "prettier-plugin-tailwindcss": "^0.6.11",
+    "@prompt-dev/trpc-api": "workspace:*",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "superjson": "^2.2.2",
