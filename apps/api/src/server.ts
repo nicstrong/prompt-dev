@@ -3,9 +3,8 @@ import express, { type Express } from 'express'
 import morgan from 'morgan'
 import cors from 'cors'
 import { createExpressMiddleware } from '@trpc/server/adapters/express'
-import { createAppRouter } from './trpc/createRouter'
+import { appRouter } from './api/root.js'
 
-const appRouter = createAppRouter()
 
 export const createServer = (): Express => {
   const app = express()

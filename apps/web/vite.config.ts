@@ -12,13 +12,13 @@ export default defineConfig({
   resolve: {
     alias: [
       {
-        find: "./runtimeConfig",
-        replacement: "./runtimeConfig.browser",
+        find: './runtimeConfig',
+        replacement: './runtimeConfig.browser',
       },
       // Reference: https://github.com/vercel/turbo/discussions/620#discussioncomment-2136195
       {
-        find: "@ui",
-        replacement: path.resolve(__dirname, "../../packages/ui/src"),
+        find: '@ui',
+        replacement: path.resolve(__dirname, '../../packages/ui/src'),
       },
     ],
   },
