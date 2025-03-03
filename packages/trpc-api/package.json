@@ -17,6 +17,7 @@
     "@trpc/server": "11.0.0-rc.819",
     "zod": "^3.24.2",
     "@prompt-dev/typescript-config": "workspace:*",
-    "@prompt-dev/prettier-config": "workspace:*"
+    "@prompt-dev/prettier-config": "workspace:*",
+    "@prompt-dev/api": "workspace:*"
   }
 }

@@ -1,6 +1,8 @@
 import dotenv from 'dotenv'
 import { createServer } from './server.js'
 
+export * from './api/index.js'
+
 dotenv.config()
 
 const port = process.env.PORT || 5001

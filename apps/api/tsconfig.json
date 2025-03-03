@@ -3,6 +3,7 @@
   "compilerOptions": {
     "outDir": "./dist",
     "moduleResolution": "nodenext",
+    "noEmit": false,
     "paths": {
       "@prompt-dev/api": ["./src/api"],
       "@prompt-dev/api/*": ["./src/api/*"]
