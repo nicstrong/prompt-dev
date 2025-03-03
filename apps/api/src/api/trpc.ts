@@ -1,6 +1,7 @@
 import { initTRPC } from "@trpc/server";
 import { ZodError } from "zod";
 import superjson from "superjson";
+import { CreateExpressContextOptions } from "@trpc/server/adapters/express";
 
 /**
  * 1. CONTEXT
@@ -9,17 +10,16 @@ import superjson from "superjson";
  *
  * These allow you to access things when processing a request, like the database, the session, etc.
  *
- * This helper generates the "internals" for a tRPC context. The API handler and RSC clients each
- * wrap this and provides the required context.
- *
  * @see https://trpc.io/docs/server/context
  */
-export const createTRPCContext = async (opts: { headers: Headers }) => {
-  return {
-    // db,
-    ...opts,
-  };
-};
+export const createTRPCContext = ({
+  req,
+  res,
+}: CreateExpressContextOptions) => ({
+  // db,
+});
+
+type Context = Awaited<ReturnType<typeof createTRPCContext>>;
 
 /**
  * 2. INITIALIZATION
@@ -28,7 +28,7 @@ export const createTRPCContext = async (opts: { headers: Headers }) => {
  * ZodErrors so that you get typesafety on the frontend if your procedure fails due to validation
  * errors on the backend.
  */
-const t = initTRPC.context<typeof createTRPCContext>().create({
+const t = initTRPC.context<Context>().create({
   transformer: superjson,
   errorFormatter({ shape, error }) {
     return {

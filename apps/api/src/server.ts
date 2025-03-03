@@ -1,9 +1,12 @@
-import { json, urlencoded } from 'body-parser'
 import express, { type Express } from 'express'
 import morgan from 'morgan'
 import cors from 'cors'
 import { createExpressMiddleware } from '@trpc/server/adapters/express'
-import { appRouter } from './api/root.js'
+import { AppRouter, appRouter } from './api/root.js'
+import { createTRPCContext } from './api/trpc.js'
+
+import bodyParser from 'body-parser';
+const { json, urlencoded } = bodyParser;
 
 
 export const createServer = (): Express => {
@@ -16,8 +19,9 @@ export const createServer = (): Express => {
     .use(cors())
     .use(
       '/trpc',
-      createExpressMiddleware({
+      createExpressMiddleware<AppRouter>({
         router: appRouter,
+        createContext: createTRPCContext,
       }),
     )
 

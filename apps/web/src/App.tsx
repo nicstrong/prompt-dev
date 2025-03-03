@@ -1,20 +1,21 @@
-import { useQuery } from '@tanstack/react-query';
+import { QueryClientProvider, useQuery } from '@tanstack/react-query'
 import css from './App.module.scss'
-import { TRPCReactProvider } from './trpc/react'
-import { useTRPC } from './trpc/trpc';
+import { getQueryClient, trpcClient, TRPCProvider, useTRPC } from './trpc/trpc'
 
 function App() {
   return (
-    <TRPCReactProvider>
-      <Content />
-    </TRPCReactProvider>
+    <QueryClientProvider client={getQueryClient()}>
+      <TRPCProvider trpcClient={trpcClient} queryClient={getQueryClient()}>
+        <Content />
+      </TRPCProvider>
+    </QueryClientProvider>
   )
 }
 
 function Content() {
-  const trpc = useTRPC();
-  const messages =   useQuery(trpc.messages({ id: 'id_bilbo' }));
+  const trpc = useTRPC()
 
+  const { data } = useQuery(trpc.messages.hello.queryOptions({ text: 'world' }))
 
   return (
     <div className={css.App}>
@@ -22,7 +23,7 @@ function Content() {
         <h1>Users</h1>
       </header>
       <div className={css.AppContent}>
-        
+        <span>{data?.greeting}</span>
       </div>
     </div>
   )
