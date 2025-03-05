@@ -6,7 +6,6 @@ export const createTable = pgTableCreator((name) => `prompt-dev_${name}`)
 
 export const rolesEnum = pgEnum("roles", ["system", "user", "assistant"]);
 
-
 export const messages = createTable('message', {
     id: text()
         .primaryKey()

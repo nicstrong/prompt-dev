@@ -2,15 +2,22 @@
   "compilerOptions": {
     "target": "ES2020",
     "useDefineForClassFields": true,
-    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "lib": [
+      "ES2020",
+      "DOM",
+      "DOM.Iterable"
+    ],
     "module": "ESNext",
     "skipLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@prompt-dev/trpc-api": ["../../packages/trpc-api/src"],
-      "~/*": ["./src/*"]
+      "@prompt-dev/trpc-api": [
+        "../../packages/trpc-api/src"
+      ],
+      "~/*": [
+        "./src/*"
+      ]
     },
-
     /* Bundler mode */
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
@@ -24,6 +31,13 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src"],
-  "references": [{ "path": "./tsconfig.node.json" }]
+  "include": [
+    "src",
+    "../api/src/api/db"
+  ],
+  "references": [
+    {
+      "path": "./tsconfig.node.json"
+    }
+  ]
 }
