@@ -1,5 +1,5 @@
-import { messagesRouter } from "./routers/messages.js";
-import { createTRPCRouter } from "./trpc.js";
+import { messagesRouter } from './routers/messages.js'
+import { createTRPCRouter } from './trpc.js'
 
 /**
  * This is the primary router for your server.
@@ -8,12 +8,12 @@ import { createTRPCRouter } from "./trpc.js";
  */
 export const appRouter = createTRPCRouter({
   messages: messagesRouter,
-});
+})
 
 // export type definition of API
-export type AppRouter = typeof appRouter;
+export type AppRouter = typeof appRouter
 
-/** 
+/**
  * Create a server-side caller for the tRPC API.
  * @example
  * const trpc = createCaller(createContext);

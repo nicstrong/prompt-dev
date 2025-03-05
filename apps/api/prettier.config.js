@@ -1,3 +1,3 @@
-import baseConfig from '@prompt-dev/prettier-config'
+import config from '@prompt-dev/prettier-config'
 
-export default baseConfig
+export default config

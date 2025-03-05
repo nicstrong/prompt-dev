@@ -1,6 +1,5 @@
-import {z } from 'zod'
-import { createTRPCRouter, publicProcedure } from '../trpc.js';
-
+import { z } from 'zod'
+import { createTRPCRouter, publicProcedure } from '../trpc.js'
 
 export const messagesRouter = createTRPCRouter({
   hello: publicProcedure
@@ -8,16 +7,15 @@ export const messagesRouter = createTRPCRouter({
     .query(({ input }) => {
       return {
         greeting: `Hello ${input.text}`,
-      };
+      }
     }),
 
   create: publicProcedure
     .input(z.object({ name: z.string().min(1) }))
-    .mutation(async ({ }) => {
+    .mutation(async ({}) => {
       // .mutation(async ({ctx, input }) => {
-        //   await ctx.db.insert(posts).values({
-    //     name: input.name,
-    //   });
+      //   await ctx.db.insert(posts).values({
+      //     name: input.name,
+      //   });
     }),
-  });
-  
+})

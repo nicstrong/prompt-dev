@@ -5,9 +5,8 @@ import { createExpressMiddleware } from '@trpc/server/adapters/express'
 import { AppRouter, appRouter } from './api/root.js'
 import { createTRPCContext } from './api/trpc.js'
 
-import bodyParser from 'body-parser';
-const { json, urlencoded } = bodyParser;
-
+import bodyParser from 'body-parser'
+const { json, urlencoded } = bodyParser
 
 export const createServer = (): Express => {
   const app = express()
