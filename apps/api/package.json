@@ -7,7 +7,7 @@
   "types": "index.d.ts",
   "scripts": {
     "start": "node dist/index.js",
-    "dev": "tsup --watch --onSuccess \"node dist/index.js\"",
+    "dev": "dotenv -e ./.env -- tsup --watch --onSuccess \"node dist/index.js\"",
     "build": "tsup",
     "clean": "rm -rf dist",
     "typecheck": "tsc --noEmit",
@@ -40,6 +40,7 @@
     "@types/morgan": "^1.9.9",
     "@types/node": "^22.13.7",
     "@types/pg": "^8.11.11",
+    "dotenv-cli": "^8.0.0",
     "drizzle-kit": "^0.30.5",
     "prettier": "^3.5.2",
     "tsup": "^8.4.0",

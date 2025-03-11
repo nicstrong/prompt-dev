@@ -1,7 +1,7 @@
 import { createEnv } from '@t3-oss/env-core'
 import { z } from 'zod'
 
-export const env = createEnv({
+const data = {
     /*
      * Serverside Environment variables, not available on the client.
      * Will throw if you access these variables on the client.
@@ -24,7 +24,11 @@ export const env = createEnv({
     runtimeEnv: {
         DATABASE_URL: process.env.DATABASE_URL,
         // OPEN_AI_API_KEY: process.env.OPEN_AI_API_KEY,
-        PORT: process.env.PORT,
+        PORT: process.env.PORT && parseInt(process.env.PORT),
         NODE_ENV: process.env.NODE_ENV,
     },
-})
+    skipValidation: !!process.env.SKIP_ENV_VALIDATION,
+
+}
+console.log('Env:', data)
+export const env = createEnv(data)
