@@ -30,5 +30,4 @@ const data = {
     skipValidation: !!process.env.SKIP_ENV_VALIDATION,
 
 }
-console.log('Env:', data)
 export const env = createEnv(data)

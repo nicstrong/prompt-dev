@@ -1,5 +1,7 @@
-import { QueryClientProvider, useQuery } from '@tanstack/react-query'
-import { getQueryClient, trpcClient, TRPCProvider, useTRPC } from './trpc/trpc'
+import { QueryClientProvider } from '@tanstack/react-query'
+import { getQueryClient, trpcClient, TRPCProvider } from './trpc/trpc'
+import { SideNav } from './components/SideNav'
+import { Main } from './components/Main'
 
 function App() {
   return (
@@ -12,12 +14,10 @@ function App() {
 }
 
 function Content() {
-  const trpc = useTRPC()
-
-  const { data } = useQuery(trpc.messages.hello.queryOptions({ text: 'world' }))
-
   return (
-    <div className='dark'>
+    <div className='relative flex h-[100dvh] text-gray-100'>
+      <SideNav />
+      <Main />
     </div>
   )
 }
