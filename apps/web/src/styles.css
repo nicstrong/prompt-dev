@@ -1,4 +1,4 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 @plugin "tailwindcss-animate";
 
@@ -121,4 +121,19 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: oklch(from var(--muted-foreground) l c h / 0.3);
+}
+::-webkit-scrollbar-thumb {
+  background: oklch(from var(--muted-foreground) l c h / 0.5);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
 }

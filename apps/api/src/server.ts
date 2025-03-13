@@ -6,6 +6,7 @@ import { AppRouter, appRouter } from './api/root.js'
 import { createTRPCContext } from './api/trpc.js'
 
 import bodyParser from 'body-parser'
+import { routes } from './api/routes/routes.js'
 const { json, urlencoded } = bodyParser
 
 export const createServer = (): Express => {
@@ -16,6 +17,7 @@ export const createServer = (): Express => {
     .use(urlencoded({ extended: true }))
     .use(json())
     .use(cors())
+    .use(routes)
     .use(
       '/trpc',
       createExpressMiddleware<AppRouter>({
