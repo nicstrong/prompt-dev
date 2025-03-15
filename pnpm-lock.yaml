@@ -53,6 +53,9 @@ importers:
       express:
         specifier: ^5.0.1
         version: 5.0.1
+      http-problem-details:
+        specifier: ^0.1.7
+        version: 0.1.7
       morgan:
         specifier: ^1.10.0
         version: 1.10.0
@@ -2274,6 +2277,9 @@ packages:
   http-errors@2.0.0:
     resolution: {integrity: sha512-FtwrG/euBzaEjYeRqOgly7G0qviiXoJWnvEH2Z1plBdXgbyjv34pHTSb9zoeHMyDy33+DWy5Wt9Wo+TURtOYSQ==}
     engines: {node: '>= 0.8'}
+
+  http-problem-details@0.1.7:
+    resolution: {integrity: sha512-+ccES43ePQOnZDIkEuo4gNyT0R/Gkulk79oZ3a9FuQQFZYPcUx0OPBe5ztmehe6t79WN/me7APHX3yD6Ha5CHA==}
 
   iconv-lite@0.4.24:
     resolution: {integrity: sha512-v3MXnZAcvnywkTUEZomIActle7RXXeedOR31wwl7VlyoXO4Qi9arvSenNQWne1TcRwhCL1HwLI21bEqdpj8/rA==}
@@ -5359,6 +5365,8 @@ snapshots:
       setprototypeof: 1.2.0
       statuses: 2.0.1
       toidentifier: 1.0.1
+
+  http-problem-details@0.1.7: {}
 
   iconv-lite@0.4.24:
     dependencies:
