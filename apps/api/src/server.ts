@@ -7,7 +7,7 @@ import { createTRPCContext } from './api/trpc.js'
 
 import bodyParser from 'body-parser'
 import { routes } from './api/routes/routes.js'
-import ProblemException, { isProblemException } from './api/ProblemException.js'
+import { isProblemException } from './api/ProblemException.js'
 import { ProblemDocument } from 'http-problem-details'
 const { json, urlencoded } = bodyParser
 
@@ -27,6 +27,7 @@ export const createServer = (): Express => {
         createContext: createTRPCContext,
       }),
     )
+    .use(routes)
     .use(errorHandler)
 
   return app
@@ -40,7 +41,9 @@ function errorHandler(
 ) {
   if (res.headersSent) {
     next(err)
+    return
   }
+  console.error('Serer error:', err)
   if (err && err.name === 'UnauthorizedError') {
     const unauthed = new ProblemDocument({
       title: 'Unauthorized',
@@ -60,11 +63,12 @@ function errorHandler(
     )
   } else if (err) {
     res.status(500).json(err.message)
+  } else {
+    res.status(500).json(
+      new ProblemDocument({
+        title: 'Server Error',
+        status: 500,
+      }),
+    )
   }
-  res.status(500).json(
-    new ProblemDocument({
-      title: 'Server Error',
-      status: 500,
-    }),
-  )
 }

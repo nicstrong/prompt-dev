@@ -12,6 +12,8 @@
     "format:write": "prettier --write \"**/*.{ts,tsx,js,jsx,mdx}\" --cache"
   },
   "dependencies": {
+    "@ai-sdk/react": "^1.1.23",
+    "@ai-sdk/ui-utils": "^1.1.19",
     "@prompt-dev/trpc-api": "workspace:*",
     "@radix-ui/react-select": "^2.1.6",
     "@radix-ui/react-slot": "^1.1.2",
@@ -22,7 +24,9 @@
     "@trpc/tanstack-react-query": "11.0.0-rc.819",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "dompurify": "^3.2.4",
     "lucide-react": "^0.477.0",
+    "micromark": "^4.0.2",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "superjson": "^2.2.2",
@@ -34,6 +38,7 @@
   "devDependencies": {
     "@eslint/js": "^9.21.0",
     "@prompt-dev/prettier-config": "workspace:*",
+    "@tailwindcss/typography": "^0.5.16",
     "@types/express": "^5.0.0",
     "@types/node": "^22.7.3",
     "@types/react": "^18.3.3",

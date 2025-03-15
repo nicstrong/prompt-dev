@@ -2,15 +2,22 @@ import { useForm } from '@tanstack/react-form'
 import { Textarea } from './ui/textarea'
 import { Button } from './ui/button'
 import { Send } from 'lucide-react'
+import { UseChatHelpers } from '@ai-sdk/react'
 
-export const ChatInput = () => {
+type Props = {
+  chatApi: UseChatHelpers
+}
+
+export const ChatInput = ({ chatApi }: Props) => {
+  const { handleSubmit, handleInputChange } = chatApi
+
   const form = useForm({
     defaultValues: {
       chatMessage: '',
     },
-    onSubmit: async ({ value }) => {
-      // Do something with form data
-      console.log(value)
+    onSubmit: async ({ formApi }) => {
+      handleSubmit()
+      formApi.reset()
     },
   })
 
@@ -59,12 +66,15 @@ export const ChatInput = () => {
             children={(field) => (
               <>
                 <Textarea
-                  className='max-h-64 resize-none focus-visible:border-0 focus-visible:ring-0'
+                  className='max-h-64 resize-none border-0 focus-visible:border-0 focus-visible:ring-0'
                   id={field.name}
                   name={field.name}
                   value={field.state.value}
                   onBlur={field.handleBlur}
-                  onChange={(e) => field.handleChange(e.target.value)}
+                  onChange={(e) => {
+                    field.handleChange(e.target.value)
+                    handleInputChange(e)
+                  }}
                   onKeyDown={(e) => handleKeyDown(e, field, form.handleSubmit)}
                   placeholder='Type your message here...'
                   data-1p-ignore
