@@ -13,7 +13,7 @@
 import { Route as rootRoute } from './routes/__root'
 import { Route as LoginImport } from './routes/login'
 import { Route as AuthedImport } from './routes/_authed'
-import { Route as AuthedIndexImport } from./routes/_authed.indexndex'
+import { Route as AuthedIndexImport } from './routes/_authed.index'
 
 // Create/Update Routes
 
