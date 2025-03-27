@@ -13,5 +13,5 @@
     "prettier-config-custom": "*",
     "turbo": "^2.4.4"
   },
-  "packageManager": "pnpm@9.14.0"
+  "packageManager": "pnpm@10.6.3"
 }

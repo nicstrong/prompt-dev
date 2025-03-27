@@ -1,5 +1,4 @@
-import { Button } from './ui/button'
-import { Settings } from 'lucide-react'
+import { UserPanel } from './UserPanel'
 
 export const SideNav = () => {
   return (
@@ -11,9 +10,7 @@ export const SideNav = () => {
       </div>
       <div className='border-t border-neutral-700'>
         <div className='flex w-full p-3'>
-          <Button size='icon' variant='ghost' className='mr-3 ml-auto'>
-            <Settings />
-          </Button>
+          <UserPanel />
         </div>
       </div>
     </nav>

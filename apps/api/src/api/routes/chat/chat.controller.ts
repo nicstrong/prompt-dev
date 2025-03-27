@@ -1,8 +1,10 @@
 import { openai } from '@ai-sdk/openai'
+import { requireAuth } from '@clerk/express'
 import { createIdGenerator, pipeDataStreamToResponse, streamText } from 'ai'
 import { NextFunction, Request, Response, Router } from 'express'
 
 const router: Router = Router()
+router.use(requireAuth)
 
 router.post(
   '/chat',

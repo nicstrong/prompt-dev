@@ -10,6 +10,7 @@ import { routes } from './api/routes/routes.js'
 import { isProblemException } from './api/ProblemException.js'
 import { ProblemDocument } from 'http-problem-details'
 const { json, urlencoded } = bodyParser
+import { clerkMiddleware } from '@clerk/express'
 
 export const createServer = (): Express => {
   const app = express()
@@ -19,6 +20,7 @@ export const createServer = (): Express => {
     .use(urlencoded({ extended: true }))
     .use(json())
     .use(cors())
+    .use(clerkMiddleware())
     .use(routes)
     .use(
       '/trpc',

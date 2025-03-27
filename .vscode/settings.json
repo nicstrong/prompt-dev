@@ -3,5 +3,11 @@
     {
       "mode": "auto"
     }
+  ],
+  "github.copilot.chat.codeGeneration.instructions": [
+    {
+      "file": "docs/code-style.md"
+    },
+    { "file": "docs/spec.md" }
   ]
 }
