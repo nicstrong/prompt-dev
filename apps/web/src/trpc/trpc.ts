@@ -17,11 +17,28 @@ export const getQueryClient = () => {
   return (clientQueryClientSingleton ??= createQueryClient())
 }
 
+let getAuthTokenSingleton: (() => Promise<string | null>) | undefined =
+  undefined
+export function setGetAuthToken(fn: () => Promise<string | null>) {
+  getAuthTokenSingleton = fn
+}
+
 export const trpcClient = createTRPCClient<AppRouter>({
   links: [
     httpBatchLink({
       url: 'http://localhost:3000/trpc',
       transformer: superjson,
+      async headers() {
+        if (getAuthTokenSingleton) {
+          const token = await getAuthTokenSingleton()
+          return token
+            ? {
+                authorization: token,
+              }
+            : {}
+        }
+        return {}
+      },
     }),
   ],
 })
