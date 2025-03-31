@@ -45,7 +45,6 @@ function errorHandler(
     next(err)
     return
   }
-  console.error('Serer error:', err)
   if (err && err.name === 'UnauthorizedError') {
     const unauthed = new ProblemDocument({
       title: 'Unauthorized',
@@ -64,8 +63,10 @@ function errorHandler(
       }),
     )
   } else if (err) {
+    console.error('Serer error:', err)
     res.status(500).json(err.message)
   } else {
+    console.error('Serer error:', err)
     res.status(500).json(
       new ProblemDocument({
         title: 'Server Error',

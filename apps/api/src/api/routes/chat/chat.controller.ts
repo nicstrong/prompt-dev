@@ -1,14 +1,18 @@
 import { openai } from '@ai-sdk/openai'
-import { requireAuth } from '@clerk/express'
+import { getAuth, requireAuth } from '@clerk/express'
 import { createIdGenerator, pipeDataStreamToResponse, streamText } from 'ai'
 import { NextFunction, Request, Response, Router } from 'express'
+import { requireAuthOrError } from '../utils.js'
 
 const router: Router = Router()
-router.use(requireAuth)
+router.use(requireAuthOrError)
 
 router.post(
   '/chat',
   async (req: Request, res: Response, next: NextFunction) => {
+    const authState = getAuth(req)
+    console.log('/chat', authState)
+
     const { messages, id } = await req.body
 
     pipeDataStreamToResponse(res, {
