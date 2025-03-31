@@ -1,16 +1,12 @@
 import { z } from 'zod'
-import { createTRPCRouter, publicProcedure } from '../trpc.js'
+import {
+  createTRPCRouter,
+  protectedProcedure,
+  publicProcedure,
+} from '../trpc.js'
 
 export const messagesRouter = createTRPCRouter({
-  hello: publicProcedure
-    .input(z.object({ text: z.string() }))
-    .query(({ input }) => {
-      return {
-        greeting: `Hello ${input.text}`,
-      }
-    }),
-
-  create: publicProcedure
+  create: protectedProcedure
     .input(z.object({ name: z.string().min(1) }))
     .mutation(async ({}) => {
       // .mutation(async ({ctx, input }) => {

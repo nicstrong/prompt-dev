@@ -1,7 +1,13 @@
-import { initTRPC } from '@trpc/server'
+import { initTRPC, TRPCError } from '@trpc/server'
 import { ZodError } from 'zod'
 import superjson from 'superjson'
 import { CreateExpressContextOptions } from '@trpc/server/adapters/express'
+import { db } from '~/db/index.js'
+import {
+  MiddlewareBuilder,
+  MiddlewareResult,
+} from '@trpc/server/unstable-core-do-not-import'
+import { SignedInAuthObject } from '@clerk/backend/internal'
 
 /**
  * 1. CONTEXT
@@ -16,7 +22,8 @@ export const createTRPCContext = ({
   req,
   res,
 }: CreateExpressContextOptions) => ({
-  // db,
+  db,
+  auth: req.auth?.userId !== null ? (req.auth as SignedInAuthObject) : null,
 })
 
 type Context = Awaited<ReturnType<typeof createTRPCContext>>
@@ -94,3 +101,18 @@ const timingMiddleware = t.middleware(async ({ next, path }) => {
  * are logged in.
  */
 export const publicProcedure = t.procedure.use(timingMiddleware)
+export const isAuthed: MiddlewareBuilder<Context, object, object, unknown> =
+  t.middleware(async ({ next, ctx }) => {
+    if (!ctx.auth === null) {
+      throw new TRPCError({ code: 'UNAUTHORIZED' })
+    }
+    const result = await next({
+      ctx: {
+        ...ctx,
+        auth: ctx.auth,
+      },
+    })
+    return result
+  })
+
+export const protectedProcedure = t.procedure.use(isAuthed)
