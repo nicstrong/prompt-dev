@@ -1,5 +1,4 @@
-import { useAuth, useClerk, UserButton, useUser } from '@clerk/clerk-react'
-import { Link } from '@tanstack/react-router'
+import { UserButton, useUser } from '@clerk/clerk-react'
 import { useEffect } from 'react'
 
 export function UserPanel() {
