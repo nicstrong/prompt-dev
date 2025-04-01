@@ -1,5 +1,4 @@
 import { UseChatHelpers } from '@ai-sdk/react'
-import { getTextFromDataUrl } from '@ai-sdk/ui-utils'
 import { UserMessage } from './components/UserMessage'
 import { AssistantMessage } from './components/AssistantMessage'
 

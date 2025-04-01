@@ -3,6 +3,8 @@ import { Textarea } from './ui/textarea'
 import { Button } from './ui/button'
 import { Send } from 'lucide-react'
 import { UseChatHelpers } from '@ai-sdk/react'
+import { useAuth } from '@clerk/clerk-react'
+import { ChatRequestOptions } from '@ai-sdk/ui-utils'
 
 type Props = {
   chatApi: UseChatHelpers
@@ -11,12 +13,19 @@ type Props = {
 export const ChatInput = ({ chatApi }: Props) => {
   const { handleSubmit, handleInputChange } = chatApi
 
+  const { getToken } = useAuth()
+
   const form = useForm({
     defaultValues: {
       chatMessage: '',
     },
     onSubmit: async ({ formApi }) => {
-      handleSubmit()
+      const token = await getToken()
+      if (!token) return
+      const opts: ChatRequestOptions = {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+      handleSubmit({}, opts)
       formApi.reset()
     },
   })
