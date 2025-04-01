@@ -1,13 +1,11 @@
-import { UseChatHelpers } from '@ai-sdk/react'
 import { UserMessage } from './components/UserMessage'
 import { AssistantMessage } from './components/AssistantMessage'
+import { useChatContext } from './ChatProvider.provider'
 
-type Props = {
-  chatApi: UseChatHelpers
-}
+type Props = {}
 
-export function Chat({ chatApi }: Props) {
-  const { messages } = chatApi
+export function Chat({}: Props) {
+  const { messages } = useChatContext()
   return (
     <div className='mx-auto flex w-full max-w-3xl flex-col space-y-12 p-4 pb-8'>
       {messages.map((message) =>

@@ -2,29 +2,20 @@ import { useForm } from '@tanstack/react-form'
 import { Textarea } from './ui/textarea'
 import { Button } from './ui/button'
 import { Send } from 'lucide-react'
-import { UseChatHelpers } from '@ai-sdk/react'
-import { useAuth } from '@clerk/clerk-react'
-import { ChatRequestOptions } from '@ai-sdk/ui-utils'
+import { useChatContext } from './Chat/ChatProvider.provider'
 
-type Props = {
-  chatApi: UseChatHelpers
-}
+type Props = {}
 
-export const ChatInput = ({ chatApi }: Props) => {
-  const { handleSubmit, handleInputChange } = chatApi
-
-  const { getToken } = useAuth()
+export const ChatInput = ({}: Props) => {
+  const { handleSubmit, handleInputChange, createRequestOptions } =
+    useChatContext()
 
   const form = useForm({
     defaultValues: {
       chatMessage: '',
     },
     onSubmit: async ({ formApi }) => {
-      const token = await getToken()
-      if (!token) return
-      const opts: ChatRequestOptions = {
-        headers: { Authorization: `Bearer ${token}` },
-      }
+      const opts = await createRequestOptions()
       handleSubmit({}, opts)
       formApi.reset()
     },
