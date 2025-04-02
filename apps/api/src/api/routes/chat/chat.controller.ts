@@ -1,23 +1,33 @@
 import { openai } from '@ai-sdk/openai'
-import { getAuth, requireAuth } from '@clerk/express'
 import { createIdGenerator, pipeDataStreamToResponse, streamText } from 'ai'
 import { NextFunction, Request, Response, Router } from 'express'
 import { requireAuthOrError } from '../utils.js'
+import { validation } from '../validationMiddleware.js'
+import { NewChatType, newChatSchema } from './chat.schemas.js'
+import { newThread } from '~/db/threads.js'
 
 const router: Router = Router()
 router.use(requireAuthOrError)
 
 router.post(
   '/chat',
+  validation(newChatSchema),
   async (req: Request, res: Response, next: NextFunction) => {
-    const authState = getAuth(req)
-    console.log('/chat', authState)
+    const data = req.body as NewChatType
+    const { messages } = data
+    let threadId = data.data?.threadId ?? null
 
-    const { messages, id } = await req.body
+    if (threadId === null) {
+      const res = await newThread({
+        userId: req.auth.userId!,
+        name: 'New Chat',
+      })
+      threadId = res[0].insertedId
+    }
 
     pipeDataStreamToResponse(res, {
       execute: async (dataStreamWriter) => {
-        dataStreamWriter.writeData('initialized call')
+        dataStreamWriter.writeData({ threadId })
 
         const result = streamText({
           model: openai('gpt-4o-mini'),

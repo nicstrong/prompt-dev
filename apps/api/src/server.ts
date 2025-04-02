@@ -64,7 +64,13 @@ function errorHandler(
     )
   } else if (err) {
     console.error('Serer error:', err)
-    res.status(500).json(err.message)
+    res.status(500).json(
+      new ProblemDocument({
+        title: 'Server Error',
+        status: 500,
+        detail: err.message,
+      }),
+    )
   } else {
     console.error('Serer error:', err)
     res.status(500).json(

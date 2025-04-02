@@ -24,6 +24,7 @@ export const threads = createTable('thread', {
     () => new Date(),
   ),
   name: text().notNull(),
+  userId: text().notNull(),
 })
 
 export const messages = createTable(
