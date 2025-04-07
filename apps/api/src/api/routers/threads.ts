@@ -1,16 +1,16 @@
-import { z } from 'zod'
-import {
-  createTRPCRouter,
-  protectedProcedure,
-  publicProcedure,
-} from '../trpc.js'
+import { getAllThreadsForUser } from '~/db/threads.js'
+import { createTRPCRouter, protectedProcedure } from '../trpc.js'
 
 export const threadsRouter = createTRPCRouter({
-  getAll: protectedProcedure.query(async () => {
-    return [
-      { id: '1', name: 'Thread 1' },
-      { id: '2', name: 'Thread 2' },
-      { id: '3', name: 'Thread 3' },
-    ]
+  getAll: protectedProcedure.query(async (opts) => {
+    const userId = opts.ctx.auth?.userId
+
+    if (!userId) {
+      throw new Error('User not authenticated')
+    }
+
+    const userThreads = await getAllThreadsForUser(userId)
+
+    return userThreads
   }),
 })
