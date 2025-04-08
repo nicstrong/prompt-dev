@@ -2,7 +2,7 @@ import { getAllThreadsForUser } from '~/db/threads.js'
 import { createTRPCRouter, protectedProcedure } from '../trpc.js'
 
 export const threadsRouter = createTRPCRouter({
-  getAll: protectedProcedure.query(async (opts) => {
+  getAllForUser: protectedProcedure.query(async (opts) => {
     const userId = opts.ctx.auth?.userId
 
     if (!userId) {
