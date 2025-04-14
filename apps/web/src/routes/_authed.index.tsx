@@ -1,4 +1,4 @@
-import Content from '@/components/Content'
+import Layout from '@/components/Layout'
 import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/_authed/')({
@@ -6,5 +6,5 @@ export const Route = createFileRoute('/_authed/')({
 })
 
 function Home() {
-  return <Content />
+  return <Layout />
 }
