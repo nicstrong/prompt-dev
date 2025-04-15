@@ -1,13 +1,36 @@
+import { useEffect } from 'react'
 import { AppSidebar } from './AppSidebar'
+import { ChatProvider } from './Chat/ChatProvider'
+import { useChatContext } from './Chat/ChatProvider.provider'
 import { Main } from './Main'
 import { SidebarProvider } from './ui/sidebar'
 
-function Layout() {
+type Props = {
+  threadId?: string
+}
+
+function Layout(props: Props) {
   return (
-    <SidebarProvider>
+    <ChatProvider>
+      <SidebarProvider>
+        <InnerLayout {...props} />
+      </SidebarProvider>
+    </ChatProvider>
+  )
+}
+
+function InnerLayout({ threadId }: Props) {
+  const { setThreadId } = useChatContext()
+
+  useEffect(() => {
+    setThreadId(threadId ?? null)
+  }, [threadId])
+
+  return (
+    <>
       <AppSidebar />
       <Main />
-    </SidebarProvider>
+    </>
   )
 }
 

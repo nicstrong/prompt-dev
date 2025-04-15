@@ -4,6 +4,7 @@ import { useCallback, useMemo } from 'react'
 import { ChatContext, ChatContextType } from './ChatProvider.provider'
 import { atom, createStore, Provider, useAtom } from 'jotai'
 import { useAuth } from '@clerk/clerk-react'
+import { getQueryClient, trpc, trpcClient } from '@/trpc/trpc'
 export type Props = {
   children: React.ReactNode
 }
@@ -37,9 +38,26 @@ function InnerChatProvider({ children }: Props) {
     return opts
   }, [])
 
+  const setAndLoadThreadId = useCallback(async (threadId: string | null) => {
+    if (threadId !== null) {
+      const messages = await trpcClient.messages.getAllForThreadId.query({
+        threadId,
+      })
+
+      const transformed = messages.map((message) => ({
+        ...message,
+        content: message.content ?? '',
+      }))
+      chatApi.setMessages(transformed)
+    }
+
+    setThreadId(threadId)
+  }, [])
+
   const value = useMemo<ChatContextType>(
     () => ({
       threadId,
+      setThreadId: setAndLoadThreadId,
       createRequestOptions,
       newThread: () => {
         setThreadId(null)

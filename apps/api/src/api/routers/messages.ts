@@ -4,14 +4,14 @@ import {
   protectedProcedure,
   publicProcedure,
 } from '../trpc.js'
+import { getAllMessagesForThread } from '~/db/messages.js'
 
 export const messagesRouter = createTRPCRouter({
-  create: protectedProcedure
-    .input(z.object({ name: z.string().min(1) }))
-    .mutation(async ({}) => {
-      // .mutation(async ({ctx, input }) => {
-      //   await ctx.db.insert(posts).values({
-      //     name: input.name,
-      //   });
+  getAllForThreadId: protectedProcedure
+    .input(z.object({ threadId: z.string().min(1) }))
+    .query(async ({ ctx, input }) => {
+      const { threadId } = input
+      const messages = await getAllMessagesForThread(threadId)
+      return messages
     }),
 })

@@ -4,6 +4,7 @@ import { createContext, useContext } from 'react'
 
 export type ChatContextType = {
   threadId: string | null
+  setThreadId: (threadId: string | null) => void
   newThread: () => void
   handleSubmit: UseChatHelpers['handleSubmit']
   handleInputChange: UseChatHelpers['handleInputChange']

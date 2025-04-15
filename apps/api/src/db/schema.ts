@@ -1,4 +1,11 @@
+import {
+  ReasoningUIPart,
+  SourceUIPart,
+  TextUIPart,
+  ToolInvocationUIPart,
+} from '@ai-sdk/ui-utils'
 import { createId } from '@paralleldrive/cuid2'
+import { Message } from 'ai'
 import { sql } from 'drizzle-orm'
 import {
   json,
@@ -27,6 +34,12 @@ export const threads = createTable('thread', {
   userId: text().notNull(),
 })
 
+type PartType =
+  | TextUIPart
+  | ReasoningUIPart
+  | ToolInvocationUIPart
+  | SourceUIPart
+
 export const messages = createTable(
   'message',
   {
@@ -42,6 +55,7 @@ export const messages = createTable(
     ),
     role: rolesEnum().notNull(),
     parts: json()
+      .$type<PartType[]>()
       .notNull()
       .default(sql`'[]'`),
     threadId: text().notNull(),
