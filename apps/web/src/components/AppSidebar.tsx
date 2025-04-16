@@ -21,14 +21,14 @@ import {
 } from './ui/dropdown-menu'
 import { UserPanel } from './UserPanel'
 import { trpc } from '@/trpc/trpc'
-import { Edit, MoreHorizontal, Plus, Trash } from 'lucide-react'
+import { MoreHorizontal, Plus } from 'lucide-react'
 import { Link } from '@tanstack/react-router'
 import { Thread } from '@/trpc/types'
-import { Route } from '@/routes/_authed.threads.$threadId'
+import { useChatContext } from './Chat/ChatProvider.provider'
 
 export const AppSidebar = () => {
   const { data: threads } = useQuery(trpc.threads.getAllForUser.queryOptions())
-  const { threadId } = Route.useParams()
+  const { threadId } = useChatContext()
 
   return (
     <Sidebar>

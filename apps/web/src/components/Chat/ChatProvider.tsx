@@ -4,7 +4,7 @@ import { useCallback, useMemo } from 'react'
 import { ChatContext, ChatContextType } from './ChatProvider.provider'
 import { atom, createStore, Provider, useAtom } from 'jotai'
 import { useAuth } from '@clerk/clerk-react'
-import { getQueryClient, trpc, trpcClient } from '@/trpc/trpc'
+import { trpcClient } from '@/trpc/trpc'
 export type Props = {
   children: React.ReactNode
 }
