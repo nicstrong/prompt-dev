@@ -13,7 +13,9 @@
     "typecheck": "tsc --noEmit",
     "lint": "eslint src/",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,mdx}\" --cache",
-    "dbstudio": "drizzle-kit studio"
+    "db:studio": "drizzle-kit studio",
+    "db:migrate": "drizzle-kit push",
+    "db:generate": "drizzle-kit generate"
   },
   "keywords": [],
   "author": "",

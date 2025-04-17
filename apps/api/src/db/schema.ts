@@ -34,7 +34,7 @@ export const threads = createTable('thread', {
   userId: text().notNull(),
 })
 
-type PartType =
+export type PartType =
   | TextUIPart
   | ReasoningUIPart
   | ToolInvocationUIPart

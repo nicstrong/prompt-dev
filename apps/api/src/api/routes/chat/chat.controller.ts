@@ -7,6 +7,7 @@ import { NewChatType, newChatSchema } from './chat.schemas.js'
 import { newThread } from '~/db/threads.js'
 import { createId } from '@paralleldrive/cuid2'
 import { newMessage } from '~/db/messages.js'
+import { convertResponseMessageToDbMessage } from './chat.services.js'
 
 const router: Router = Router()
 router.use(requireAuthOrError)
@@ -48,17 +49,11 @@ router.post(
             size: 16,
           }),
           async onFinish({ response }) {
-            console.log('response', response)
-            console.log('messages', response.messages)
-            console.log('messages[0]', response.messages[0])
-            console.log('messages[0].content', response.messages[0].content)
-            // await saveChat({
-            //   id,
-            //   messages: appendResponseMessages({
-            //     messages,
-            //     responseMessages: response.messages,
-            //   }),
-            // })
+            const responseMessage = convertResponseMessageToDbMessage(
+              response.messages,
+              threadId,
+            )
+            await newMessage(responseMessage)
           },
         })
 
