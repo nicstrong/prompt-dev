@@ -62,6 +62,13 @@ export function convertResponseMessageToDbMessage(
     }
   }
 
+  if (content === '') {
+    const textPart = parts.find((part) => part.type === 'text')
+    if (textPart) {
+      content = textPart.text
+    }
+  }
+
   return {
     role: 'assistant',
     threadId: threadId,
