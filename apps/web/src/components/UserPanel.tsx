@@ -1,12 +1,7 @@
 import { UserButton, useUser } from '@clerk/clerk-react'
-import { useEffect } from 'react'
 
 export function UserPanel() {
   const user = useUser()
-
-  useEffect(() => {
-    console.log('Auth:', user)
-  }, [user])
 
   return (
     <div className='flex flex-row items-center gap-4'>

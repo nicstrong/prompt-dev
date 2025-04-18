@@ -38,10 +38,10 @@ router.post(
 
     pipeDataStreamToResponse(res, {
       execute: async (dataStreamWriter) => {
-        dataStreamWriter.writeData({ threadId })
+        dataStreamWriter.writeMessageAnnotation({ threadId })
 
         const result = streamText({
-          model: openai('gpt-4o-mini'),
+          model: openai('gpt-4.1-mini-2025-04-14'),
           messages,
           // id format for server-side messages:
           experimental_generateMessageId: createIdGenerator({

@@ -1,5 +1,5 @@
 import { useChat } from '@ai-sdk/react'
-import { ChatRequestOptions } from '@ai-sdk/ui-utils'
+import { ChatRequestOptions, JSONValue } from '@ai-sdk/ui-utils'
 import { useCallback, useMemo } from 'react'
 import { ChatContext, ChatContextType } from './ChatProvider.provider'
 import { atom, createStore, Provider, useAtom } from 'jotai'
@@ -26,6 +26,16 @@ function InnerChatProvider({ children }: Props) {
 
   const chatApi = useChat({
     api: 'http://localhost:3000/api/chat',
+    onFinish: async (message) => {
+      if (message.annotations) {
+        const threadIdObj = message.annotations.find((ann) =>
+          isThreadIdAnnotation(ann),
+        )
+        if (threadIdObj) {
+          setThreadId(threadIdObj.threadId)
+        }
+      }
+    },
   })
 
   const createRequestOptions = useCallback(async () => {
@@ -36,7 +46,7 @@ function InnerChatProvider({ children }: Props) {
       data: { threadId: threadId },
     }
     return opts
-  }, [])
+  }, [threadId, getToken])
 
   const setAndLoadThreadId = useCallback(async (threadId: string | null) => {
     if (threadId !== null) {
@@ -70,4 +80,23 @@ function InnerChatProvider({ children }: Props) {
   )
 
   return <ChatContext.Provider value={value}>{children}</ChatContext.Provider>
+}
+
+function isThreadIdAnnotation(value: JSONValue): value is { threadId: string } {
+  if (typeof value !== 'object' || value === null) {
+    return false
+  }
+
+  if (Array.isArray(value)) {
+    return false
+  }
+
+  if (!Object.prototype.hasOwnProperty.call(value, 'threadId')) {
+    return false
+  }
+
+  if (typeof (value as { threadId?: unknown }).threadId !== 'string') {
+    return false
+  }
+  return true
 }
