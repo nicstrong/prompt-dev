@@ -12,6 +12,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarMenuAction,
+  SidebarRail,
 } from './ui/sidebar'
 import {
   DropdownMenu,
@@ -26,17 +27,19 @@ import { Link } from '@tanstack/react-router'
 import { Thread } from '@/trpc/types'
 import { useChatContext } from './Chat/ChatProvider.provider'
 
-export const AppSidebar = () => {
+export const AppSidebar = ({
+  ...props
+}: React.ComponentProps<typeof Sidebar>) => {
   const { data: threads } = useQuery(trpc.threads.getAllForUser.queryOptions())
   const { threadId } = useChatContext()
 
   return (
-    <Sidebar>
+    <Sidebar {...props}>
       <SidebarHeader>
         <h2>Prompt Workbench</h2>
       </SidebarHeader>
       <SidebarContent>
-        <SidebarGroup>
+        <SidebarGroup key='threads'>
           <SidebarGroupLabel>Threads</SidebarGroupLabel>
           <SidebarGroupAction title='New Thread'>
             <Plus /> <span className='sr-only'>New Thread</span>
@@ -57,6 +60,7 @@ export const AppSidebar = () => {
       <SidebarFooter>
         <UserPanel />
       </SidebarFooter>
+      <SidebarRail />
     </Sidebar>
   )
 }

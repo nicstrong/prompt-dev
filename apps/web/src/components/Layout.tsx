@@ -3,7 +3,7 @@ import { AppSidebar } from './AppSidebar'
 import { ChatProvider } from './Chat/ChatProvider'
 import { useChatContext } from './Chat/ChatProvider.provider'
 import { Main } from './Main'
-import { SidebarProvider } from './ui/sidebar'
+import { SidebarInset, SidebarProvider } from './ui/sidebar'
 
 type Props = {
   threadId?: string
@@ -29,7 +29,9 @@ function InnerLayout({ threadId }: Props) {
   return (
     <>
       <AppSidebar />
-      <Main />
+      <SidebarInset>
+        <Main />
+      </SidebarInset>
     </>
   )
 }
