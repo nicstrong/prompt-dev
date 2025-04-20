@@ -1,6 +1,8 @@
 import {
+  FileUIPart,
   ReasoningUIPart,
   SourceUIPart,
+  StepStartUIPart,
   TextUIPart,
   ToolInvocationUIPart,
 } from '@ai-sdk/ui-utils'
@@ -39,6 +41,8 @@ export type PartType =
   | ReasoningUIPart
   | ToolInvocationUIPart
   | SourceUIPart
+  | FileUIPart
+  | StepStartUIPart
 
 export const messages = createTable(
   'message',

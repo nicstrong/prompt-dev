@@ -1,5 +1,5 @@
 import { useChat } from '@ai-sdk/react'
-import { ChatRequestOptions, JSONValue } from '@ai-sdk/ui-utils'
+import { ChatRequestOptions, JSONValue, Message } from '@ai-sdk/ui-utils'
 import { useCallback, useMemo } from 'react'
 import { ChatContext, ChatContextType } from './ChatProvider.provider'
 import { atom, createStore, Provider, useAtom } from 'jotai'
@@ -54,10 +54,13 @@ function InnerChatProvider({ children }: Props) {
         threadId,
       })
 
-      const transformed = messages.map((message) => ({
-        ...message,
-        content: message.content ?? '',
-      }))
+      const transformed = messages.map(
+        (message) =>
+          ({
+            ...message,
+            content: message.content ?? '',
+          }) as Message,
+      )
       chatApi.setMessages(transformed)
     }
 
