@@ -17,3 +17,7 @@ export async function getAllMessagesForThread(threadId: string) {
 
   return threadMessages
 }
+
+export async function deleteMessagesForThreadId(threadId: string) {
+  return db.delete(messages).where(eq(messages.threadId, threadId))
+}

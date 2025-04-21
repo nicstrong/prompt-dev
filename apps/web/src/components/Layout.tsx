@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { AppSidebar } from './AppSidebar'
+import { AppSidebar } from './AppSidebar/AppSidebar'
 import { ChatProvider } from './Chat/ChatProvider'
 import { useChatContext } from './Chat/ChatProvider.provider'
 import { Main } from './Main'

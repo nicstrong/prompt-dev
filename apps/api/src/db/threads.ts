@@ -18,3 +18,11 @@ export async function getAllThreadsForUser(userId: string): Promise<Thread[]> {
 
   return userThreads
 }
+
+export async function deleteThread(threadId: string) {
+  return db.delete(threads).where(eq(threads.id, threadId))
+}
+
+export async function renameThread(threadId: string, name: string) {
+  return db.update(threads).set({ name: name }).where(eq(threads.id, threadId))
+}

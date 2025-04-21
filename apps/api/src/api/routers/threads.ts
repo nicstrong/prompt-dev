@@ -1,5 +1,11 @@
-import { getAllThreadsForUser } from '~/db/threads.js'
+import {
+  deleteThread,
+  getAllThreadsForUser,
+  renameThread,
+} from '~/db/threads.js'
 import { createTRPCRouter, protectedProcedure } from '../trpc.js'
+import { z } from 'zod'
+import { deleteMessagesForThreadId } from '~/db/messages.js'
 
 export const threadsRouter = createTRPCRouter({
   getAllForUser: protectedProcedure.query(async (opts) => {
@@ -13,4 +19,17 @@ export const threadsRouter = createTRPCRouter({
 
     return userThreads
   }),
+  deleteThread: protectedProcedure
+    .input(z.object({ threadId: z.string().min(1) }))
+    .mutation(async (opts) => {
+      const { threadId } = opts.input
+      await deleteMessagesForThreadId(threadId)
+      await deleteThread(threadId)
+    }),
+  renameThread: protectedProcedure
+    .input(z.object({ threadId: z.string().min(1), name: z.string().min(1) }))
+    .mutation(async (opts) => {
+      const { threadId, name } = opts.input
+      await renameThread(threadId, name)
+    }),
 })
