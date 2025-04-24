@@ -4,14 +4,14 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from '../ui/sidebar'
-import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuItem,
-} from '@radix-ui/react-dropdown-menu'
 import { FolderPenIcon, Trash2Icon, MoreHorizontal } from 'lucide-react'
 import { Link } from '@tanstack/react-router'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '../ui/dropdown-menu'
 
 type Props = {
   thread: Thread
