@@ -4,7 +4,12 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from '../ui/sidebar'
-import { FolderPenIcon, Trash2Icon, MoreHorizontal } from 'lucide-react'
+import {
+  FolderPenIcon,
+  Trash2Icon,
+  MoreHorizontal,
+  RefreshCcwIcon,
+} from 'lucide-react'
 import { Link } from '@tanstack/react-router'
 import {
   DropdownMenu,
@@ -18,9 +23,16 @@ type Props = {
   isActive: boolean
   onDelete: (threadId: string) => void
   onRename: (threadId: string) => void
+  onRefresh: (threadId: string) => void
 }
 
-export function MenuItem({ thread, isActive, onDelete }: Props) {
+export function MenuItem({
+  thread,
+  isActive,
+  onDelete,
+  onRename,
+  onRefresh,
+}: Props) {
   return (
     <SidebarMenuItem key={thread.id}>
       <SidebarMenuButton asChild isActive={isActive}>
@@ -35,9 +47,13 @@ export function MenuItem({ thread, isActive, onDelete }: Props) {
           </SidebarMenuAction>
         </DropdownMenuTrigger>
         <DropdownMenuContent side='right' align='start'>
-          <DropdownMenuItem onClick={() => onDelete(thread.id)}>
+          <DropdownMenuItem onClick={() => onRename(thread.id)}>
             <FolderPenIcon />
             <span>Rename</span>
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => onRefresh(thread.id)}>
+            <RefreshCcwIcon />
+            <span>Refresh</span>
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => onDelete(thread.id)}>
             <Trash2Icon color='red' />

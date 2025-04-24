@@ -42,11 +42,22 @@ export const AppSidebar = ({
       },
     }),
   )
+  const { mutateAsync: refreshThread } = useMutation(
+    trpc.threads.refreshThread.mutationOptions({
+      onSuccess: () => {
+        console.log('refreshThread sent successfully.')
+        // getQueryClient().invalidateQueries(
+        //   trpc.threads.getAllForUser.queryFilter(),
+        // )
+      },
+    }),
+  )
+
   const { threadId } = useChatContext()
   const [showDeleteThread, setShowDeleteThread] = useState<string | null>(null)
-  const [showRenameThread, setRenameDeleteThread] = useState<string | null>(
-    null,
-  )
+  const [showRenameThread, setRenameDeleteThread] = useState<
+    readonly [string, string] | null
+  >(null)
 
   return (
     <Sidebar {...props}>
@@ -67,7 +78,10 @@ export const AppSidebar = ({
                   thread={thread}
                   isActive={threadId === thread.id}
                   onDelete={(tid) => setShowDeleteThread(tid)}
-                  onRename={(tid) => setRenameDeleteThread(tid)}
+                  onRename={(tid) => setRenameDeleteThread([tid, thread.name])}
+                  onRefresh={async (tid) => {
+                    await refreshThread({ threadId: tid })
+                  }}
                 />
               ))}
             </SidebarMenu>
@@ -92,12 +106,12 @@ export const AppSidebar = ({
           onConfirm={async (name) => {
             setRenameDeleteThread(null)
             await renameThread({
-              threadId: showRenameThread,
+              threadId: showRenameThread[0],
               name,
             })
           }}
           onDismiss={() => setRenameDeleteThread(null)}
-          currentName={''}
+          currentName={showRenameThread[1]}
         />
       )}
     </Sidebar>
