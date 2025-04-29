@@ -37,7 +37,12 @@ export function MenuItem({
     <SidebarMenuItem key={thread.id}>
       <SidebarMenuButton asChild isActive={isActive}>
         <Link to='/threads/$threadId' params={{ threadId: thread.id }}>
-          {thread.name}
+          <div
+            className='text-muted-foreground hover:truncate-none truncate overflow-hidden text-sm'
+            title={thread.name}
+          >
+            {thread.name}
+          </div>
         </Link>
       </SidebarMenuButton>
       <DropdownMenu>

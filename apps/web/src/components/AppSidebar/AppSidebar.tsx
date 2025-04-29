@@ -66,7 +66,9 @@ export const AppSidebar = ({
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup key='threads'>
-          <SidebarGroupLabel>Threads</SidebarGroupLabel>
+          <SidebarGroupLabel className='text-foreground'>
+            Threads
+          </SidebarGroupLabel>
           <SidebarGroupAction title='New Thread'>
             <Plus /> <span className='sr-only'>New Thread</span>
           </SidebarGroupAction>
