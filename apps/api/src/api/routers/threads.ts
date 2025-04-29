@@ -5,7 +5,13 @@ import {
 } from '~/db/threads.js'
 import { createTRPCRouter, protectedProcedure } from '../trpc.js'
 import { z } from 'zod'
-import { deleteMessagesForThreadId } from '~/db/messages.js'
+import {
+  deleteMessagesForThreadId,
+  getAllMessagesForThread,
+} from '~/db/messages.js'
+import { generateText } from 'ai'
+import { openai } from '@ai-sdk/openai'
+import { inspect } from 'util'
 
 export const threadsRouter = createTRPCRouter({
   getAllForUser: protectedProcedure.query(async (opts) => {
@@ -37,24 +43,22 @@ export const threadsRouter = createTRPCRouter({
     .output(z.void())
     .mutation(async (opts) => {
       const { threadId } = opts.input
-      console.log(
-        `[refreshThread] Received event: ${
-          threadId
-        }, Payload: ${JSON.stringify}`,
-      )
-      processBackgroundTask(`Event: ${threadId}`).catch((err) => {
-        // CRITICAL: Handle errors from the background task separately
-        // (e.g., log to an error tracking service). The client won't know.
-        console.error('Background task failed:', err)
+      generateThreadName(threadId).catch((err) => {
+        console.error('renameThread failed:', err)
       })
-      console.log(`[Server Sync] Background task triggered for: ${threadId}`)
     }),
 })
 
-const processBackgroundTask = async (event: string): Promise<void> => {
-  console.log(`[Server Background] Starting task for: ${event}`)
-  // Simulate work (e.g., database write, external API call)
-  await new Promise((resolve) => setTimeout(resolve, 20000)) // Wait 2 seconds
-  console.log(`[Server Background] Finished task for: ${event}`)
-  // Note: Proper error handling for background tasks is crucial in production!
+const generateThreadName = async (threadId: string): Promise<void> => {
+  const messages = await getAllMessagesForThread(threadId)
+  const transcript = messages
+    .map(
+      (m) => `${m.role === 'assistant' ? 'Assistant' : 'User'}: ${m.content}`,
+    )
+    .join('\n')
+  const result = await generateText({
+    model: openai('gpt-4.1-mini-2025-04-14'),
+    prompt: `The following transcript is a conversation thread between a user and an AI assistant. Generate a thread title that can be used in a UI showing a list of threads.\n\n${transcript}`,
+  })
+  await renameThread(threadId, result.text)
 }
