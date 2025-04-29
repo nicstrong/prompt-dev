@@ -34,13 +34,7 @@ export const AppSidebar = ({
     }),
   )
   const { mutateAsync: renameThread } = useMutation(
-    trpc.threads.renameThread.mutationOptions({
-      onSuccess: () => {
-        getQueryClient().invalidateQueries(
-          trpc.threads.getAllForUser.queryFilter(),
-        )
-      },
-    }),
+    trpc.threads.renameThread.mutationOptions(),
   )
   const { mutateAsync: refreshThread } = useMutation(
     trpc.threads.refreshThread.mutationOptions({

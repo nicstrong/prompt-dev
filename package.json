@@ -11,7 +11,7 @@
     "eslint": "^9.21.0",
     "prettier": "^3.5.2",
     "prettier-config-custom": "*",
-    "turbo": "^2.4.4"
+    "turbo": "^2.5.2"
   },
-  "packageManager": "pnpm@10.7.0"
+  "packageManager": "pnpm@10.10.0"
 }

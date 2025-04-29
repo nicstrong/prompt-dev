@@ -12,8 +12,9 @@ import { ProblemDocument } from 'http-problem-details'
 const { json, urlencoded } = bodyParser
 import { clerkMiddleware } from '@clerk/express'
 
-export const createServer = (): Express => {
+export const createServerApp = (): Express => {
   const app = express()
+
   app
     .disable('x-powered-by')
     .use(morgan('dev'))

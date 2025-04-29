@@ -1,0 +1,21 @@
+{
+  "name": "@prompt-dev/shared-types",
+  "version": "1.0.0",
+  "description": "Shared types between the API and web app.",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsup src/index.ts --format cjs,esm --dts",
+    "dev": "tsup src/index.ts --format cjs,esm --dts --watch",
+    "clean": "rm -rf dist"
+  },
+  "devDependencies": {
+    "tsup": "^8.4.0",
+    "typescript": "^5.7.3"
+  },
+  "dependencies": {
+    "@prompt-dev/prettier-config": "workspace:*",
+    "@prompt-dev/typescript-config": "workspace:*"
+  }
+}
