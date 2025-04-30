@@ -1,10 +1,13 @@
 import { useChat } from '@ai-sdk/react'
 import { ChatRequestOptions, JSONValue, Message } from '@ai-sdk/ui-utils'
 import { useCallback, useMemo } from 'react'
-import { ChatContext, ChatContextType } from './ChatProvider.provider'
+import { ChatContext, ChatContextType } from './ChatProvider.context'
 import { atom, createStore, Provider, useAtom } from 'jotai'
 import { useAuth } from '@clerk/clerk-react'
-import { trpcClient } from '@/trpc/trpc'
+import { trpc, trpcClient } from '@/trpc/trpc'
+import { annotationSchema } from './schemas'
+import { useQueryClient } from '@tanstack/react-query'
+import { Thread } from '@/trpc/types'
 export type Props = {
   children: React.ReactNode
 }
@@ -23,17 +26,43 @@ export function ChatProvider({ children }: Props) {
 function InnerChatProvider({ children }: Props) {
   const [threadId, setThreadId] = useAtom(threadIdAtom)
   const { getToken } = useAuth()
+  const queryClient = useQueryClient()
 
   const chatApi = useChat({
     api: 'http://localhost:3000/api/chat',
     onFinish: async (message) => {
       if (message.annotations) {
-        const threadIdObj = message.annotations.find((ann) =>
-          isThreadIdAnnotation(ann),
-        )
-        if (threadIdObj) {
-          setThreadId(threadIdObj.threadId)
-        }
+        const parsed = message.annotations
+          .map((ann) => annotationSchema.safeParse(ann))
+          .filter((r) => r.success)
+          .map((r) => r.data)
+
+        parsed.forEach((annotation) => {
+          switch (annotation.kind) {
+            case 'thread-metadata': {
+              const metadata = annotation.content
+              console.log('thread-metadata annotation', metadata)
+              if (metadata.isNew === true) {
+                // add the thread to front of query cache
+                queryClient.setQueriesData(
+                  trpc.threads.getAllForUser.queryFilter(),
+                  (oldData: Thread[] | undefined) => {
+                    const newThread = {
+                      id: metadata.threadId,
+                      name: metadata.name,
+                      createdAt: metadata.createdAt,
+                      updatedAt: metadata.updatedAt,
+                      userId: metadata.userId,
+                    }
+                    return oldData ? [...oldData, newThread] : [newThread]
+                  },
+                )
+              } else {
+                setThreadId(metadata.threadId)
+              }
+            }
+          }
+        })
       }
     },
   })
@@ -83,23 +112,4 @@ function InnerChatProvider({ children }: Props) {
   )
 
   return <ChatContext.Provider value={value}>{children}</ChatContext.Provider>
-}
-
-function isThreadIdAnnotation(value: JSONValue): value is { threadId: string } {
-  if (typeof value !== 'object' || value === null) {
-    return false
-  }
-
-  if (Array.isArray(value)) {
-    return false
-  }
-
-  if (!Object.prototype.hasOwnProperty.call(value, 'threadId')) {
-    return false
-  }
-
-  if (typeof (value as { threadId?: unknown }).threadId !== 'string') {
-    return false
-  }
-  return true
 }

@@ -14,11 +14,12 @@ import {
 import { UserPanel } from '../UserPanel'
 import { getQueryClient, trpc } from '@/trpc/trpc'
 import { Plus } from 'lucide-react'
-import { useChatContext } from '../Chat/ChatProvider.provider'
+import { useChatContext } from '../Chat/ChatProvider.context'
 import { useState } from 'react'
 import { ConfirmDeletedDialog } from './ConfirmDeletedDialog'
 import { MenuItem } from './MenuItem'
 import { RenameDialog } from './RenameDialog'
+import { Link } from '@tanstack/react-router'
 
 export const AppSidebar = ({
   ...props
@@ -39,7 +40,6 @@ export const AppSidebar = ({
   const { mutateAsync: refreshThread } = useMutation(
     trpc.threads.refreshThread.mutationOptions(),
   )
-
   const { threadId } = useChatContext()
   const [showDeleteThread, setShowDeleteThread] = useState<string | null>(null)
   const [showRenameThread, setRenameDeleteThread] = useState<
@@ -57,7 +57,9 @@ export const AppSidebar = ({
             Threads
           </SidebarGroupLabel>
           <SidebarGroupAction title='New Thread'>
-            <Plus /> <span className='sr-only'>New Thread</span>
+            <Link to='/'>
+              <Plus /> <span className='sr-only'>New Thread</span>
+            </Link>
           </SidebarGroupAction>
           <SidebarGroupContent>
             <SidebarMenu>

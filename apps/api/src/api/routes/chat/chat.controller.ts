@@ -4,7 +4,7 @@ import { NextFunction, Request, Response, Router } from 'express'
 import { requireAuthOrError } from '../utils.js'
 import { validation } from '../validationMiddleware.js'
 import { NewChatType, newChatSchema } from './chat.schemas.js'
-import { newThread } from '~/db/threads.js'
+import { newThread, Thread } from '~/db/threads.js'
 import { createId } from '@paralleldrive/cuid2'
 import { newMessage } from '~/db/messages.js'
 import { convertResponseMessageToDbMessage } from './chat.services.js'
@@ -21,12 +21,11 @@ router.post(
     const data = req.body as NewChatType
     const { messages } = data
     let threadId = data.data?.threadId ?? null
-    let threadCreated = false
+    let createdThread: Thread | null = null
 
     if (threadId === null) {
-      threadCreated = true
       threadId = createId()
-      const res = await newThread({
+      createdThread = await newThread({
         id: threadId,
         userId: req.auth.userId!,
         name: 'New Chat',
@@ -42,7 +41,11 @@ router.post(
 
     pipeDataStreamToResponse(res, {
       execute: async (dataStreamWriter) => {
-        dataStreamWriter.writeMessageAnnotation({ threadId })
+        if (createdThread) {
+          dataStreamWriter.writeMessageAnnotation({ threadId })
+        } else {
+          dataStreamWriter.writeMessageAnnotation({ threadId })
+        }
 
         const result = streamText({
           model: openai('gpt-4.1-mini-2025-04-14'),

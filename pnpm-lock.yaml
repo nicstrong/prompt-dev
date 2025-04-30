@@ -345,21 +345,15 @@ importers:
 
   packages/shared-types:
     dependencies:
-      '@prompt-dev/api':
-        specifier: workspace:*
-        version: link:../../apps/api
       '@prompt-dev/prettier-config':
         specifier: workspace:*
         version: link:../prettier-config
       '@prompt-dev/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config
-      '@trpc/server':
-        specifier: 11.0.1
-        version: 11.0.1(typescript@5.8.3)
       zod:
-        specifier: ^3.24.2
-        version: 3.24.3
+        specifier: 3.24.2
+        version: 3.24.2
     devDependencies:
       tsup:
         specifier: ^8.4.0
@@ -4613,6 +4607,9 @@ packages:
     peerDependencies:
       zod: ^3.24.1
 
+  zod@3.24.2:
+    resolution: {integrity: sha512-lY7CDW43ECgW9u1TcT3IoXHflywfVqDYze4waEz812jR/bZ8FHDsl7pFQoSZTz5N+2NqRXs8GBwnAwo3ZNxqhQ==}
+
   zod@3.24.3:
     resolution: {integrity: sha512-HhY1oqzWCQWuUqvBFnsyrtZRhyPeR7SUGv+C4+MsisMuVfSPx8HpwWqH8tRahSlt6M3PiFAcoeFhZAqIXTxoSg==}
 
@@ -8557,5 +8554,7 @@ snapshots:
   zod-to-json-schema@3.24.5(zod@3.24.3):
     dependencies:
       zod: 3.24.3
+
+  zod@3.24.2: {}
 
   zod@3.24.3: {}

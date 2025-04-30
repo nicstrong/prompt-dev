@@ -13,19 +13,22 @@ import { generateText } from 'ai'
 import { openai } from '@ai-sdk/openai'
 import { inspect } from 'util'
 import { io } from '~/index.js'
+import { threadSchema } from '@prompt-dev/shared-types'
 
 export const threadsRouter = createTRPCRouter({
-  getAllForUser: protectedProcedure.query(async (opts) => {
-    const userId = opts.ctx.auth?.userId
+  getAllForUser: protectedProcedure
+    .output(z.array(threadSchema))
+    .query(async (opts) => {
+      const userId = opts.ctx.auth?.userId
 
-    if (!userId) {
-      throw new Error('User not authenticated')
-    }
+      if (!userId) {
+        throw new Error('User not authenticated')
+      }
 
-    const userThreads = await getAllThreadsForUser(userId)
+      const userThreads = await getAllThreadsForUser(userId)
 
-    return userThreads
-  }),
+      return userThreads
+    }),
   deleteThread: protectedProcedure
     .input(z.object({ threadId: z.string().min(1) }))
     .mutation(async (opts) => {

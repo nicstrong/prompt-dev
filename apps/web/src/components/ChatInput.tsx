@@ -2,7 +2,7 @@ import { useForm } from '@tanstack/react-form'
 import { Textarea } from './ui/textarea'
 import { Button } from './ui/button'
 import { Send } from 'lucide-react'
-import { useChatContext } from './Chat/ChatProvider.provider'
+import { useChatContext } from './Chat/ChatProvider.context'
 
 type Props = {}
 

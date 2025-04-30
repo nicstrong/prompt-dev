@@ -1,6 +1,6 @@
 import { UserMessage } from './components/UserMessage'
 import { AssistantMessage } from './components/AssistantMessage'
-import { useChatContext } from './ChatProvider.provider'
+import { useChatContext } from './ChatProvider.context'
 
 type Props = {}
 

@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { AppSidebar } from './AppSidebar/AppSidebar'
 import { ChatProvider } from './Chat/ChatProvider'
-import { useChatContext } from './Chat/ChatProvider.provider'
+import { useChatContext } from './Chat/ChatProvider.context'
 import { Main } from './Main'
 import { SidebarInset, SidebarProvider } from './ui/sidebar'
 import { SocketProvider } from '@/contexts/SocketContext'
@@ -24,7 +24,6 @@ function Layout(props: Props) {
 }
 
 function InnerLayout({ threadId }: Props) {
-  console.log('InnerLayout threadId:', threadId)
   useSocketEventListener()
   const { setThreadId } = useChatContext()
 

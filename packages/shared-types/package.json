@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@prompt-dev/prettier-config": "workspace:*",
-    "@prompt-dev/typescript-config": "workspace:*"
+    "@prompt-dev/typescript-config": "workspace:*",
+    "zod": "3.24.2"
   }
 }

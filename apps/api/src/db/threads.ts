@@ -5,10 +5,11 @@ import { eq, desc } from 'drizzle-orm'
 type NewThread = typeof threads.$inferInsert
 
 export async function newThread(newThread: NewThread) {
-  return db.insert(threads).values(newThread)
+  const rows = await db.insert(threads).values(newThread).returning()
+  return rows[0]
 }
 
-type Thread = typeof threads.$inferSelect
+export type Thread = typeof threads.$inferSelect
 export async function getAllThreadsForUser(userId: string): Promise<Thread[]> {
   const userThreads = await db
     .select()
