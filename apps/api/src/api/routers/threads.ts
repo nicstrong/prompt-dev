@@ -12,6 +12,7 @@ import {
 import { generateText } from 'ai'
 import { openai } from '@ai-sdk/openai'
 import { inspect } from 'util'
+import { io } from '~/index.js'
 
 export const threadsRouter = createTRPCRouter({
   getAllForUser: protectedProcedure.query(async (opts) => {
@@ -43,13 +44,16 @@ export const threadsRouter = createTRPCRouter({
     .output(z.void())
     .mutation(async (opts) => {
       const { threadId } = opts.input
-      generateThreadName(threadId).catch((err) => {
+      generateThreadName(threadId, opts.ctx.auth?.userId).catch((err) => {
         console.error('renameThread failed:', err)
       })
     }),
 })
 
-const generateThreadName = async (threadId: string): Promise<void> => {
+export const generateThreadName = async (
+  threadId: string,
+  forUserId: string | undefined,
+): Promise<void> => {
   const messages = await getAllMessagesForThread(threadId)
   const transcript = messages
     .map(
@@ -61,4 +65,19 @@ const generateThreadName = async (threadId: string): Promise<void> => {
     prompt: `The following transcript is a conversation thread between a user and an AI assistant. Generate a thread title that can be used in a UI showing a list of threads.\n\n${transcript}`,
   })
   await renameThread(threadId, result.text)
+
+  console.log(`Generated thread name for user ${forUserId}:`, result.text)
+
+  if (forUserId) {
+    const sockets = await io.fetchSockets()
+    const socket = sockets.find((s) => s.data.userId === forUserId)
+    if (socket) {
+      console.log('Emitting item_updated event to socket:', inspect(socket))
+      socket.emit('item_updated', {
+        kind: 'thread-name',
+        itemId: threadId,
+        newName: result.text,
+      })
+    }
+  }
 }

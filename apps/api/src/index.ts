@@ -9,6 +9,9 @@ import {
   InterServerEvents,
   SocketData,
 } from '@prompt-dev/shared-types'
+import { UnauthorizedError } from './api/routes/utils.js'
+import { verifyToken } from '@clerk/express'
+import { inspect } from 'node:util'
 
 export * from './api/index.js'
 
@@ -18,29 +21,40 @@ const port = env.PORT || 5001
 const app = createServerApp()
 const server = createServer(app)
 
-const io = new Server<
+export const io = new Server<
   ClientToServerEvents,
   ServerToClientEvents,
   InterServerEvents,
   SocketData
->(server)
+>(server, {
+  transports: ['websocket'],
+  cors: {
+    origin: 'http://localhost:5173',
+    methods: ['GET', 'POST'],
+  },
+})
 
-io.use((socket, next) => {
+io.use(async (socket, next) => {
   const token = socket.handshake.auth.token
-  console.log('Token:', token)
-  // if (isValidToken(token)) {
-  //   // Token is valid, proceed with connection
-  //   next()
-  // } else {
-  //   // Token is invalid, refuse connection
-  //   next(new Error('Invalid token'))
-  // }
+  if (!token) {
+    // No token provided, refuse connection
+    return next(new UnauthorizedError('Unauthorized (missing_token)'))
+  }
+
+  try {
+    const claims = await verifyToken(token, {
+      secretKey: env.CLERK_SECRET_KEY,
+    })
+    socket.data.userId = claims.sub
+    next()
+  } catch (error) {
+    // Handle any errors that occur during token validation
+    console.error('Token validation error:', error)
+    return next(new UnauthorizedError('Unauthorized (token_validation_error)'))
+  }
 })
 io.on('connection', (socket) => {
-  console.log('a user connected')
-  socket.on('disconnect', () => {
-    console.log('user disconnected')
-  })
+  socket.on('disconnect', () => {})
 })
 
 server.listen(port, () => {

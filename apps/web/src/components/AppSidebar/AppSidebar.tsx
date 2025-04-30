@@ -37,14 +37,7 @@ export const AppSidebar = ({
     trpc.threads.renameThread.mutationOptions(),
   )
   const { mutateAsync: refreshThread } = useMutation(
-    trpc.threads.refreshThread.mutationOptions({
-      onSuccess: () => {
-        console.log('refreshThread sent successfully.')
-        // getQueryClient().invalidateQueries(
-        //   trpc.threads.getAllForUser.queryFilter(),
-        // )
-      },
-    }),
+    trpc.threads.refreshThread.mutationOptions(),
   )
 
   const { threadId } = useChatContext()

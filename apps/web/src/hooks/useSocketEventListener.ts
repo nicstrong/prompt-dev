@@ -15,6 +15,7 @@ export const useSocketEventListener = () => {
     }
 
     const updateQueryCache = (payload: ItemUpdatePayload) => {
+      console.log('Received socket event:', payload)
       switch (payload.kind) {
         case 'thread-name':
           queryClient.setQueriesData(

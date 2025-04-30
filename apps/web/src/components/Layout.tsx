@@ -24,6 +24,7 @@ function Layout(props: Props) {
 }
 
 function InnerLayout({ threadId }: Props) {
+  console.log('InnerLayout threadId:', threadId)
   useSocketEventListener()
   const { setThreadId } = useChatContext()
 

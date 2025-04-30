@@ -8,6 +8,7 @@ import { newThread } from '~/db/threads.js'
 import { createId } from '@paralleldrive/cuid2'
 import { newMessage } from '~/db/messages.js'
 import { convertResponseMessageToDbMessage } from './chat.services.js'
+import { generateThreadName } from '~/api/routers/threads.js'
 
 const router: Router = Router()
 router.use(requireAuthOrError)
@@ -16,11 +17,14 @@ router.post(
   '/chat',
   validation(newChatSchema),
   async (req: Request, res: Response, next: NextFunction) => {
+    const userId = req.auth.userId!
     const data = req.body as NewChatType
     const { messages } = data
     let threadId = data.data?.threadId ?? null
+    let threadCreated = false
 
     if (threadId === null) {
+      threadCreated = true
       threadId = createId()
       const res = await newThread({
         id: threadId,
@@ -53,7 +57,12 @@ router.post(
               response.messages,
               threadId,
             )
-            await newMessage(responseMessage)
+            const newMsg = await newMessage(responseMessage)
+            if (threadCreated) {
+              generateThreadName(threadId, userId).catch((err) => {
+                console.error('renameThread failed:', err)
+              })
+            }
           },
         })
 

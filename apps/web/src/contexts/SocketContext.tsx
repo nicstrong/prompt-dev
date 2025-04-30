@@ -15,12 +15,16 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
   const newSocketRef = useRef<AppSocket | null>(null)
 
   useEffect(() => {
+    let unmounted = false
     async function connect() {
       // Replace with your actual server URL
       const SERVER_URL = 'http://localhost:3000' // Or your backend URL
 
       const token = await getToken()
+      if (unmounted) return
       const newSocket: AppSocket = io(SERVER_URL, {
+        transports: ['websocket'],
+
         auth: { token },
         // Consider disabling autoConnect if you want to connect manually
         // based on user login status, etc.
@@ -28,6 +32,7 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
         reconnectionAttempts: 5,
         reconnectionDelay: 1000,
       })
+      if (unmounted) return
 
       setSocket(newSocket)
 
@@ -50,7 +55,8 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
     connect()
 
     return () => {
-      console.log('Disconnecting socket...')
+      unmounted = true
+      console.log('Disconnecting socket...', newSocketRef.current?.id)
       newSocketRef.current?.disconnect()
       setIsConnected(false)
     }
