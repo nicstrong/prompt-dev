@@ -1,5 +1,5 @@
 import { useChat } from '@ai-sdk/react'
-import { ChatRequestOptions, JSONValue, Message } from '@ai-sdk/ui-utils'
+import { ChatRequestOptions, Message } from '@ai-sdk/ui-utils'
 import { useCallback, useMemo } from 'react'
 import { ChatContext, ChatContextType } from './ChatProvider.context'
 import { atom, createStore, Provider, useAtom } from 'jotai'

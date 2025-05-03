@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { useQuery } from '@tanstack/react-query'
 import {
   Sidebar,
   SidebarContent,
@@ -12,7 +12,7 @@ import {
   SidebarRail,
 } from '../ui/sidebar'
 import { UserPanel } from '../UserPanel'
-import { getQueryClient, trpc } from '@/trpc/trpc'
+import { trpc } from '@/trpc/trpc'
 import { Plus } from 'lucide-react'
 import { useChatContext } from '../Chat/ChatProvider.context'
 import { useState } from 'react'
