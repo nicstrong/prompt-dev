@@ -75,7 +75,7 @@ export const generateThreadName = async (
     const sockets = await io.fetchSockets()
     const socket = sockets.find((s) => s.data.userId === forUserId)
     if (socket) {
-      console.log('Emitting item_updated event to socket:', inspect(socket))
+      console.log(`Emitting item_updated event to socket ${socket.id}`)
       socket.emit('item_updated', {
         kind: 'thread-name',
         itemId: threadId,

@@ -20,26 +20,13 @@ import { ConfirmDeletedDialog } from './ConfirmDeletedDialog'
 import { MenuItem } from './MenuItem'
 import { RenameDialog } from './RenameDialog'
 import { Link } from '@tanstack/react-router'
+import { useThreadMutations } from '@/hooks/threadMutations'
 
 export const AppSidebar = ({
   ...props
 }: React.ComponentProps<typeof Sidebar>) => {
   const { data: threads } = useQuery(trpc.threads.getAllForUser.queryOptions())
-  const { mutateAsync: deleteThread } = useMutation(
-    trpc.threads.deleteThread.mutationOptions({
-      onSuccess: () => {
-        getQueryClient().invalidateQueries(
-          trpc.threads.getAllForUser.queryFilter(),
-        )
-      },
-    }),
-  )
-  const { mutateAsync: renameThread } = useMutation(
-    trpc.threads.renameThread.mutationOptions(),
-  )
-  const { mutateAsync: refreshThread } = useMutation(
-    trpc.threads.refreshThread.mutationOptions(),
-  )
+  const { deleteThread, renameThread, refreshThread } = useThreadMutations()
   const { threadId } = useChatContext()
   const [showDeleteThread, setShowDeleteThread] = useState<string | null>(null)
   const [showRenameThread, setRenameDeleteThread] = useState<
