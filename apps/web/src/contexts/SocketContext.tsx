@@ -36,14 +36,16 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
 
       setSocket(newSocket)
 
+      const socketId = newSocket.id
+
       // Event listeners for connection status
       newSocket.on('connect', () => {
-        console.log('Socket connected:', newSocket.id)
+        console.log(`Socket connected: id=${socketId}`)
         setIsConnected(true)
       })
 
       newSocket.on('disconnect', (reason) => {
-        console.log(`Socket disconnected: id=${newSocket.id}`, reason)
+        console.log(`Socket disconnected: id=${socketId}:`, reason)
         setIsConnected(false)
       })
 
