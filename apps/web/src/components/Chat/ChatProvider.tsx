@@ -5,9 +5,9 @@ import { ChatContext, ChatContextType } from './ChatProvider.context'
 import { atom, createStore, Provider, useAtom } from 'jotai'
 import { useAuth } from '@clerk/clerk-react'
 import { trpc, trpcClient } from '@/trpc/trpc'
-import { annotationSchema } from './schemas'
 import { useQueryClient } from '@tanstack/react-query'
 import { Thread } from '@/trpc/types'
+import { annotationSchema } from '@prompt-dev/shared-types'
 export type Props = {
   children: React.ReactNode
 }
@@ -31,6 +31,7 @@ function InnerChatProvider({ children }: Props) {
   const chatApi = useChat({
     api: 'http://localhost:3000/api/chat',
     onFinish: async (message) => {
+      console.log('onFinish', message)
       if (message.annotations) {
         const parsed = message.annotations
           .map((ann) => annotationSchema.safeParse(ann))
@@ -54,7 +55,7 @@ function InnerChatProvider({ children }: Props) {
                       updatedAt: metadata.updatedAt,
                       userId: metadata.userId,
                     }
-                    return oldData ? [...oldData, newThread] : [newThread]
+                    return oldData ? [newThread, ...oldData] : [newThread]
                   },
                 )
               } else {

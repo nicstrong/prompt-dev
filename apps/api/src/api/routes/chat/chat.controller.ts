@@ -9,6 +9,8 @@ import { createId } from '@paralleldrive/cuid2'
 import { newMessage } from '~/db/messages.js'
 import { convertResponseMessageToDbMessage } from './chat.services.js'
 import { generateThreadName } from '~/api/routers/threads.js'
+import { threadMetadataAnnotationSchema } from '@prompt-dev/shared-types'
+import { z } from 'zod'
 
 const router: Router = Router()
 router.use(requireAuthOrError)
@@ -42,9 +44,27 @@ router.post(
     pipeDataStreamToResponse(res, {
       execute: async (dataStreamWriter) => {
         if (createdThread) {
-          dataStreamWriter.writeMessageAnnotation({ threadId })
+          const evt: z.infer<typeof threadMetadataAnnotationSchema> = {
+            kind: 'thread-metadata',
+            content: {
+              threadId,
+              isNew: true,
+              name: createdThread.name,
+              createdAt: createdThread.createdAt.valueOf(),
+              updatedAt: createdThread.updatedAt?.valueOf() ?? null,
+              userId: createdThread.userId,
+            },
+          }
+          dataStreamWriter.writeMessageAnnotation(evt)
         } else {
-          dataStreamWriter.writeMessageAnnotation({ threadId })
+          const evt: z.infer<typeof threadMetadataAnnotationSchema> = {
+            kind: 'thread-metadata',
+            content: {
+              threadId,
+              isNew: false,
+            },
+          }
+          dataStreamWriter.writeMessageAnnotation(evt)
         }
 
         const result = streamText({
@@ -61,7 +81,7 @@ router.post(
               threadId,
             )
             const newMsg = await newMessage(responseMessage)
-            if (threadCreated) {
+            if (createdThread) {
               generateThreadName(threadId, userId).catch((err) => {
                 console.error('renameThread failed:', err)
               })

@@ -11,7 +11,6 @@ import {
 } from '~/db/messages.js'
 import { generateText } from 'ai'
 import { openai } from '@ai-sdk/openai'
-import { inspect } from 'util'
 import { io } from '~/index.js'
 import { threadSchema } from '@prompt-dev/shared-types'
 
@@ -26,8 +25,13 @@ export const threadsRouter = createTRPCRouter({
       }
 
       const userThreads = await getAllThreadsForUser(userId)
+      const result = userThreads.map((thread) => ({
+        ...thread,
+        createdAt: thread.createdAt.valueOf(),
+        updatedAt: thread.updatedAt?.valueOf() ?? null,
+      }))
 
-      return userThreads
+      return result
     }),
   deleteThread: protectedProcedure
     .input(z.object({ threadId: z.string().min(1) }))
