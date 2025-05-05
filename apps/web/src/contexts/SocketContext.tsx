@@ -35,15 +35,19 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
       if (unmounted) return
 
       setSocket(newSocket)
+      newSocketRef.current = newSocket
 
       // Event listeners for connection status
       newSocket.on('connect', () => {
-        console.log('Socket connected:', newSocket.id)
+        console.log(`Socket connected: id=${newSocketRef.current?.id}`)
         setIsConnected(true)
       })
 
       newSocket.on('disconnect', (reason) => {
-        console.log(`Socket disconnected: id=${newSocket.id}`, reason)
+        console.log(
+          `Socket disconnected: id=${newSocketRef.current?.id}:`,
+          reason,
+        )
         setIsConnected(false)
       })
 
