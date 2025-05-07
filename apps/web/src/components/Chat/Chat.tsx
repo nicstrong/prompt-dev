@@ -7,14 +7,16 @@ type Props = {}
 export function Chat({}: Props) {
   const { messages } = useChatContext()
   return (
-    <div className='mx-auto flex w-full max-w-3xl flex-col space-y-12 p-4 pb-8'>
-      {messages.map((message) =>
-        message.role === 'user' ? (
-          <UserMessage key={message.id} message={message} />
-        ) : (
-          <AssistantMessage key={message.id} message={message} />
-        ),
-      )}
+    <div className='absolute inset-0 overflow-y-scroll'>
+      <div className='pb-10-pt-safe-offset-10 mx-auto flex w-full max-w-3xl flex-col space-y-4 px-4'>
+        {messages.map((message) =>
+          message.role === 'user' ? (
+            <UserMessage key={message.id} message={message} />
+          ) : (
+            <AssistantMessage key={message.id} message={message} />
+          ),
+        )}
+      </div>
     </div>
   )
 }

@@ -9,7 +9,7 @@ export function UserMessage({ message }: Props) {
     return null
   }
   return (
-    <div className='flex justify-end'>
+    <div data-message-id={message.id} className='flex justify-end'>
       <div className='prose prose-neutral prose-invert group text-left" relative inline-block max-w-[80%] rounded-2xl bg-neutral-700 p-4 break-words'>
         {message.content}
       </div>

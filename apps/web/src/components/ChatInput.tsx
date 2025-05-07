@@ -52,7 +52,7 @@ export const ChatInput = ({}: Props) => {
 
   return (
     <form
-      className='relative flex w-full flex-col items-stretch gap-2 rounded-t-xl bg-[#2D2D2D] px-3 py-3'
+      className='relative flex w-full flex-col items-stretch gap-2 rounded-t-xl px-3 py-3'
       onSubmit={(e) => {
         e.preventDefault()
         e.stopPropagation()
@@ -66,7 +66,7 @@ export const ChatInput = ({}: Props) => {
             children={(field) => (
               <>
                 <Textarea
-                  className='max-h-64 resize-none border-0 focus-visible:border-0 focus-visible:ring-0'
+                  className='bg-input-background dark:bg-input-background max-h-64 resize-none border-0 backdrop-blur-xl focus-visible:border-0 focus-visible:ring-0'
                   id={field.name}
                   name={field.name}
                   value={field.state.value}
@@ -88,7 +88,7 @@ export const ChatInput = ({}: Props) => {
             selector={(state) => [state.canSubmit, state.isSubmitting]}
             children={([canSubmit, isSubmitting]) => (
               <Button
-                className='absolute right-3 bottom-3 ml-auto rounded-full bg-pink-600 text-neutral-100 hover:bg-pink-500'
+                className='absolute right-3 bottom-3 ml-auto rounded-full bg-sky-600 text-neutral-100 hover:bg-sky-500'
                 type='submit'
                 disabled={!canSubmit || isSubmitting}
               >

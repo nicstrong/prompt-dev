@@ -11,7 +11,10 @@ export function AssistantMessage({ message }: Props) {
   const sanitizedHtml = DOMPurify.sanitize(htmlContent)
 
   return (
-    <div className='prose prose-neutral prose-invert flex flex-col gap-2'>
+    <div
+      data-message-id={message.id}
+      className='prose prose-neutral prose-invert flex flex-col gap-2'
+    >
       <div dangerouslySetInnerHTML={{ __html: sanitizedHtml }} />
       <div className='flex flex-row gap-2'>
         {message.experimental_attachments?.map((attachment, index) =>
