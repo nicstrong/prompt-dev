@@ -3,10 +3,7 @@ import { ZodError } from 'zod'
 import superjson from 'superjson'
 import { CreateExpressContextOptions } from '@trpc/server/adapters/express'
 import { db } from '~/db/index.js'
-import {
-  MiddlewareBuilder,
-  MiddlewareResult,
-} from '@trpc/server/unstable-core-do-not-import'
+import { MiddlewareBuilder } from '@trpc/server/unstable-core-do-not-import'
 import { SignedInAuthObject } from '@clerk/backend/internal'
 
 /**

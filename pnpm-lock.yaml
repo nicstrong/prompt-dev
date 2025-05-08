@@ -150,6 +150,9 @@ importers:
       '@hookform/resolvers':
         specifier: ^5.0.1
         version: 5.0.1(react-hook-form@7.55.0(react@19.1.0))
+      '@paralleldrive/cuid2':
+        specifier: ^2.2.2
+        version: 2.2.2
       '@prompt-dev/shared-types':
         specifier: workspace:*
         version: link:../../packages/shared-types

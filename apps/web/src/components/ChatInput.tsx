@@ -3,6 +3,8 @@ import { Textarea } from './ui/textarea'
 import { Button } from './ui/button'
 import { Send } from 'lucide-react'
 import { useChatContext } from './Chat/ChatProvider.context'
+import { ModelSelect } from './Chat/ModelSelect'
+import { useLocalStorageState } from '@/hooks/react'
 
 type Props = {}
 
@@ -10,10 +12,14 @@ export const ChatInput = ({}: Props) => {
   const { handleSubmit, handleInputChange, createRequestOptions } =
     useChatContext()
 
+  const [model, setModel] = useLocalStorageState('model', 'gpt-4.1')
+
   const form = useForm({
     defaultValues: {
       chatMessage: '',
+      model: model,
     },
+
     onSubmit: async ({ formApi }) => {
       const opts = await createRequestOptions()
       handleSubmit({}, opts)
@@ -84,6 +90,18 @@ export const ChatInput = ({}: Props) => {
           />
         </div>
         <div className='flex flex-1'>
+          <form.Field
+            name='model'
+            children={(field) => (
+              <ModelSelect
+                value={field.state.value}
+                onValueChange={(v) => {
+                  field.setValue(v)
+                  setModel(v)
+                }}
+              />
+            )}
+          />
           <form.Subscribe
             selector={(state) => [state.canSubmit, state.isSubmitting]}
             children={([canSubmit, isSubmitting]) => (

@@ -8,7 +8,7 @@ import {
 } from '@ai-sdk/ui-utils'
 import { createId } from '@paralleldrive/cuid2'
 import { Message } from 'ai'
-import { sql } from 'drizzle-orm'
+import { desc, sql } from 'drizzle-orm'
 import {
   json,
   pgEnum,
@@ -72,3 +72,21 @@ export const messages = createTable(
     }),
   ],
 )
+
+export const providerEnum = pgEnum('providers', [
+  'openai',
+  'google',
+  'anthropic',
+  'grok',
+])
+
+export const models = createTable('model', {
+  id: text()
+    .primaryKey()
+    .$defaultFn(() => createId()),
+  name: text().notNull(),
+  description: text().notNull(),
+  shortDescription: text().notNull(),
+  provider: providerEnum().notNull(),
+  modelId: text().notNull(),
+})

@@ -1,4 +1,5 @@
 import { messagesRouter } from './routers/messages.js'
+import { modelsRouter } from './routers/models.js'
 import { threadsRouter } from './routers/threads.js'
 import { createTRPCRouter } from './trpc.js'
 
@@ -10,6 +11,7 @@ import { createTRPCRouter } from './trpc.js'
 export const appRouter = createTRPCRouter({
   messages: messagesRouter,
   threads: threadsRouter,
+  models: modelsRouter,
 })
 
 // export type definition of API
