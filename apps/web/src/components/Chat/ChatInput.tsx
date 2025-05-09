@@ -1,9 +1,9 @@
 import { useForm } from '@tanstack/react-form'
-import { Textarea } from './ui/textarea'
-import { Button } from './ui/button'
+import { Textarea } from '../ui/textarea'
+import { Button } from '../ui/button'
 import { Send } from 'lucide-react'
-import { useChatContext } from './Chat/ChatProvider.context'
-import { ModelSelect } from './Chat/ModelSelect'
+import { useChatContext } from './ChatProvider.context'
+import { ModelSelect } from './ModelSelect'
 import { useLocalStorageState } from '@/hooks/react'
 
 type Props = {}

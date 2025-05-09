@@ -1,4 +1,4 @@
-import { ChatInput } from './ChatInput'
+import { ChatInput } from './Chat/ChatInput'
 
 export const ChatInputBottomPanel = () => {
   return (
