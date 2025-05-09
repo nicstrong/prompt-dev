@@ -1,51 +1,42 @@
-import { useForm } from '@tanstack/react-form'
 import { Textarea } from '../ui/textarea'
 import { Button } from '../ui/button'
 import { Send } from 'lucide-react'
 import { useChatContext } from './ChatProvider.context'
 import { ModelSelect } from './ModelSelect'
 
-type Props = {}
+export const ChatInput = () => {
+  const {
+    handleSubmit,
+    createRequestOptions,
+    handleInputChange,
+    model,
+    setModel,
+    input,
+    setInput,
+  } = useChatContext()
 
-export const ChatInput = ({}: Props) => {
-  const { handleSubmit, setInput, createRequestOptions, model, setModel } =
-    useChatContext()
+  const onSubmit = async () => {
+    const opts = await createRequestOptions()
+    handleSubmit({}, opts)
+  }
 
-  const form = useForm({
-    defaultValues: {
-      chatMessage: '',
-      model: model,
-    },
-
-    onSubmit: async ({ formApi }) => {
-      setInput(formApi.state.values.chatMessage)
-      const opts = await createRequestOptions()
-      handleSubmit({}, opts)
-      formApi.reset()
-    },
-  })
-
-  const handleKeyDown = (
-    e: React.KeyboardEvent,
-    field: any,
-    submit: () => void,
-  ) => {
+  const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault()
-      submit()
+      onSubmit()
     } else if (e.key === 'Enter' && e.shiftKey) {
       e.preventDefault()
       const cursorPosition = (e.target as HTMLTextAreaElement).selectionStart
-      const textBeforeCursor = field.state.value.substring(0, cursorPosition)
-      const textAfterCursor = field.state.value.substring(cursorPosition)
+      const textBeforeCursor = input.substring(0, cursorPosition)
+      const textAfterCursor = input.substring(cursorPosition)
 
       const newValue = `${textBeforeCursor}\n${textAfterCursor}`
-      field.handleChange(newValue)
+      setInput(newValue)
 
       // Set cursor position after the inserted newline
       setTimeout(() => {
         const textarea = document.getElementById(
-          field.name,
+          'chatMessage',
         ) as HTMLTextAreaElement
         if (textarea) {
           textarea.selectionStart = textarea.selectionEnd = cursorPosition + 1
@@ -55,64 +46,39 @@ export const ChatInput = ({}: Props) => {
   }
 
   return (
-    <form
-      className='relative flex w-full flex-col items-stretch gap-2 rounded-t-xl px-3 py-3'
-      onSubmit={(e) => {
-        e.preventDefault()
-        e.stopPropagation()
-        form.handleSubmit()
-      }}
-    >
+    <div className='relative flex w-full flex-col items-stretch gap-2 rounded-t-xl px-3 py-3'>
       <div className='flex flex-grow flex-col'>
         <div>
-          <form.Field
+          <Textarea
+            className='bg-input-background dark:bg-input-background max-h-64 resize-none border-0 backdrop-blur-xl focus-visible:border-0 focus-visible:ring-0'
+            id='chatMessage'
             name='chatMessage'
-            children={(field) => (
-              <>
-                <Textarea
-                  className='bg-input-background dark:bg-input-background max-h-64 resize-none border-0 backdrop-blur-xl focus-visible:border-0 focus-visible:ring-0'
-                  id={field.name}
-                  name={field.name}
-                  value={field.state.value}
-                  onBlur={field.handleBlur}
-                  onChange={(e) => {
-                    field.handleChange(e.target.value)
-                  }}
-                  onKeyDown={(e) => handleKeyDown(e, field, form.handleSubmit)}
-                  placeholder='Type your message here...'
-                  data-1p-ignore
-                />
-              </>
-            )}
+            value={input}
+            onChange={(e) => {
+              handleInputChange(e)
+            }}
+            onKeyDown={(e) => handleKeyDown(e)}
+            placeholder='Type your message here...'
+            data-1p-ignore
           />
         </div>
         <div className='flex flex-1'>
-          <form.Field
-            name='model'
-            children={(field) => (
-              <ModelSelect
-                value={field.state.value}
-                onValueChange={(v) => {
-                  field.setValue(v)
-                  setModel(v)
-                }}
-              />
-            )}
+          <ModelSelect
+            value={model}
+            onValueChange={(v) => {
+              setModel(v)
+            }}
           />
-          <form.Subscribe
-            selector={(state) => [state.canSubmit, state.isSubmitting]}
-            children={([canSubmit, isSubmitting]) => (
-              <Button
-                className='absolute right-3 bottom-3 ml-auto rounded-lg border-1 border-sky-900 bg-[#0284c740] text-neutral-100 hover:bg-[#0284c790]'
-                type='submit'
-                disabled={!canSubmit || isSubmitting}
-              >
-                <Send />
-              </Button>
-            )}
-          />
+
+          <Button
+            className='absolute right-3 bottom-3 ml-auto rounded-lg border-1 border-sky-900 bg-[#0284c740] text-neutral-100 hover:bg-[#0284c790]'
+            type='submit'
+            disabled={input.length === 0}
+          >
+            <Send />
+          </Button>
         </div>
       </div>
-    </form>
+    </div>
   )
 }

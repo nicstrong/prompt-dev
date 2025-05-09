@@ -30,9 +30,8 @@ function InnerChatProvider({ children }: Props) {
   const queryClient = useQueryClient()
   const [model, setModel] = useLocalStorageState('model', 'gpt-4.1')
 
-  const chatApi = useChat({
-    api: 'http://localhost:3000/api/chat',
-    onFinish: async (message) => {
+  const onFinish = useCallback(
+    async (message: Message) => {
       console.log('onFinish', message)
       if (message.annotations) {
         const parsed = message.annotations
@@ -68,6 +67,19 @@ function InnerChatProvider({ children }: Props) {
         })
       }
     },
+    [queryClient, setThreadId],
+  )
+
+  const {
+    handleSubmit,
+    handleInputChange,
+    input,
+    setInput,
+    messages,
+    setMessages,
+  } = useChat({
+    api: 'http://localhost:3000/api/chat',
+    onFinish: onFinish,
   })
 
   const createRequestOptions = useCallback(async () => {
@@ -78,26 +90,29 @@ function InnerChatProvider({ children }: Props) {
       data: { threadId: threadId, model },
     }
     return opts
-  }, [threadId, getToken])
+  }, [threadId, getToken, model])
 
-  const setAndLoadThreadId = useCallback(async (threadId: string | null) => {
-    if (threadId !== null) {
-      const messages = await trpcClient.messages.getAllForThreadId.query({
-        threadId,
-      })
+  const setAndLoadThreadId = useCallback(
+    async (threadId: string | null) => {
+      if (threadId !== null) {
+        const messages = await trpcClient.messages.getAllForThreadId.query({
+          threadId,
+        })
 
-      const transformed = messages.map(
-        (message) =>
-          ({
-            ...message,
-            content: message.content ?? '',
-          }) as Message,
-      )
-      chatApi.setMessages(transformed)
-    }
+        const transformed = messages.map(
+          (message) =>
+            ({
+              ...message,
+              content: message.content ?? '',
+            }) as Message,
+        )
+        setMessages(transformed)
+      }
 
-    setThreadId(threadId)
-  }, [])
+      setThreadId(threadId)
+    },
+    [setMessages, setThreadId],
+  )
 
   const value = useMemo<ChatContextType>(
     () => ({
@@ -107,13 +122,27 @@ function InnerChatProvider({ children }: Props) {
       newThread: () => {
         setThreadId(null)
       },
-      handleSubmit: chatApi.handleSubmit,
-      setInput: chatApi.setInput,
-      messages: chatApi.messages,
+      handleSubmit,
+      handleInputChange,
+      input,
+      setInput,
+      messages,
       setModel: setModel,
       model: model,
     }),
-    [chatApi],
+    [
+      createRequestOptions,
+      handleInputChange,
+      handleSubmit,
+      input,
+      setInput,
+      messages,
+      model,
+      setAndLoadThreadId,
+      setModel,
+      setThreadId,
+      threadId,
+    ],
   )
 
   return <ChatContext.Provider value={value}>{children}</ChatContext.Provider>
