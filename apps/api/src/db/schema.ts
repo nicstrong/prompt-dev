@@ -16,6 +16,7 @@ import {
   pgTableCreator,
   timestamp,
   foreignKey,
+  integer,
 } from 'drizzle-orm/pg-core'
 
 export const createTable = pgTableCreator((name) => `prompt-dev_${name}`)
@@ -89,4 +90,5 @@ export const models = createTable('model', {
   shortDescription: text().notNull(),
   provider: providerEnum().notNull(),
   modelId: text().notNull(),
+  order: integer().notNull().default(1),
 })
