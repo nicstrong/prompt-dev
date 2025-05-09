@@ -8,6 +8,7 @@ import { trpc, trpcClient } from '@/trpc/trpc'
 import { useQueryClient } from '@tanstack/react-query'
 import { Thread } from '@/trpc/types'
 import { annotationSchema } from '@prompt-dev/shared-types'
+import { useLocalStorageState } from '@/hooks/react'
 export type Props = {
   children: React.ReactNode
 }
@@ -27,6 +28,7 @@ function InnerChatProvider({ children }: Props) {
   const [threadId, setThreadId] = useAtom(threadIdAtom)
   const { getToken } = useAuth()
   const queryClient = useQueryClient()
+  const [model, setModel] = useLocalStorageState('model', 'gpt-4.1')
 
   const chatApi = useChat({
     api: 'http://localhost:3000/api/chat',
@@ -73,7 +75,7 @@ function InnerChatProvider({ children }: Props) {
     if (!token) return
     const opts: ChatRequestOptions = {
       headers: { Authorization: `Bearer ${token}` },
-      data: { threadId: threadId },
+      data: { threadId: threadId, model },
     }
     return opts
   }, [threadId, getToken])
@@ -106,8 +108,10 @@ function InnerChatProvider({ children }: Props) {
         setThreadId(null)
       },
       handleSubmit: chatApi.handleSubmit,
-      handleInputChange: chatApi.handleInputChange,
+      setInput: chatApi.setInput,
       messages: chatApi.messages,
+      setModel: setModel,
+      model: model,
     }),
     [chatApi],
   )

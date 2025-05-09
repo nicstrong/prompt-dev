@@ -4,15 +4,12 @@ import { Button } from '../ui/button'
 import { Send } from 'lucide-react'
 import { useChatContext } from './ChatProvider.context'
 import { ModelSelect } from './ModelSelect'
-import { useLocalStorageState } from '@/hooks/react'
 
 type Props = {}
 
 export const ChatInput = ({}: Props) => {
-  const { handleSubmit, handleInputChange, createRequestOptions } =
+  const { handleSubmit, setInput, createRequestOptions, model, setModel } =
     useChatContext()
-
-  const [model, setModel] = useLocalStorageState('model', 'gpt-4.1')
 
   const form = useForm({
     defaultValues: {
@@ -21,6 +18,7 @@ export const ChatInput = ({}: Props) => {
     },
 
     onSubmit: async ({ formApi }) => {
+      setInput(formApi.state.values.chatMessage)
       const opts = await createRequestOptions()
       handleSubmit({}, opts)
       formApi.reset()
@@ -79,7 +77,6 @@ export const ChatInput = ({}: Props) => {
                   onBlur={field.handleBlur}
                   onChange={(e) => {
                     field.handleChange(e.target.value)
-                    handleInputChange(e)
                   }}
                   onKeyDown={(e) => handleKeyDown(e, field, form.handleSubmit)}
                   placeholder='Type your message here...'

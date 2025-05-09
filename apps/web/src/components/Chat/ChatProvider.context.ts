@@ -7,9 +7,11 @@ export type ChatContextType = {
   setThreadId: (threadId: string | null) => void
   newThread: () => void
   handleSubmit: UseChatHelpers['handleSubmit']
-  handleInputChange: UseChatHelpers['handleInputChange']
+  setInput: UseChatHelpers['setInput']
   createRequestOptions: () => Promise<ChatRequestOptions | undefined>
   messages: UIMessage[]
+  setModel: (updater: string | ((prev: string) => string)) => void
+  model: string
 }
 
 export const ChatContext = createContext<ChatContextType | null>(null)
