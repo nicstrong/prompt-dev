@@ -29,7 +29,7 @@ function InnerLayout({ threadId }: Props) {
 
   useEffect(() => {
     setThreadId(threadId ?? null)
-  }, [threadId])
+  }, [setThreadId, threadId])
 
   return (
     <>

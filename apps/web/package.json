@@ -49,6 +49,7 @@
     "micromark": "^4.0.2",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
+    "react-scan": "^0.3.3",
     "recharts": "^2.15.2",
     "socket.io-client": "^4.8.1",
     "sonner": "^2.0.3",

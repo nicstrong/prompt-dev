@@ -21,10 +21,10 @@ import { MenuItem } from './MenuItem'
 import { RenameDialog } from './RenameDialog'
 import { Link } from '@tanstack/react-router'
 import { useThreadMutations } from '@/hooks/threadMutations'
+import React from 'react'
+import { Threads } from '@/trpc/types'
 
-export const AppSidebar = ({
-  ...props
-}: React.ComponentProps<typeof Sidebar>) => {
+const AppSidebarImpl = ({ ...props }: React.ComponentProps<typeof Sidebar>) => {
   const { data: threads } = useQuery(trpc.threads.getAllForUser.queryOptions())
   const { deleteThread, renameThread, refreshThread } = useThreadMutations()
   const { threadId } = useChatContext()
@@ -48,22 +48,13 @@ export const AppSidebar = ({
               <Plus /> <span className='sr-only'>New Thread</span>
             </Link>
           </SidebarGroupAction>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {(threads ?? []).map((thread) => (
-                <MenuItem
-                  key={thread.id}
-                  thread={thread}
-                  isActive={threadId === thread.id}
-                  onDelete={(tid) => setShowDeleteThread(tid)}
-                  onRename={(tid) => setRenameDeleteThread([tid, thread.name])}
-                  onRefresh={async (tid) => {
-                    await refreshThread({ threadId: tid })
-                  }}
-                />
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
+          <ThreadSidebarGroupContent
+            threads={threads ?? []}
+            activeThreadId={threadId}
+            setShowDeleteThread={setShowDeleteThread}
+            setRenameDeleteThread={setRenameDeleteThread}
+            refreshThread={refreshThread}
+          />
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>
@@ -95,3 +86,42 @@ export const AppSidebar = ({
     </Sidebar>
   )
 }
+
+interface ThreadSidebarGroupContentProps {
+  threads: Threads
+  activeThreadId: string | null
+  setShowDeleteThread: (threadId: string | null) => void
+  setRenameDeleteThread: (arg: readonly [string, string] | null) => void
+  refreshThread: (arg: { threadId: string }) => Promise<void>
+}
+
+const ThreadSidebarGroupContent = React.memo(
+  ({
+    threads,
+    activeThreadId,
+    setShowDeleteThread,
+    setRenameDeleteThread,
+    refreshThread,
+  }: ThreadSidebarGroupContentProps) => {
+    return (
+      <SidebarGroupContent>
+        <SidebarMenu>
+          {(threads ?? []).map((thread) => (
+            <MenuItem
+              key={thread.id}
+              thread={thread}
+              isActive={activeThreadId === thread.id}
+              onDelete={(tid) => setShowDeleteThread(tid)}
+              onRename={(tid) => setRenameDeleteThread([tid, thread.name])}
+              onRefresh={async (tid) => {
+                await refreshThread({ threadId: tid })
+              }}
+            />
+          ))}
+        </SidebarMenu>
+      </SidebarGroupContent>
+    )
+  },
+)
+
+export const AppSidebar = React.memo(AppSidebarImpl)
