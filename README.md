@@ -10,6 +10,7 @@ This project began as an exploration into technologies I hadn’t used before, i
 - shadcn/ui
 - Vercel AI SDK
 - Turborepo (monerepos)
+  
 I was also curious to see how modern AI tools and workflows perform in a greenfield project, since most of my professional experience has been with legacy applications. Inspired by the amazing t3.chat—though this is a humble and much simpler imitation.
 
 While it started as a learning project, my hope is to grow it into a comprehensive platform for prompt engineering and agent/assistant development.
