@@ -8,7 +8,7 @@ import {
 } from '../ui/select'
 import { trpc } from '@/trpc/trpc'
 import { SelectProps } from '@radix-ui/react-select'
-import { OpenAI } from '../icons/OpenAi'
+import { OpenAI } from '../icons/OpenAI'
 import { InfoIcon } from 'lucide-react'
 import {
   Tooltip,

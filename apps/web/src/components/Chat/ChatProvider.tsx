@@ -9,12 +9,14 @@ import { useQueryClient } from '@tanstack/react-query'
 import { Thread } from '@/trpc/types'
 import { annotationSchema } from '@prompt-dev/shared-types'
 import { useLocalStorageState } from '@/hooks/react'
+import { scopedLog } from 'scope-log'
 export type Props = {
   children: React.ReactNode
 }
 const chatStore = createStore()
 
 const threadIdAtom = atom<string | null>(null)
+const log = scopedLog('ChatProvider')
 
 export function ChatProvider({ children }: Props) {
   return (
@@ -32,7 +34,7 @@ function InnerChatProvider({ children }: Props) {
 
   const onFinish = useCallback(
     async (message: Message) => {
-      console.log('onFinish', message)
+      log('onFinish', message)
       if (message.annotations) {
         const parsed = message.annotations
           .map((ann) => annotationSchema.safeParse(ann))
@@ -43,7 +45,7 @@ function InnerChatProvider({ children }: Props) {
           switch (annotation.kind) {
             case 'thread-metadata': {
               const metadata = annotation.content
-              console.log('thread-metadata annotation', metadata)
+              log('thread-metadata annotation', metadata)
               if (metadata.isNew === true) {
                 // add the thread to front of query cache
                 queryClient.setQueriesData(

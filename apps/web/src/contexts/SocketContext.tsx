@@ -2,10 +2,12 @@ import React, { useEffect, useRef, useState } from 'react'
 import { io } from 'socket.io-client'
 import { AppSocket, SocketContext } from './SocketContext.provider'
 import { useAuth } from '@clerk/clerk-react'
+import { scopedLog } from 'scope-log'
 
 interface SocketProviderProps {
   children: React.ReactNode
 }
+const log = scopedLog('SocketProvider')
 
 export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
   const [socket, setSocket] = useState<AppSocket | null>(null)
@@ -39,20 +41,17 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
 
       // Event listeners for connection status
       newSocket.on('connect', () => {
-        console.log(`Socket connected: id=${newSocketRef.current?.id}`)
+        log(`Socket connected: id=${newSocketRef.current?.id}`)
         setIsConnected(true)
       })
 
       newSocket.on('disconnect', (reason) => {
-        console.log(
-          `Socket disconnected: id=${newSocketRef.current?.id}:`,
-          reason,
-        )
+        log(`Socket disconnected: id=${newSocketRef.current?.id}:`, reason)
         setIsConnected(false)
       })
 
       newSocket.on('connect_error', (error) => {
-        console.error('Socket connection error:', error)
+        log.error('Socket connection error:', error)
       })
     }
 
@@ -60,7 +59,7 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
 
     return () => {
       unmounted = true
-      console.log('Disconnecting socket...', newSocketRef.current?.id)
+      log('Disconnecting socket...', newSocketRef.current?.id)
       newSocketRef.current?.disconnect()
       setIsConnected(false)
     }

@@ -4,6 +4,9 @@ import { Thread } from '@/trpc/types'
 import { ItemUpdatePayload } from '@prompt-dev/shared-types'
 import { useQueryClient } from '@tanstack/react-query'
 import { useEffect } from 'react'
+import { scopedLog } from 'scope-log'
+
+const log = scopedLog('SocketEventListener')
 
 export const useSocketEventListener = () => {
   const { socket, isConnected } = useSocket()
@@ -15,7 +18,7 @@ export const useSocketEventListener = () => {
     }
 
     const updateQueryCache = (payload: ItemUpdatePayload) => {
-      console.log('Received socket event:', payload)
+      log('Received socket event:', payload)
       switch (payload.kind) {
         case 'thread-name':
           queryClient.setQueriesData(
