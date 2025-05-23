@@ -1,7 +1,7 @@
 # Prompt Dev
 
 
-A modern AI chat application built with React, tRPC, and Express.js, featuring real-time messaging and AI integration.
+A modern AI chat application built with React, tRPC, Express.js and Vercel AI SDK.
 
 This project began as an exploration into technologies I hadn’t used before, including:
 - Express.js
