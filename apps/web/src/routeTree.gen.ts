@@ -14,6 +14,7 @@ import { Route as rootRoute } from './routes/__root'
 import { Route as LoginImport } from './routes/login'
 import { Route as AuthedImport } from './routes/_authed'
 import { Route as AuthedIndexImport } from './routes/_authed.index'
+import { Route as AuthedSettingsImport } from './routes/_authed.settings'
 import { Route as AuthedThreadsThreadIdImport } from './routes/_authed.threads.$threadId'
 
 // Create/Update Routes
@@ -32,6 +33,12 @@ const AuthedRoute = AuthedImport.update({
 const AuthedIndexRoute = AuthedIndexImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => AuthedRoute,
+} as any)
+
+const AuthedSettingsRoute = AuthedSettingsImport.update({
+  id: '/settings',
+  path: '/settings',
   getParentRoute: () => AuthedRoute,
 } as any)
 
@@ -59,6 +66,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginImport
       parentRoute: typeof rootRoute
     }
+    '/_authed/settings': {
+      id: '/_authed/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof AuthedSettingsImport
+      parentRoute: typeof AuthedImport
+    }
     '/_authed/': {
       id: '/_authed/'
       path: '/'
@@ -79,11 +93,13 @@ declare module '@tanstack/react-router' {
 // Create and export the route tree
 
 interface AuthedRouteChildren {
+  AuthedSettingsRoute: typeof AuthedSettingsRoute
   AuthedIndexRoute: typeof AuthedIndexRoute
   AuthedThreadsThreadIdRoute: typeof AuthedThreadsThreadIdRoute
 }
 
 const AuthedRouteChildren: AuthedRouteChildren = {
+  AuthedSettingsRoute: AuthedSettingsRoute,
   AuthedIndexRoute: AuthedIndexRoute,
   AuthedThreadsThreadIdRoute: AuthedThreadsThreadIdRoute,
 }
@@ -94,12 +110,14 @@ const AuthedRouteWithChildren =
 export interface FileRoutesByFullPath {
   '': typeof AuthedRouteWithChildren
   '/login': typeof LoginRoute
+  '/settings': typeof AuthedSettingsRoute
   '/': typeof AuthedIndexRoute
   '/threads/$threadId': typeof AuthedThreadsThreadIdRoute
 }
 
 export interface FileRoutesByTo {
   '/login': typeof LoginRoute
+  '/settings': typeof AuthedSettingsRoute
   '/': typeof AuthedIndexRoute
   '/threads/$threadId': typeof AuthedThreadsThreadIdRoute
 }
@@ -108,19 +126,21 @@ export interface FileRoutesById {
   __root__: typeof rootRoute
   '/_authed': typeof AuthedRouteWithChildren
   '/login': typeof LoginRoute
+  '/_authed/settings': typeof AuthedSettingsRoute
   '/_authed/': typeof AuthedIndexRoute
   '/_authed/threads/$threadId': typeof AuthedThreadsThreadIdRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '' | '/login' | '/' | '/threads/$threadId'
+  fullPaths: '' | '/login' | '/settings' | '/' | '/threads/$threadId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/login' | '/' | '/threads/$threadId'
+  to: '/login' | '/settings' | '/' | '/threads/$threadId'
   id:
     | '__root__'
     | '/_authed'
     | '/login'
+    | '/_authed/settings'
     | '/_authed/'
     | '/_authed/threads/$threadId'
   fileRoutesById: FileRoutesById
@@ -153,12 +173,17 @@ export const routeTree = rootRoute
     "/_authed": {
       "filePath": "_authed.tsx",
       "children": [
+        "/_authed/settings",
         "/_authed/",
         "/_authed/threads/$threadId"
       ]
     },
     "/login": {
       "filePath": "login.tsx"
+    },
+    "/_authed/settings": {
+      "filePath": "_authed.settings.tsx",
+      "parent": "/_authed"
     },
     "/_authed/": {
       "filePath": "_authed.index.tsx",

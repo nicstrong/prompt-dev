@@ -6,3 +6,6 @@ export type Thread = Threads[number]
 
 export type Messages = inferOutput<typeof trpc.messages.getAllForThreadId>
 export type Message = Messages[number]
+
+export type Models = inferOutput<typeof trpc.models.getModels>
+export type Model = Models[number]

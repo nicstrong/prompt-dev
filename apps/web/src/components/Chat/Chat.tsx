@@ -2,9 +2,7 @@ import { UserMessage } from './components/UserMessage'
 import { AssistantMessage } from './components/AssistantMessage'
 import { useChatContext } from './ChatProvider.context'
 
-type Props = {}
-
-export function Chat({}: Props) {
+export function Chat() {
   const { messages } = useChatContext()
   return (
     <div className='absolute inset-0 overflow-y-scroll pb-32'>
