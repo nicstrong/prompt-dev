@@ -8,7 +8,6 @@ import {
 } from '../ui/select'
 import { trpc } from '@/trpc/trpc'
 import { SelectProps } from '@radix-ui/react-select'
-import { OpenAI } from '../icons/OpenAI'
 import { InfoIcon } from 'lucide-react'
 import {
   Tooltip,
@@ -16,6 +15,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '../ui/tooltip'
+import { ProviderIcon } from '../ProviderIcon'
 
 export function ModelSelect(props: SelectProps) {
   const { data: models } = useQuery(trpc.models.getModels.queryOptions())
@@ -34,7 +34,7 @@ export function ModelSelect(props: SelectProps) {
             value={model.modelId}
             className='flex items-center'
           >
-            {model.provider === 'openai' && <OpenAI className='fill-sky-500' />}
+            <ProviderIcon provider={model.provider} />
             <span>{model.name}</span>
             <TooltipProvider>
               <Tooltip>

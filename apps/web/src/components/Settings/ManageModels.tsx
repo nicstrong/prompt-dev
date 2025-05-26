@@ -10,11 +10,11 @@ import {
   TableHeader,
   TableRow,
 } from '../ui/table'
-import { OpenAI } from '../icons/OpenAI'
 import * as O from 'fp-ts/Option'
 import { Model } from '@/trpc/types'
 import { useState } from 'react'
 import { EditModelDialog } from './EditModelDialog'
+import { ProviderIcon } from '../ProviderIcon'
 
 export function ManageModels() {
   const { data: models } = useQuery(trpc.models.getModels.queryOptions())
@@ -38,11 +38,16 @@ export function ManageModels() {
               <TableCell>{model.name}</TableCell>
               <TableCell>{model.shortDescription}</TableCell>
               <TableCell className=''>
-                {model.provider === 'openai' ? (
-                  <OpenAI className='mx-auto fill-sky-500' />
-                ) : (
-                  model.provider
-                )}
+                <div className='flex items-center gap-2'>
+                  <ProviderIcon provider={model.provider} />
+                  {model.provider === 'openai'
+                    ? 'OpenAI'
+                    : model.provider === 'anthropic'
+                      ? 'Anthropic'
+                      : model.provider === 'google'
+                        ? 'Google'
+                        : 'Grok'}
+                </div>
               </TableCell>
               <TableCell className='text-right'>
                 <Button

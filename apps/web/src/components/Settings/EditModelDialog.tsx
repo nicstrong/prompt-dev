@@ -12,6 +12,8 @@ import { Model } from '@/trpc/types'
 import { Label } from '../ui/label'
 import { Textarea } from '../ui/textarea'
 import { createId } from '@paralleldrive/cuid2'
+import { Select } from '../ui/select'
+import { ProviderSelect } from '../Chat/ProviderSelect'
 
 type Props = {
   onConfirm: (model: Model | Omit<Model, 'order'>) => void
@@ -26,7 +28,7 @@ export function EditModelDialog({ model, onConfirm, onDismiss }: Props) {
       shortDescription: model?.shortDescription ?? '',
       description: model?.description ?? '',
       provider: model?.provider ?? '',
-      modelId: model?.id ?? '',
+      modelId: model?.modelId ?? '',
     },
     onSubmit: async ({ value }) => {
       // Do something with forms data
@@ -66,6 +68,7 @@ export function EditModelDialog({ model, onConfirm, onDismiss }: Props) {
                   onBlur={field.handleBlur}
                   value={field.state.value}
                   onChange={(e) => field.handleChange(e.target.value)}
+                  data-1p-ignore
                 />
                 {!field.state.meta.isValid && (
                   <em>{field.state.meta.errors.join(',')}</em>
@@ -98,6 +101,41 @@ export function EditModelDialog({ model, onConfirm, onDismiss }: Props) {
                 <Label htmlFor={field.name}>Description</Label>
                 <Textarea
                   className='min-h-40'
+                  name={field.name}
+                  onBlur={field.handleBlur}
+                  value={field.state.value}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                />
+                {!field.state.meta.isValid && (
+                  <em>{field.state.meta.errors.join(',')}</em>
+                )}
+              </div>
+            )}
+          />
+          <form.Field
+            name='modelId'
+            children={(field) => (
+              <div className='flex flex-col gap-4'>
+                <Label htmlFor={field.name}>Model Provider</Label>
+                <ProviderSelect
+                  value={field.state.value}
+                  defaultValue={field.state.value}
+                  onValueChange={(v) => {
+                    field.handleChange(v)
+                  }}
+                />
+                {!field.state.meta.isValid && (
+                  <em>{field.state.meta.errors.join(',')}</em>
+                )}
+              </div>
+            )}
+          />
+          <form.Field
+            name='modelId'
+            children={(field) => (
+              <div className='flex flex-col gap-4'>
+                <Label htmlFor={field.name}>Model ID</Label>
+                <Input
                   name={field.name}
                   onBlur={field.handleBlur}
                   value={field.state.value}
