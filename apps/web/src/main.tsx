@@ -7,8 +7,11 @@ import { createRouter } from './router.tsx'
 import { RouterProvider } from '@tanstack/react-router'
 import { ClerkProvider, useClerk } from '@clerk/clerk-react'
 import { dark } from '@clerk/themes'
+import { LogLevel, setLogLevel } from 'scope-log'
 
 const router = createRouter()
+
+setLogLevel('$:*', LogLevel.DEBUG)
 
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY
 

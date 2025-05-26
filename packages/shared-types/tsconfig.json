@@ -1,6 +1,8 @@
 {
   "extends": "@prompt-dev/typescript-config/base.json",
   "compilerOptions": {
+    "preserveConstEnums": true,
+    "declaration": true,
     "outDir": "./dist",
     "noEmit": false,
     "baseUrl": ".",

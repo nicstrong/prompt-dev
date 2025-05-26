@@ -15,7 +15,7 @@ import { UserPanel } from '../UserPanel'
 import { trpc } from '@/trpc/trpc'
 import { Plus } from 'lucide-react'
 import { useChatContext } from '../Chat/ChatProvider.context'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { ConfirmDeletedDialog } from './ConfirmDeletedDialog'
 import { MenuItem } from './MenuItem'
 import { RenameDialog } from './RenameDialog'
@@ -23,6 +23,19 @@ import { Link } from '@tanstack/react-router'
 import { useThreadMutations } from '@/hooks/threadMutations'
 import React from 'react'
 import { Threads } from '@/trpc/types'
+import {
+  startOfDay,
+  subDays,
+  isToday,
+  isYesterday,
+  isWithinInterval,
+} from 'date-fns'
+import { groupBy } from 'fp-ts/NonEmptyArray'
+import { pipe } from 'fp-ts/lib/function'
+import { Thread } from '@prompt-dev/shared-types'
+import { scopedLog } from 'scope-log'
+
+const log = scopedLog('UI:AppSidebar')
 
 const AppSidebarImpl = ({ ...props }: React.ComponentProps<typeof Sidebar>) => {
   const { data: threads } = useQuery(trpc.threads.getAllForUser.queryOptions())
@@ -95,6 +108,13 @@ interface ThreadSidebarGroupContentProps {
   refreshThread: (arg: { threadId: string }) => Promise<void>
 }
 
+type ThreadGroup =
+  | 'Today'
+  | 'Yesterday'
+  | 'Last 7 Days'
+  | 'Last 30 Days'
+  | 'Older'
+
 const ThreadSidebarGroupContent = React.memo(
   ({
     threads,
@@ -103,22 +123,75 @@ const ThreadSidebarGroupContent = React.memo(
     setRenameDeleteThread,
     refreshThread,
   }: ThreadSidebarGroupContentProps) => {
+    const threadsGrouped = useMemo<Record<ThreadGroup, Thread[]>>(() => {
+      const today = new Date()
+      const startOfToday = startOfDay(today)
+      const startOfLast7Days = startOfDay(subDays(today, 6)) // Includes today
+      const startOfLast30Days = startOfDay(subDays(today, 29)) // Includes todayå
+
+      const groupThread = (item: Thread): ThreadGroup => {
+        const itemDate = item.updatedAt
+        log(`Grouping thread ${item.id} by date ${itemDate}`)
+
+        if (itemDate === null) {
+          return 'Older'
+        }
+
+        if (isToday(itemDate)) {
+          return 'Today'
+        }
+        if (isYesterday(itemDate)) {
+          return 'Yesterday'
+        }
+        if (
+          isWithinInterval(itemDate, {
+            start: startOfLast7Days,
+            end: startOfToday,
+          })
+        ) {
+          return 'Last 7 Days'
+        }
+        if (
+          isWithinInterval(itemDate, {
+            start: startOfLast30Days,
+            end: startOfToday,
+          })
+        ) {
+          return 'Last 30 Days'
+        }
+        return 'Older'
+      }
+
+      const data = pipe(threads, groupBy(groupThread))
+      return data as Record<ThreadGroup, Array<Thread>>
+    }, [threads])
     return (
       <SidebarGroupContent>
-        <SidebarMenu>
-          {(threads ?? []).map((thread) => (
-            <MenuItem
-              key={thread.id}
-              thread={thread}
-              isActive={activeThreadId === thread.id}
-              onDelete={(tid) => setShowDeleteThread(tid)}
-              onRename={(tid) => setRenameDeleteThread([tid, thread.name])}
-              onRefresh={async (tid) => {
-                await refreshThread({ threadId: tid })
-              }}
-            />
-          ))}
-        </SidebarMenu>
+        {Object.entries(threadsGrouped).map(([category, threadsInCategory]) =>
+          threadsInCategory.length > 0 ? (
+            <React.Fragment key={category}>
+              <SidebarGroupLabel className='text-muted-foreground px-3 pt-2 text-xs first:pt-0'>
+                {category}
+              </SidebarGroupLabel>
+              <SidebarMenu>
+                {(threads ?? []).map((thread) => (
+                  <MenuItem
+                    key={thread.id}
+                    thread={thread}
+                    isActive={activeThreadId === thread.id}
+                    onDelete={(tid) => setShowDeleteThread(tid)}
+                    onRename={(tid) =>
+                      setRenameDeleteThread([tid, thread.name])
+                    }
+                    onRefresh={async (tid) => {
+                      await refreshThread({ threadId: tid })
+                    }}
+                  />
+                ))}
+              </SidebarMenu>
+            </React.Fragment>
+          ) : null,
+        )}
       </SidebarGroupContent>
     )
   },

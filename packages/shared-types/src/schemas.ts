@@ -7,6 +7,7 @@ export const threadSchema = z.object({
   name: z.string(),
   userId: z.string(),
 })
+export type Thread = z.infer<typeof threadSchema>
 
 export const threadMetadataAnnotationSchema = z.object({
   kind: z.literal('thread-metadata'),
@@ -25,6 +26,10 @@ export const threadMetadataAnnotationSchema = z.object({
   ]),
 })
 
+export type ThreadMetadataAnnotation = z.infer<typeof threadSchema>
+
 export const annotationSchema = z.discriminatedUnion('kind', [
   threadMetadataAnnotationSchema,
 ])
+
+export type Annotation = z.infer<typeof annotationSchema>
