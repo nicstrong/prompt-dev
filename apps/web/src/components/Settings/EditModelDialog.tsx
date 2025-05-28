@@ -12,7 +12,6 @@ import { Model } from '@/trpc/types'
 import { Label } from '../ui/label'
 import { Textarea } from '../ui/textarea'
 import { createId } from '@paralleldrive/cuid2'
-import { Select } from '../ui/select'
 import { ProviderSelect } from '../Chat/ProviderSelect'
 
 type Props = {
