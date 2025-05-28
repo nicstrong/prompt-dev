@@ -5,6 +5,7 @@ import { models, providerEnum } from '~/db/schema.js'
 import { TRPCError } from '@trpc/server'
 import { db } from '~/db/index.js'
 import { eq } from 'drizzle-orm'
+import { hasRole } from '~/utils/auth.js'
 
 export const modelsRouter = createTRPCRouter({
   getModels: protectedProcedure.query(async ({ ctx }) => {
@@ -25,6 +26,13 @@ export const modelsRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input }) => {
       const { id, ...updateData } = input
+
+      if (hasRole(ctx.auth, 'admin')) {
+        throw new TRPCError({
+          code: 'UNAUTHORIZED',
+          message: 'You do not have permission to update models.',
+        })
+      }
 
       const dataToSet: Partial<typeof models.$inferInsert> = {}
 
