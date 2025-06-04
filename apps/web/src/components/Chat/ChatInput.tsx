@@ -66,6 +66,7 @@ export const ChatInput = () => {
           <ModelSelect
             value={model}
             onValueChange={(v) => {
+              console.log('Model changed to:', v)
               setModel(v)
             }}
           />

@@ -102,5 +102,6 @@ export type NewChatType = {
   messages: UIMessage[]
   data: {
     threadId: string | null
+    model: string | null
   } | null
 }

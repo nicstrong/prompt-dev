@@ -11,6 +11,7 @@ import { convertResponseMessageToDbMessage } from './chat.services.js'
 import { generateThreadName } from '~/api/routers/threads.js'
 import { threadMetadataAnnotationSchema } from '@prompt-dev/shared-types'
 import { z } from 'zod'
+import { createModel } from './modelFactory.js'
 
 const router: Router = Router()
 router.use(requireAuthOrError)
@@ -21,10 +22,13 @@ router.post(
   async (req: Request, res: Response, next: NextFunction) => {
     const userId = req.auth.userId!
     const data = req.body as NewChatType
+    console.log('Received chat request:', data)
     const { messages } = data
     let threadId = data.data?.threadId ?? null
     let createdThread: Thread | null = null
 
+    const model = await createModel(data.data?.model ?? null)
+    console.log('Using model:', model)
     if (threadId === null) {
       threadId = createId()
       createdThread = await newThread({
@@ -68,7 +72,7 @@ router.post(
         }
 
         const result = streamText({
-          model: openai('gpt-4.1-mini-2025-04-14'),
+          model: model,
           messages,
           // id format for server-side messages:
           experimental_generateMessageId: createIdGenerator({

@@ -7,7 +7,7 @@ import {
   SelectValue,
 } from '../ui/select'
 import { trpc } from '@/trpc/trpc'
-import { SelectProps } from '@radix-ui/react-select'
+import { SelectItemText, SelectProps } from '@radix-ui/react-select'
 import { InfoIcon } from 'lucide-react'
 import {
   Tooltip,
@@ -17,25 +17,29 @@ import {
 } from '../ui/tooltip'
 import { ProviderIcon } from '../ProviderIcon'
 
-export function ModelSelect(props: SelectProps) {
+export function ModelSelect({ value, ...props }: SelectProps) {
   const { data: models } = useQuery(trpc.models.getModels.queryOptions())
 
+  const selectedOption = (models ?? []).find((o) => o.id === value)
+
   return (
-    <Select {...props}>
+    <Select value={value} {...props}>
       <SelectTrigger className='bg-input-background dark:bg-input-background w-[180px] border-0 backdrop-blur-xl focus-visible:border-0 focus-visible:ring-0'>
         <SelectValue asChild>
-          <span>{props.value}</span>
-        </SelectValue>
+          <span>
+            {selectedOption ? selectedOption.name : 'Please chose a model'}
+          </span>
+        </SelectValue>{' '}
       </SelectTrigger>
       <SelectContent className='bg-sidebar dark:bg-sidebar-accent border-0 focus-visible:border-0 focus-visible:ring-0'>
         {models?.map((model) => (
           <SelectItem
-            key={model.modelId}
-            value={model.modelId}
+            key={model.id}
+            value={model.id}
             className='flex items-center'
           >
             <ProviderIcon provider={model.provider} />
-            <span>{model.name}</span>
+            <SelectItemText>{model.name}</SelectItemText>
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger>
