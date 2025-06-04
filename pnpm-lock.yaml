@@ -392,17 +392,17 @@ importers:
         specifier: workspace:*
         version: link:../typescript-config
       '@trpc/server':
-        specifier: 11.1.2
-        version: 11.1.2(typescript@5.8.3)
+        specifier: 11.2.0
+        version: 11.2.0(typescript@5.8.3)
       zod:
-        specifier: ^3.24.2
+        specifier: ^3.25.51
         version: 3.25.51
     devDependencies:
       tsup:
-        specifier: ^8.4.0
+        specifier: ^8.5.0
         version: 8.5.0(jiti@2.4.2)(postcss@8.5.4)(tsx@4.19.4)(typescript@5.8.3)
       typescript:
-        specifier: ^5.7.3
+        specifier: ^5.8.3
         version: 5.8.3
 
   packages/typescript-config: {}
@@ -1846,11 +1846,6 @@ packages:
     resolution: {integrity: sha512-uGehc0QvK3+UmTZb1KmIwvMLtRW0I5ykiYQHA1Yqa7yHPzpF9zw7mbwna6gqZAgjclt0/S6jwxAMJizoaP8uqQ==}
     peerDependencies:
       '@trpc/server': 11.2.0
-      typescript: '>=5.7.2'
-
-  '@trpc/server@11.1.2':
-    resolution: {integrity: sha512-Oi9zWHG0ZDkbDo4sYkduoV7q4sIe6UwjrRLC91vNMYQK+PVgpbTCmK1laRwewAGu0zaayqcGDosANjceOIC3GA==}
-    peerDependencies:
       typescript: '>=5.7.2'
 
   '@trpc/server@11.2.0':
@@ -5707,10 +5702,6 @@ snapshots:
   '@trpc/client@11.2.0(@trpc/server@11.2.0(typescript@5.8.3))(typescript@5.8.3)':
     dependencies:
       '@trpc/server': 11.2.0(typescript@5.8.3)
-      typescript: 5.8.3
-
-  '@trpc/server@11.1.2(typescript@5.8.3)':
-    dependencies:
       typescript: 5.8.3
 
   '@trpc/server@11.2.0(typescript@5.8.3)':
