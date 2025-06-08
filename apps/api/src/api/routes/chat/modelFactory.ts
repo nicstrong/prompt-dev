@@ -1,50 +1,44 @@
 import { openai } from '@ai-sdk/openai'
 import { anthropic } from '@ai-sdk/anthropic'
-import { xai } from '@ai-sdk/xai'
 import { google } from '@ai-sdk/google'
-import { LanguageModel } from 'ai'
+import { xai } from '@ai-sdk/xai'
 import { LRUCache } from 'lru-cache'
 import { scopedLog } from 'scope-log'
 import { getModelById, Model } from '~/db/models.js'
 
 const cache = new LRUCache<string, Model>({
   max: 500,
-  ttl: 1000 * 60 * 20,
+  ttl: 1000 * 60 * 5, // 5 minutes
   fetchMethod: async (key, staleValue, { options, signal }) => {
-    // You can use the signal to abort the fetch if needed
-    return (await getModelById(key)) ?? undefined
+    const model = await getModelById(key)
+    return model ?? undefined
   },
 })
 
 const log = scopedLog('modelFactory')
 const DEFAULT_OPENAI_MODEL = 'gpt-4.1-mini'
 
-export async function createModel(
-  modelId: string | null,
-): Promise<LanguageModel> {
-  if (modelId === null) {
-    log.warn('No modelId specified, using default model')
+export async function createModel(model: string | null) {
+  if (model === null) {
+    log.warn('No model specified, using default model')
     return openai(DEFAULT_OPENAI_MODEL)
   }
 
-  const model = await cache.fetch(modelId)
+  const modelDef = await cache.fetch(model)
 
-  if (!model) {
-    log.warn(`Model with ID ${modelId} not found, using default model`)
-    return openai(DEFAULT_OPENAI_MODEL)
-  }
-
-  switch (model.provider) {
+  switch (modelDef?.provider) {
     case 'openai':
-      return openai(model.modelId)
+      return openai(modelDef.modelId)
     case 'anthropic':
-      return anthropic(model.modelId)
+      return anthropic(modelDef.modelId)
     case 'google':
-      return google(model.modelId)
+      return google(modelDef.modelId)
     case 'grok':
-      return xai(model.modelId)
+      return xai(modelDef.modelId)
+    default:
+      log.warn(
+        `Unknown model provider: ${modelDef?.provider}, using default model`,
+      )
+      return openai(DEFAULT_OPENAI_MODEL)
   }
-
-  log.warn(`Provider ${model.provider} not supported, using default model`)
-  return openai(DEFAULT_OPENAI_MODEL)
 }
