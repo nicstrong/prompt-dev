@@ -1,0 +1,15 @@
+services:
+  db:
+    image: postgres:latest
+    container_name: my_postgres
+    environment:
+      POSTGRES_PASSWORD: P@ssw0rd123
+      POSTGRES_USER: postgres
+      POSTGRES_DB: prompt_dev_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:
