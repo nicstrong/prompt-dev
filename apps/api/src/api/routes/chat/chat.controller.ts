@@ -22,13 +22,11 @@ router.post(
   async (req: Request, res: Response, next: NextFunction) => {
     const userId = req.auth.userId!
     const data = req.body as NewChatType
-    console.log('Received chat request:', data)
     const { messages } = data
     let threadId = data.data?.threadId ?? null
     let createdThread: Thread | null = null
 
     const model = await createModel(data.data?.model ?? null)
-    console.log('Using model:', model)
     if (threadId === null) {
       threadId = createId()
       createdThread = await newThread({
