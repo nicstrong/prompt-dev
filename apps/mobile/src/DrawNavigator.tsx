@@ -1,7 +1,9 @@
 import { SafeAreaInsetsContext } from 'react-native-safe-area-context'
 import DrawerItems from './DrawerItems'
 import { createDrawerNavigator } from '@react-navigation/drawer'
+import { getFocusedRouteNameFromRoute } from '@react-navigation/native'
 import HomeNavigator from './HomeNavigator'
+import AppBarHeader from './AppBarHeader'
 
 const Drawer = createDrawerNavigator<{ Home: undefined }>()
 
@@ -13,6 +15,9 @@ export default function DrawerNavigator() {
         const collapsedDrawerWidth = 100 + Math.max(left, right)
         return (
           <Drawer.Navigator
+            screenOptions={{
+              header: (props) => <AppBarHeader {...props} />,
+            }}
             drawerContent={({ navigation }) => (
               <DrawerItems drawerNavigation={navigation} />
             )}
@@ -20,7 +25,13 @@ export default function DrawerNavigator() {
             <Drawer.Screen
               name='Home'
               component={HomeNavigator}
-              options={{ headerShown: true }}
+              options={({ route }) => {
+                // Get the name of the focused tab
+                const routeName = getFocusedRouteNameFromRoute(route) ?? 'Chat'
+                return {
+                  title: routeName,
+                }
+              }}
             />
           </Drawer.Navigator>
         )

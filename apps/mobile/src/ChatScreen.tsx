@@ -6,7 +6,7 @@ import { Button, List, Text } from 'react-native-paper'
 import ScreenWrapper from './ScreenWrapper'
 import { useAppTheme } from './hooks/useAppTheme'
 
-const ChatScreen = () => {
+export default function ChatScreen() {
   const theme = useAppTheme()
 
   const color = theme.isV3 ? theme.colors.inversePrimary : theme.colors.accent
@@ -17,8 +17,6 @@ const ChatScreen = () => {
     </ScreenWrapper>
   )
 }
-
-ChatScreen.title = 'ChatScreen'
 
 const styles = StyleSheet.create({
   row: {
@@ -64,5 +62,3 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
   },
 })
-
-export default ChatScreen

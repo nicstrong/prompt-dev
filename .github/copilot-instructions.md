@@ -1,28 +1,62 @@
-# Layout
+# Architecture Overview
 
-This is a monorepo project (using Turborepo). The main apps are:
+This is a **Turborepo monorepo** with three main applications:
 
-1. apps/web - a static React web app
-2. apps/api - a express Nodejs api server that also includes a tRPC endpoint.
+1. **`apps/web`** - React/TypeScript Vite web app with TanStack Router
+2. **`apps/api`** - Express.js server with tRPC endpoints and WebSocket support
+3. **`apps/mobile`** - React Native app with Paper UI and React Navigation
 
-# Stack
+## Key Development Patterns
 
-## API
+### tRPC Integration
+- **API-first approach**: All data flows through tRPC procedures in `apps/api/src/api/routers/`
+- **Type safety**: Use `@prompt-dev/trpc-api` package for shared router types
+- **Authentication**: All procedures use `protectedProcedure` with Clerk auth middleware
+- **Client setup**: Web app uses `@tanstack/react-query` with tRPC for caching and mutations
 
-- NodeJS Express Server with tRPC (both HTTP and tRPC endpoints)
-- Database is postgres using Drizzle as the ORM.
-- Vercel ai-sdk for AI related code.
+### Database & State Management
+- **Drizzle ORM**: Schema in `apps/api/src/db/schema.ts`, migrations via `pnpm db:migrate`
+- **PostgreSQL**: Use `docker-compose up` for local development database
+- **Type-safe queries**: Import from `~/db/` modules like `getAllThreadsForUser()`
+- **Shared types**: Use `@prompt-dev/shared-types` for cross-app type definitions
 
-## Web
+### Authentication & Authorization
+- **Clerk**: Handles auth across web and API with `@clerk/clerk-react` and `@clerk/express`
+- **Context pattern**: API auth context via `createTRPCContext()` with user claims
+- **Protected routes**: Use `isAuthed` middleware for tRPC procedures requiring authentication
 
-- React/Typescript Vite App.
-- tRPC client
-- Some HTTP endpoints.
+### Mobile App Architecture
+- **Navigation**: Nested structure: `RootStackNavigator` > `DrawerNavigator` > `HomeNavigator` (tabs)
+- **Theme system**: Material Design 3 with React Native Paper, theme switching in `PreferencesContext`
+- **Component patterns**: Use `ScreenWrapper` for consistent safe area and theming
 
-# Code Style
+## Essential Commands
 
-## Typescript
+```bash
+# Start all apps in development
+pnpm dev
 
-- The language for this project is Typescript.
-- Never use interfaces always use type.
-- Don't generate enums use type unioned strings.
+# Database operations
+cd apps/api && pnpm db:migrate    # Push schema changes
+cd apps/api && pnpm db:studio     # Open Drizzle Studio
+
+# Build for production
+pnpm build
+```
+
+## Code Style & Conventions
+
+### TypeScript
+- **Always use `type`, never `interface`**
+- **Enum alternatives**: Use union types like `type Provider = 'openai' | 'google'`
+- **Import aliases**: Use `~/` for relative imports in API, `@/` for web app
+
+### React Patterns
+- **Context over props drilling**: See `PreferencesContext` and `ChatProvider`
+- **Custom hooks**: Extract reusable logic (e.g., `useAppTheme`, `useThreadMutations`)
+- **Component composition**: Use compound patterns like sidebar components
+
+### File Organization
+- **Feature-based routing**: Web routes in `src/routes/`, mobile screens as standalone components
+- **Shared packages**: Use workspace packages for cross-app concerns (`shared-types`, `trpc-api`)
+- **API structure**: Group related endpoints in `routers/`, shared logic in `utils/`

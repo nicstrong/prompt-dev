@@ -1,13 +1,15 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
-import { CommonActions, createStaticNavigation } from '@react-navigation/native'
-import { BottomNavigation, Icon, Provider } from 'react-native-paper'
+import {
+  CommonActions,
+  createComponentForStaticNavigation,
+} from '@react-navigation/native'
+import { BottomNavigation, Icon } from 'react-native-paper'
 import ChatScreen from './ChatScreen'
-import { View } from 'react-native'
-import { Text } from 'react-native-paper'
-
+import AssistantsScreen from './AssistantsScreen'
 const HomeTabs = createBottomTabNavigator({
   screenOptions: {
     animation: 'shift',
+    headerShown: false,
   },
   tabBar: ({ navigation, state, descriptors, insets }) => (
     <BottomNavigation.Bar
@@ -50,24 +52,27 @@ const HomeTabs = createBottomTabNavigator({
     />
   ),
   screens: {
-    Home: {
+    Chat: {
       screen: ChatScreen,
       options: {
         tabBarIcon: ({ color }) => (
           <Icon source='chat-outline' size={26} color={color} />
         ),
+        title: 'Chat',
+      },
+    },
+    Assistants: {
+      screen: AssistantsScreen,
+      options: {
+        tabBarIcon: ({ color }) => (
+          <Icon source='assistant' size={26} color={color} />
+        ),
+        title: 'Assistants',
       },
     },
   },
 })
 
-const Navigation = createStaticNavigation(HomeTabs)
+const Navigation = createComponentForStaticNavigation(HomeTabs, 'HomeNavigator')
 
-const HomeNavigator = () => {
-  return (
-    <View>
-      <Text variant='bodyLarge'>Home Navigator</Text>
-    </View>
-  )
-}
-export default HomeNavigator
+export default Navigation

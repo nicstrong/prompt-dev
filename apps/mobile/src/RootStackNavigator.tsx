@@ -9,6 +9,7 @@ import { Appbar, Drawer } from 'react-native-paper'
 import Chat from './ChatScreen'
 import DrawerNavigator from './DrawNavigator'
 import SettingsScreen from './SettingsScreen'
+import AppBarHeader from './AppBarHeader'
 
 export type RootStackParamList = {
   Main: undefined
@@ -28,22 +29,7 @@ export default function RootStackNavigator() {
     <Stack.Navigator
       screenOptions={() => ({
         cardStyleInterpolator,
-        header: ({ navigation, route, options, back }) => (
-          <Appbar.Header elevated>
-            {back ? (
-              <Appbar.BackAction onPress={() => navigation.goBack()} />
-            ) : (navigation as any).openDrawer ? (
-              <Appbar.Action
-                icon='menu'
-                isLeading
-                onPress={() =>
-                  (navigation as any as DrawerNavigationProp<{}>).openDrawer()
-                }
-              />
-            ) : null}
-            <Appbar.Content title={options.title || route.name} />
-          </Appbar.Header>
-        ),
+        header: (props) => <AppBarHeader {...props} />,
       })}
     >
       <Stack.Screen
