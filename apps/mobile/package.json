@@ -1,0 +1,38 @@
+{
+  "name": "mobile",
+  "version": "1.0.0",
+  "main": "index.ts",
+  "scripts": {
+    "start": "expo start",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "web": "expo start --web",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,mdx}\" --cache"
+  },
+  "dependencies": {
+    "@pchmn/expo-material3-theme": "^1.3.2",
+    "@react-native-async-storage/async-storage": "^2.1.2",
+    "@react-native-vector-icons/material-design-icons": "^12.1.0",
+    "@react-navigation/bottom-tabs": "^7.4.2",
+    "@react-navigation/drawer": "^7.5.3",
+    "@react-navigation/native": "^7.1.14",
+    "@react-navigation/stack": "^7.4.2",
+    "expo": "~53.0.17",
+    "expo-font": "~13.3.2",
+    "expo-status-bar": "~2.2.3",
+    "expo-updates": "~0.28.17",
+    "prettier": "^3.5.3",
+    "react": "19.0.0",
+    "react-native": "0.79.5",
+    "react-native-paper": "^5.14.5",
+    "react-native-reanimated": "~3.17.5",
+    "react-native-safe-area-context": "^5.4.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.25.2",
+    "@prompt-dev/prettier-config": "workspace:*",
+    "@types/react": "~19.0.10",
+    "typescript": "~5.8.3"
+  },
+  "private": true
+}
