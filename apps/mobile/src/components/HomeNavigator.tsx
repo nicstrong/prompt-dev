@@ -4,7 +4,7 @@ import {
   createComponentForStaticNavigation,
 } from '@react-navigation/native'
 import { BottomNavigation, Icon } from 'react-native-paper'
-import ChatScreen from './ChatScreen'
+import ChatScreen from './chat/ChatScreen'
 import AssistantsScreen from './AssistantsScreen'
 const HomeTabs = createBottomTabNavigator({
   screenOptions: {

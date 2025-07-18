@@ -3,7 +3,7 @@ import DrawerItems from './DrawerItems'
 import { createDrawerNavigator } from '@react-navigation/drawer'
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native'
 import HomeNavigator from './HomeNavigator'
-import AppBarHeader from './AppBarHeader'
+import AppBarHeader from '../AppBarHeader'
 
 const Drawer = createDrawerNavigator<{ Home: undefined }>()
 

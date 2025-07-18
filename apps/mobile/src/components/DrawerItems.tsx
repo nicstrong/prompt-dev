@@ -8,11 +8,11 @@ import {
 import Constants, { ExecutionEnvironment } from 'expo-constants'
 import { Drawer, Text } from 'react-native-paper'
 
-import { PreferencesContext } from './PreferencesContext'
-import { useAppTheme } from './hooks/useAppTheme'
+import { PreferencesContext } from '../PreferencesContext'
+import { useAppTheme } from '../hooks/useAppTheme'
 import { useNavigation } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
-import { RootStackParamList } from './RootStackNavigator'
+import { RootStackParamList } from '../RootStackNavigator'
 import { DrawerActions } from '@react-navigation/native'
 
 const DrawerItemsData = [

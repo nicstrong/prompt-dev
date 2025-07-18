@@ -6,8 +6,8 @@ import {
   createStackNavigator,
 } from '@react-navigation/stack'
 import { Appbar, Drawer } from 'react-native-paper'
-import Chat from './ChatScreen'
-import DrawerNavigator from './DrawNavigator'
+import Chat from './components/chat/ChatScreen'
+import DrawerNavigator from './components/DrawNavigator'
 import SettingsScreen from './SettingsScreen'
 import AppBarHeader from './AppBarHeader'
 

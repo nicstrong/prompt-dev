@@ -1,4 +1,4 @@
-import * as React from 'react';
+import * as React from 'react'
 import {
   ScrollView,
   ScrollViewProps,
@@ -6,18 +6,17 @@ import {
   StyleSheet,
   View,
   ViewStyle,
-} from 'react-native';
+} from 'react-native'
 
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useAppTheme } from './hooks/useAppTheme';
-
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { useAppTheme } from '../hooks/useAppTheme'
 
 type Props = ScrollViewProps & {
-  children: React.ReactNode;
-  withScrollView?: boolean;
-  style?: StyleProp<ViewStyle>;
-  contentContainerStyle?: StyleProp<ViewStyle>;
-};
+  children: React.ReactNode
+  withScrollView?: boolean
+  style?: StyleProp<ViewStyle>
+  contentContainerStyle?: StyleProp<ViewStyle>
+}
 
 export default function ScreenWrapper({
   children,
@@ -26,9 +25,9 @@ export default function ScreenWrapper({
   contentContainerStyle,
   ...rest
 }: Props) {
-  const theme = useAppTheme();
+  const theme = useAppTheme()
 
-  const insets = useSafeAreaInsets();
+  const insets = useSafeAreaInsets()
 
   const containerStyle = [
     styles.container,
@@ -38,7 +37,7 @@ export default function ScreenWrapper({
       paddingLeft: insets.left,
       paddingRight: insets.left,
     },
-  ];
+  ]
 
   return (
     <>
@@ -46,7 +45,7 @@ export default function ScreenWrapper({
         <ScrollView
           {...rest}
           contentContainerStyle={contentContainerStyle}
-          keyboardShouldPersistTaps="always"
+          keyboardShouldPersistTaps='always'
           alwaysBounceVertical={false}
           showsVerticalScrollIndicator={false}
           style={[containerStyle, style]}
@@ -57,11 +56,11 @@ export default function ScreenWrapper({
         <View style={[containerStyle, style]}>{children}</View>
       )}
     </>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-});
+})

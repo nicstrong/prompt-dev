@@ -3,8 +3,8 @@ import { StyleSheet } from 'react-native'
 
 import { Text } from 'react-native-paper'
 
+import { useAppTheme } from '../hooks/useAppTheme'
 import ScreenWrapper from './ScreenWrapper'
-import { useAppTheme } from './hooks/useAppTheme'
 
 export default function AssistantsScreen() {
   const theme = useAppTheme()

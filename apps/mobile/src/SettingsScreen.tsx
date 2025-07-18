@@ -1,5 +1,5 @@
 import { useAppTheme } from './hooks/useAppTheme'
-import ScreenWrapper from './ScreenWrapper'
+import ScreenWrapper from './components/ScreenWrapper'
 import { Text } from 'react-native-paper'
 
 export default function SettingsScreen() {
