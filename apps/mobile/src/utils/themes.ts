@@ -41,7 +41,7 @@ export const CombinedDarkTheme = {
   },
 }
 
-type CombinedTheme = typeof CombinedDefaultTheme
+export type AppTheme = typeof CombinedDefaultTheme
 
 export const deviceColorsSupported =
   Boolean(ExpoMaterial3ThemeModule) &&

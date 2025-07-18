@@ -5,3 +5,6 @@ onlyBuiltDependencies:
   - '@clerk/shared'
   - '@tailwindcss/oxide'
   - esbuild
+updateConfig:
+  ignoreDependencies:
+    - '@types/node'
