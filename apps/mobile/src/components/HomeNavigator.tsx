@@ -6,6 +6,7 @@ import {
 import { BottomNavigation, Icon } from 'react-native-paper'
 import ChatScreen from './chat/ChatScreen'
 import AssistantsScreen from './AssistantsScreen'
+import ChatNavigator from './chat/ChatNavigator'
 const HomeTabs = createBottomTabNavigator({
   screenOptions: {
     animation: 'shift',
@@ -53,7 +54,7 @@ const HomeTabs = createBottomTabNavigator({
   ),
   screens: {
     Chat: {
-      screen: ChatScreen,
+      screen: ChatNavigator,
       options: {
         tabBarIcon: ({ color }) => (
           <Icon source='chat-outline' size={26} color={color} />

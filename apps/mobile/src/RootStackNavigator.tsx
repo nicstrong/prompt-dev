@@ -1,12 +1,9 @@
-import { Platform, StyleSheet, View } from 'react-native'
+import { Platform } from 'react-native'
 
-import type { DrawerNavigationProp } from '@react-navigation/drawer'
 import {
   CardStyleInterpolators,
   createStackNavigator,
 } from '@react-navigation/stack'
-import { Appbar, Drawer } from 'react-native-paper'
-import Chat from './components/chat/ChatScreen'
 import DrawerNavigator from './components/DrawNavigator'
 import SettingsScreen from './SettingsScreen'
 import AppBarHeader from './AppBarHeader'
@@ -45,14 +42,3 @@ export default function RootStackNavigator() {
     </Stack.Navigator>
   )
 }
-
-const styles = StyleSheet.create({
-  stackWrapper: {
-    flex: 1,
-    ...Platform.select({
-      web: {
-        overflow: 'scroll',
-      },
-    }),
-  },
-})

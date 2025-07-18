@@ -5,13 +5,18 @@ import { Text } from 'react-native-paper'
 import ScreenWrapper from '../ScreenWrapper'
 import ChatInput from './ChatInput'
 import { useState } from 'react'
+import { StackNavigationProp, StackScreenProps } from '@react-navigation/stack'
+import { ChatStackParamList } from './ChatNavigator'
 
-export default function ChatScreen() {
+type Props = StackScreenProps<ChatStackParamList, 'Chat'>
+
+export default function ChatScreen(props: Props) {
   const [text, setText] = useState('')
+
   return (
     <ScreenWrapper style={styles.wrapper} withScrollView={false}>
       <View style={styles.body}>
-        <Text variant='bodyLarge'>Chat Body</Text>
+        <Text variant='bodyLarge'>Chat Body {props.route.params.threadId}</Text>
       </View>
       <ChatInput style={styles.input} onChangeText={setText} text={text} />
     </ScreenWrapper>
