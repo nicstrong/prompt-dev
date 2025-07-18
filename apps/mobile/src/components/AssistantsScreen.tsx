@@ -7,10 +7,6 @@ import { useAppTheme } from '../hooks/useAppTheme'
 import ScreenWrapper from './ScreenWrapper'
 
 export default function AssistantsScreen() {
-  const theme = useAppTheme()
-
-  const color = theme.isV3 ? theme.colors.inversePrimary : theme.colors.accent
-
   return (
     <ScreenWrapper style={styles.wrapper}>
       <Text variant='bodyLarge'>Assistants</Text>

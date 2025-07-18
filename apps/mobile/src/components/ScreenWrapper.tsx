@@ -1,5 +1,7 @@
 import * as React from 'react'
 import {
+  KeyboardAvoidingView,
+  Platform,
   ScrollView,
   ScrollViewProps,
   StyleProp,
@@ -10,6 +12,7 @@ import {
 
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useAppTheme } from '../hooks/useAppTheme'
+import { useHeaderHeight } from '@react-navigation/elements'
 
 type Props = ScrollViewProps & {
   children: React.ReactNode
@@ -38,9 +41,14 @@ export default function ScreenWrapper({
       paddingRight: insets.left,
     },
   ]
+  const headerHeight = useHeaderHeight()
 
   return (
-    <>
+    <KeyboardAvoidingView
+      style={styles.keyboaardAvoidingView}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={headerHeight}
+    >
       {withScrollView ? (
         <ScrollView
           {...rest}
@@ -55,11 +63,14 @@ export default function ScreenWrapper({
       ) : (
         <View style={[containerStyle, style]}>{children}</View>
       )}
-    </>
+    </KeyboardAvoidingView>
   )
 }
 
 const styles = StyleSheet.create({
+  keyboaardAvoidingView: {
+    flex: 1,
+  },
   container: {
     flex: 1,
   },
