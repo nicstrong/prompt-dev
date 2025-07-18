@@ -104,27 +104,14 @@ This project is organized as a monorepo with the following structure:
 └── docs/            # Documentation
 ```
 
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Acknowledgments
-
-- Built with [Turborepo](https://turbo.build/repo)
-- UI components from [shadcn/ui](https://ui.shadcn.com/)
-- AI capabilities powered by [Vercel AI SDK](https://sdk.vercel.ai/)
-- Authentication by [Clerk](https://clerk.com/)
-- Inspired by [t3.chat](https://t3.chat) b
-
 ## Mobile App
 
 The mobile app is built with React Native and Material Design 3, using React Native Paper and React Navigation for UI and navigation. It shares types and API logic with the web and API apps via workspace packages.
 
 ### Features
-- Material Design 3 theming and Paper UI components
+- Material Design 3 theming using Paper UI components
 - Drawer and tab navigation structure
-- Shared authentication and API logic via Clerk and tRPC
-- Consistent safe area and theming with `ScreenWrapper` and `PreferencesContext`
+- Shared authentication (Clerk) and API logic with the Web
 
 ### Running the Mobile App
 1. Install dependencies:
@@ -141,3 +128,16 @@ The mobile app is built with React Native and Material Design 3, using React Nat
    pnpm android   # for Android
    pnpm ios       # for iOS
    ```
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Acknowledgments
+
+- Built with [Turborepo](https://turbo.build/repo)
+- UI components from [shadcn/ui](https://ui.shadcn.com/)
+- AI capabilities powered by [Vercel AI SDK](https://sdk.vercel.ai/)
+- Authentication by [Clerk](https://clerk.com/)
+- Inspired by [t3.chat](https://t3.chat)
+
