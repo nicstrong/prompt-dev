@@ -18,7 +18,8 @@ While it started as a learning project, my hope is to grow it into a comprehensi
 
 ## Features
 
-- 🚀 **Modern Tech Stack**: Built with TypeScript, React, tRPC, Express.js.
+- 🚀 **Modern Tech Stack**: Built with TypeScript, React, React Native, tRPC, Express.js.
+- 📱 **Mobile App**: React Native app, Paper UI, and React Navigation.
 - 🤖 **AI Integration**: Powered by Vercel AI SDK.
 - 🔐 **Authentication**: Secure user authentication with Clerk
 - 🗄️ **Database**: PostgreSQL with Drizzle ORM for type-safe database operations
@@ -82,6 +83,7 @@ This project is organized as a monorepo with the following structure:
 
 - **`apps/web`**: React frontend application built with Vite
 - **`apps/api`**: Express.js backend with tRPC endpoints
+- **`apps/mobile`**: React Native mobile app, Paper UI, and React Navigation
 - **`packages/shared-types`**: Shared TypeScript types and schemas
 - **`packages/trpc-api`**: tRPC router definitions
 - **`packages/eslint-config`**: Shared ESLint configurations
@@ -93,7 +95,8 @@ This project is organized as a monorepo with the following structure:
 ```
 ├── apps/
 │   ├── api/          # Express.js backend
-│   └── web/          # React frontend
+│   ├── web/          # React frontend
+│   └── mobile/       # React Native mobile app
 ├── packages/
 │   ├── shared-types/ # Shared TypeScript types
 │   ├── trpc-api/     # tRPC router definitions
@@ -112,3 +115,29 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - AI capabilities powered by [Vercel AI SDK](https://sdk.vercel.ai/)
 - Authentication by [Clerk](https://clerk.com/)
 - Inspired by [t3.chat](https://t3.chat) b
+
+## Mobile App
+
+The mobile app is built with React Native and Material Design 3, using React Native Paper and React Navigation for UI and navigation. It shares types and API logic with the web and API apps via workspace packages.
+
+### Features
+- Material Design 3 theming and Paper UI components
+- Drawer and tab navigation structure
+- Shared authentication and API logic via Clerk and tRPC
+- Consistent safe area and theming with `ScreenWrapper` and `PreferencesContext`
+
+### Running the Mobile App
+1. Install dependencies:
+   ```bash
+   cd apps/mobile
+   pnpm install
+   ```
+2. Start the Metro bundler:
+   ```bash
+   pnpm start
+   ```
+3. Run on your device/emulator (using Expo or React Native CLI):
+   ```bash
+   pnpm android   # for Android
+   pnpm ios       # for iOS
+   ```
