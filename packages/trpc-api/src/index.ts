@@ -1,5 +1,5 @@
 import { inferRouterInputs, inferRouterOutputs } from '@trpc/server'
-import { type AppRouter } from '@prompt-dev/api/dist/index.cjs'
+import { type AppRouter } from '@prompt-dev/api'
 
 // Export the router type
 export type { AppRouter }

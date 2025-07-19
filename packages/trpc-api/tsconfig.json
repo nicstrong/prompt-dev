@@ -8,8 +8,6 @@
     "noEmit": false,
     "baseUrl": ".",
     "paths": {
-      "@prompt-dev/api": ["../../apps/api/src/api"],
-      "@prompt-dev/api/*": ["../../apps/api/src/api/*"],
       "~/*": ["./src/*"]
     }
   },
