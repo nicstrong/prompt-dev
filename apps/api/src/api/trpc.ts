@@ -4,7 +4,7 @@ import superjson from 'superjson'
 import { CreateExpressContextOptions } from '@trpc/server/adapters/express'
 import { db } from '~/db/index.js'
 import { MiddlewareBuilder } from '@trpc/server/unstable-core-do-not-import'
-import { SignedInAuthObject } from '@clerk/backend/internal'
+import { isSessionObject } from '~/utils/auth.js'
 
 /**
  * 1. CONTEXT
@@ -20,7 +20,7 @@ export const createTRPCContext = ({
   res,
 }: CreateExpressContextOptions) => ({
   db,
-  auth: req.auth?.userId !== null ? (req.auth as SignedInAuthObject) : null,
+  auth: isSessionObject(req.auth) ? req.auth : null,
 })
 
 type Context = Awaited<ReturnType<typeof createTRPCContext>>
