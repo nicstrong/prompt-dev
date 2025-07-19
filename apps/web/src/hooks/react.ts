@@ -17,7 +17,10 @@ export const getStorageItem = <T>(key: string, defaultValue: T): T => {
       window.localStorage.getItem(`prompt-dev:${key}`) || ';',
     )
     return value === undefined ? defaultValue : value
-  } catch {}
+  } catch {
+    // If parsing fails, return the default value
+    console.warn(`Failed to parse localStorage item: ${key}`)
+  }
   return defaultValue
 }
 

@@ -1,8 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { trpc } from '@/trpc/trpc.ts'
-type Props = {}
 
-export function ThreadList({}: Props) {
+export function ThreadList() {
   const { data: threads } = useQuery(trpc.threads.getAllForUser.queryOptions())
 
   return (

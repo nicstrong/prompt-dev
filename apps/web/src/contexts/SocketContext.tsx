@@ -63,7 +63,7 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
       newSocketRef.current?.disconnect()
       setIsConnected(false)
     }
-  }, [])
+  }, [getToken])
 
   return (
     <SocketContext.Provider value={{ socket, isConnected }}>
