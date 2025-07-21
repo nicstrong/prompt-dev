@@ -7,11 +7,13 @@ import {
 import DrawerNavigator from './components/DrawNavigator'
 import SettingsScreen from './SettingsScreen'
 import AppBarHeader from './AppBarHeader'
+import { useAuth } from '@clerk/clerk-expo'
+import SignInScreen from './SignInScreen'
 
 export type RootStackParamList = {
   Main: undefined
   Settings: undefined
-  // Add other global overlays here, e.g., Profile: { userId: string };
+  SignIn: undefined
 }
 
 const Stack = createStackNavigator<RootStackParamList>()
@@ -21,7 +23,7 @@ export default function RootStackNavigator() {
     Platform.OS === 'android'
       ? CardStyleInterpolators.forFadeFromBottomAndroid
       : CardStyleInterpolators.forHorizontalIOS
-
+  const { isSignedIn, isLoaded } = useAuth()
   return (
     <Stack.Navigator
       screenOptions={() => ({
@@ -29,16 +31,24 @@ export default function RootStackNavigator() {
         header: (props) => <AppBarHeader {...props} />,
       })}
     >
-      <Stack.Screen
-        name='Main'
-        component={DrawerNavigator}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name='Settings'
-        component={SettingsScreen}
-        options={{ title: 'Settings' }}
-      />
+      {isSignedIn ? (
+        <>
+          <Stack.Screen
+            name='Main'
+            component={DrawerNavigator}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name='Settings'
+            component={SettingsScreen}
+            options={{ title: 'Settings' }}
+          />
+        </>
+      ) : (
+        <Stack.Screen name='SignIn' options={{ title: 'Sign in' }}>
+          {() => <SignInScreen isLoaded={isLoaded} />}
+        </Stack.Screen>
+      )}
     </Stack.Navigator>
   )
 }

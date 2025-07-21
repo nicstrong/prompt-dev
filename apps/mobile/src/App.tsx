@@ -17,7 +17,8 @@ import { InitialState, NavigationContainer } from '@react-navigation/native'
 import { PreferencesContext } from './PreferencesContext'
 import { StatusBar } from 'expo-status-bar'
 import RootStackNavigator from './RootStackNavigator'
-
+import { ClerkProvider } from '@clerk/clerk-expo'
+import { tokenCache } from '@clerk/clerk-expo/token-cache'
 const PERSISTENCE_KEY = 'NAVIGATION_STATE'
 const PREFERENCES_KEY = 'APP_PREFERENCES'
 
@@ -109,16 +110,18 @@ export function App() {
       theme={theme}
     >
       <PreferencesContext.Provider value={preferences}>
-        <NavigationContainer
-          theme={combinedTheme}
-          initialState={initialState}
-          onStateChange={(state) =>
-            AsyncStorage.setItem(PERSISTENCE_KEY, JSON.stringify(state))
-          }
-        >
-          <RootStackNavigator />
-          <StatusBar style={!theme.isV3 || theme.dark ? 'light' : 'dark'} />
-        </NavigationContainer>
+        <ClerkProvider tokenCache={tokenCache}>
+          <NavigationContainer
+            theme={combinedTheme}
+            initialState={initialState}
+            onStateChange={(state) =>
+              AsyncStorage.setItem(PERSISTENCE_KEY, JSON.stringify(state))
+            }
+          >
+            <RootStackNavigator />
+            <StatusBar style={!theme.isV3 || theme.dark ? 'light' : 'dark'} />
+          </NavigationContainer>
+        </ClerkProvider>
       </PreferencesContext.Provider>
     </PaperProvider>
   )

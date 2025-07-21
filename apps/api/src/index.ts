@@ -9,7 +9,7 @@ import {
   InterServerEvents,
   SocketData,
 } from '@prompt-dev/shared-types'
-import { UnauthorizedError } from './api/routes/utils.js'
+import { UnauthorizedError } from './api/routes/auth.js'
 import { verifyToken } from '@clerk/express'
 import { inspect } from 'node:util'
 

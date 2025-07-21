@@ -1,7 +1,7 @@
 import { openai } from '@ai-sdk/openai'
 import { createIdGenerator, pipeDataStreamToResponse, streamText } from 'ai'
 import { NextFunction, Request, Response, Router } from 'express'
-import { requireAuthOrError } from '../utils.js'
+import { requireAuthOrError } from '../auth.js'
 import { validation } from '../validationMiddleware.js'
 import { NewChatType, newChatSchema } from './chat.schemas.js'
 import { newThread, Thread } from '~/db/threads.js'

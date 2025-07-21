@@ -1,0 +1,27 @@
+{
+  "name": "@prompt-dev/client",
+  "version": "1.0.0",
+  "description": "Client code for access that chat/assistant data layer.",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsup src/index.ts --format cjs,esm --dts",
+    "dev": "tsup src/index.ts --format cjs,esm --dts --watch",
+    "clean": "rm -rf dist",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src/",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,mdx}\" --cache"
+  },
+  "devDependencies": {
+    "tsup": "^8.5.0",
+    "typescript": "^5.8.3"
+  },
+  "dependencies": {
+    "@prompt-dev/prettier-config": "workspace:*",
+    "@prompt-dev/shared-types": "workspace:*",
+    "@prompt-dev/typescript-config": "workspace:*",
+    "prettier": "^3.6.2",
+    "zod": "3.25.76"
+  }
+}

@@ -93,9 +93,12 @@ export const newChatSchema = z.object({
   data: z
     .object({
       threadId: z.string().nullable(),
+      model: z.string().nullable(),
     })
     .nullable(),
 })
+
+export type NewChatMessage = z.infer<typeof newChatSchema>
 
 export type NewChatType = {
   id: string
