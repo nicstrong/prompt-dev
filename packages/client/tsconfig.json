@@ -1,7 +1,9 @@
 {
   "extends": "@prompt-dev/typescript-config/base.json",
   "compilerOptions": {
+    "lib": ["ESNext", "DOM", "DOM.Iterable"],
     "preserveConstEnums": true,
+    "jsx": "react-jsx",
     "declaration": true,
     "outDir": "./dist",
     "noEmit": false,

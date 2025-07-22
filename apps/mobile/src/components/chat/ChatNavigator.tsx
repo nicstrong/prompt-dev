@@ -9,7 +9,7 @@ import AppBarHeader from '../../AppBarHeader'
 
 export type ChatStackParamList = {
   Threads: undefined
-  Chat: { threadId: string }
+  Thread: { threadId: string }
 }
 
 const Stack = createStackNavigator<ChatStackParamList>()
@@ -33,7 +33,7 @@ export default function ChatNavigator() {
         options={{ title: 'Chat' }}
       />
       <Stack.Screen
-        name='Chat'
+        name='Thread'
         component={ChatScreen}
         options={{ title: 'Chat' }}
       />

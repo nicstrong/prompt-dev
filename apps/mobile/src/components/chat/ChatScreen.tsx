@@ -8,7 +8,7 @@ import { useState } from 'react'
 import { StackNavigationProp, StackScreenProps } from '@react-navigation/stack'
 import { ChatStackParamList } from './ChatNavigator'
 
-type Props = StackScreenProps<ChatStackParamList, 'Chat'>
+type Props = StackScreenProps<ChatStackParamList, 'Thread'>
 
 export default function ChatScreen(props: Props) {
   const [text, setText] = useState('')

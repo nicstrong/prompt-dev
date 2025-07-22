@@ -455,6 +455,9 @@ importers:
       '@prompt-dev/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config
+      '@types/react':
+        specifier: ^19.1.8
+        version: 19.1.8
       prettier:
         specifier: ^3.6.2
         version: 3.6.2
