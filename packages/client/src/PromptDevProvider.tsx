@@ -1,58 +1,49 @@
-import { useCallback, useMemo } from 'react'
+import { useMemo } from 'react'
+import { PromptDevContext } from './PromptDevProvider.context'
+import { ApiOptions } from './types'
+import { Provider as JotaiProvider, createStore } from 'jotai'
+import { initializeConfig } from './config'
+import { initializeQueryClient } from './queryClient'
 import {
-  PromptDevContextType,
-  PromptDevContext,
-} from './PromptDevProvider.context'
-import { urlConcat } from './utils/url'
-import { withEnricher, ensureSuccess, RequestEnricher } from './utils/fetch'
+  QueryClient,
+  QueryClientConfig,
+  QueryClientProvider,
+} from '@tanstack/react-query'
 
-export type PromptDevOptions = {
-  baseUrl: string
-  getToken?: () => Promise<string>
-  getHeaders?: () => Promise<Record<string, string>>
-}
+type Store = ReturnType<typeof createStore>
 
 export type Props = {
-  options: PromptDevOptions
+  options: ApiOptions
+  jotaiStore?: Store
+  queryClient?: QueryClient
+  queryClientOptions?: QueryClientConfig
   children: React.ReactNode
 }
 
-export function PromptDevProvider({ options, children }: Props) {
-  const execute = useCallback(async (path: string, init?: RequestInit) => {
-    const resp = await fetch(
-      `${options.baseUrl}${urlConcat(options.baseUrl, path)}`,
-      await withEnricher(createEnricher(options), init),
-    )
-    await ensureSuccess(resp)
-    return resp
-  }, [])
+export function PromptDevProvider({
+  options,
+  jotaiStore,
+  children,
+  queryClient,
+  queryClientOptions,
+}: Props) {
+  const store = useMemo(
+    () => initializeConfig(jotaiStore, options),
+    [jotaiStore, options],
+  )
 
-  const value = useMemo<PromptDevContextType>(
-    () => ({ execute, options }),
-    [execute, options],
+  const rqClient = useMemo(
+    () => initializeQueryClient(queryClient, queryClientOptions),
+    [queryClient],
   )
 
   return (
-    <PromptDevContext.Provider value={value}>
-      {children}
-    </PromptDevContext.Provider>
+    <JotaiProvider store={store}>
+      <QueryClientProvider client={rqClient}>
+        <PromptDevContext.Provider value={{}}>
+          {children}
+        </PromptDevContext.Provider>
+      </QueryClientProvider>
+    </JotaiProvider>
   )
-}
-
-function createEnricher(options: PromptDevOptions): RequestEnricher {
-  return async (init: RequestInit) => {
-    let headers: Record<string, string> = {}
-    if (options.getHeaders) {
-      headers = await options.getHeaders()
-    }
-    if (options.getToken) {
-      headers['Authorization'] = 'Bearer ' + (await options.getToken())
-    }
-    if (!(init.headers instanceof Headers)) {
-      init.headers = new Headers(init.headers)
-    }
-    for (const [key, value] of Object.entries(headers)) {
-      init.headers.append(key, value)
-    }
-  }
 }

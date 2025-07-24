@@ -13,16 +13,22 @@
     "lint": "eslint src/",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,mdx}\" --cache"
   },
+  "peerDependencies": {
+    "@tanstack/react-query": "^5.0.0",
+    "react": "^19.0.0"
+  },
   "devDependencies": {
+    "@prompt-dev/prettier-config": "workspace:*",
+    "@prompt-dev/typescript-config": "workspace:*",
+    "@tanstack/react-query": "^5.83.0",
+    "@types/react": "^19.0.14",
+    "prettier": "^3.6.2",
     "tsup": "^8.5.0",
     "typescript": "^5.8.3"
   },
   "dependencies": {
-    "@prompt-dev/prettier-config": "workspace:*",
     "@prompt-dev/shared-types": "workspace:*",
-    "@prompt-dev/typescript-config": "workspace:*",
-    "@types/react": "^19.1.8",
-    "prettier": "^3.6.2",
+    "jotai": "^2.12.5",
     "zod": "3.25.76"
   }
 }

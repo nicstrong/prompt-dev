@@ -1,13 +1,9 @@
 import { createContext, useContext } from 'react'
-import { PromptDevOptions } from './PromptDevProvider'
 
-export type RequestOptions = {
-  headers?: Record<string, string> | Headers
-}
-export type PromptDevContextType = {
-  execute: (path: string, init?: RequestInit) => Promise<Response>
-  options: PromptDevOptions
-}
+// export type RequestOptions = {
+//   headers?: Record<string, string> | Headers
+// }
+export type PromptDevContextType = {}
 
 export const PromptDevContext = createContext<PromptDevContextType | null>(null)
 
