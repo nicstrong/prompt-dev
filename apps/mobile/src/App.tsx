@@ -21,9 +21,17 @@ import RootStackNavigator from './RootStackNavigator'
 import { ClerkProvider, useAuth } from '@clerk/clerk-expo'
 import { tokenCache } from '@clerk/clerk-expo/token-cache'
 import { PromptDevProvider } from '@prompt-dev/client'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { createQueryClient } from './query-client'
 
 const PERSISTENCE_KEY = 'NAVIGATION_STATE'
 const PREFERENCES_KEY = 'APP_PREFERENCES'
+
+let clientQueryClientSingleton: QueryClient | undefined = undefined
+
+export const getQueryClient = () => {
+  return (clientQueryClientSingleton ??= createQueryClient())
+}
 
 export function App() {
   const [themeVersion, setThemeVersion] = useState<2 | 3>(3)
@@ -138,22 +146,25 @@ function AppNavigation({ theme, initialState }: AppNavigationProps) {
         }
         return token
       },
+      queryClient: getQueryClient(),
     }
   }, [])
 
   return (
-    <PromptDevProvider options={options}>
-      <NavigationContainer
-        theme={theme}
-        initialState={initialState}
-        onStateChange={(state) =>
-          AsyncStorage.setItem(PERSISTENCE_KEY, JSON.stringify(state))
-        }
-      >
-        <RootStackNavigator />
-        <StatusBar style={!theme.isV3 || theme.dark ? 'light' : 'dark'} />
-      </NavigationContainer>
-    </PromptDevProvider>
+    <NavigationContainer
+      theme={theme}
+      initialState={initialState}
+      onStateChange={(state) =>
+        AsyncStorage.setItem(PERSISTENCE_KEY, JSON.stringify(state))
+      }
+    >
+      <PromptDevProvider options={options}>
+        <QueryClientProvider client={getQueryClient()}>
+          <RootStackNavigator />
+        </QueryClientProvider>
+      </PromptDevProvider>
+      <StatusBar style={!theme.isV3 || theme.dark ? 'light' : 'dark'} />
+    </NavigationContainer>
   )
 }
 

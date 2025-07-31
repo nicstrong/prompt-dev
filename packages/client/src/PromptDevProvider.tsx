@@ -37,13 +37,5 @@ export function PromptDevProvider({
     [queryClient],
   )
 
-  return (
-    <JotaiProvider store={store}>
-      <QueryClientProvider client={rqClient}>
-        <PromptDevContext.Provider value={{}}>
-          {children}
-        </PromptDevContext.Provider>
-      </QueryClientProvider>
-    </JotaiProvider>
-  )
+  return <JotaiProvider store={store}>{children}</JotaiProvider>
 }

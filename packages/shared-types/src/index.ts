@@ -4,4 +4,4 @@ export {
   threadMetadataAnnotationSchema,
   annotationSchema,
 } from './schemas/thread.js'
-export type { Thread, ThreadMetadataAnnotation, Annotation } from './schemas/thread.js'
+export type { Thread, ThreadWithLastMessage, ThreadMetadataAnnotation, Annotation } from './schemas/thread.js'

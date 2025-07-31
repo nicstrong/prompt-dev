@@ -15,6 +15,21 @@ export class HttpError extends Error {
 
     Object.setPrototypeOf(this, HttpError.prototype)
   }
+
+  static async fromResponse(resp: Response): Promise<HttpError> {
+    let body: string | null = null
+    if (resp.headers.get('Content-Type')?.includes('application/json')) {
+      body = JSON.stringify(await resp.json())
+    } else {
+      body = await resp.text()
+    }
+
+    return new HttpError(resp.status, resp.statusText, body)
+  }
+}
+
+export function isHttpError<T>(obj: T | HttpError): obj is HttpError {
+  return obj instanceof HttpError
 }
 
 export async function withEnricher(
@@ -43,6 +58,8 @@ export async function ensureSuccess(resp: Response) {
     try {
       body = await resp.text()
     } catch (e) {}
+
+    console.error(`HttpError: ${resp.status} - ${resp.statusText}`, body)
 
     throw new HttpError(resp.status, resp.statusText, body)
   }

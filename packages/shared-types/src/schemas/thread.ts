@@ -33,3 +33,14 @@ export const annotationSchema = z.discriminatedUnion('kind', [
 ])
 
 export type Annotation = z.infer<typeof annotationSchema>
+
+export const threadWithLastMessageSchema = threadSchema.extend({
+  lastMessage: z.object({
+    id: z.string(),
+    content: z.string(),
+    createdAt: z.number(),
+    updatedAt: z.number().nullable(),
+  }).optional().nullable(),
+})
+
+export type ThreadWithLastMessage = z.infer<typeof threadWithLastMessageSchema>

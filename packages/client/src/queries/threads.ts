@@ -2,14 +2,14 @@ import { get } from '~/api'
 import { threadsKeys } from '~/keys/threadKeys'
 import * as api from '~/api'
 import { useQueryClient } from '@tanstack/react-query'
-import { Thread } from '@prompt-dev/shared-types'
+import { Thread, ThreadWithLastMessage } from '@prompt-dev/shared-types'
 
 export const threads = {
   // Query: Get all threads (summary)
   getAll: {
     queryOptions: (filter = {}) => ({
       queryKey: threadsKeys.listWithFilter(filter),
-      queryFn: () => api.get<Thread[]>('threads', filter),
+      queryFn: () => api.get<ThreadWithLastMessage[]>('threads', filter),
     }),
   },
 

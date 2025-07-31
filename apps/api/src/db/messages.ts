@@ -3,12 +3,15 @@ import { messages } from './schema.js'
 import { eq, asc } from 'drizzle-orm'
 
 export type NewMessage = typeof messages.$inferInsert
+export type Message = typeof messages.$inferSelect
 
 export async function newMessage(newMessage: NewMessage) {
   return db.insert(messages).values(newMessage)
 }
 
-export async function getAllMessagesForThread(threadId: string) {
+export async function getAllMessagesForThread(
+  threadId: string,
+): Promise<Message[]> {
   const threadMessages = await db
     .select()
     .from(messages)

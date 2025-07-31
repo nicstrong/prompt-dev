@@ -1,15 +1,28 @@
-import { ensureSuccess, RequestEnricher, withEnricher } from './utils/fetch'
+import {
+  ensureSuccess,
+  HttpError,
+  RequestEnricher,
+  withEnricher,
+} from './utils/fetch'
 import { urlConcat } from './utils/url'
 import { getConfig } from './config'
 import { ApiOptions } from './types'
 
 export const execute = async (path: string, init?: RequestInit) => {
   const config = getConfig()
-  const resp = await fetch(
-    urlConcat(config.baseUrl, path),
-    await withEnricher(createEnricher(config), init),
-  )
-  await ensureSuccess(resp)
+  const url = urlConcat(config.baseUrl, path)
+
+  console.log(`${init?.method ?? 'UNK'} ${url}`)
+  let resp: Response
+  try {
+    resp = await fetch(url, await withEnricher(createEnricher(config), init))
+    console.log(`${resp.status} - ${resp.statusText}`, resp)
+  } catch (error) {
+    console.error(`Error fetching ${url}:`, error)
+    throw new Error(`Failed to fetch ${url}: ${error}`)
+  }
+
+  ensureSuccess(resp)
   return resp
 }
 
@@ -37,6 +50,7 @@ export const get = async <T>(
     ...init,
     method: 'GET',
   })
+
   return (await resp.json()) as T
 }
 
@@ -62,7 +76,7 @@ export const post = async <TBody, TResponse>(
 export const del = async <T>(
   path: string,
   init?: RequestInit,
-): Promise<T | void> => {
+): Promise<void> => {
   const resp = await execute(path, {
     ...init,
     method: 'DELETE',
