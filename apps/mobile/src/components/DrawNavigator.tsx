@@ -28,8 +28,11 @@ export default function DrawerNavigator() {
               options={({ route }) => {
                 // Get the name of the focused tab
                 const routeName = getFocusedRouteNameFromRoute(route) ?? 'Chat'
+                // Hide header for Chat tab since ChatNavigator manages its own header
+                const headerShown = routeName !== 'Chat'
                 return {
                   title: routeName,
+                  headerShown,
                 }
               }}
             />

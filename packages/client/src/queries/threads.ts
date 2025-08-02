@@ -2,18 +2,21 @@ import { get } from '~/api'
 import { threadsKeys } from '~/keys/threadKeys'
 import * as api from '~/api'
 import { useQueryClient } from '@tanstack/react-query'
-import { Thread, ThreadWithLastMessage } from '@prompt-dev/shared-types'
+import {
+  Thread,
+  ThreadWithLastMessage,
+  ThreadsFilter,
+} from '@prompt-dev/shared-types'
 
 export const threads = {
   // Query: Get all threads (summary)
   getAll: {
-    queryOptions: (filter = {}) => ({
+    queryOptions: (filter: ThreadsFilter = {}) => ({
       queryKey: threadsKeys.listWithFilter(filter),
       queryFn: () => api.get<ThreadWithLastMessage[]>('threads', filter),
     }),
   },
 
-  // Query: Get thread by ID (with aggregated messages)
   getById: {
     queryOptions: (id: string) => ({
       queryKey: threadsKeys.byId(id),
@@ -21,7 +24,6 @@ export const threads = {
     }),
   },
 
-  // Mutation: Create a thread
   create: {
     mutationOptions: () => {
       const queryClient = useQueryClient()

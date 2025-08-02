@@ -42,6 +42,7 @@ const createStyles = (theme: AppTheme) =>
       borderColor: theme.colors.surfaceVariant,
       borderWidth: 1,
       borderRadius: 8,
+      marginTop: 2,
     },
     input: {
       marginLeft: 8,

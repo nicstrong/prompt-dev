@@ -49,8 +49,16 @@ function errorHandler(
   if (err && err.name === 'UnauthorizedError') {
     const unauthed = new ProblemDocument({
       title: 'Unauthorized',
-      detail: 'Missing Authorization credentials',
+      detail: err.message,
       status: 401,
+    })
+    res.status(401).json(unauthed)
+  }
+  if (err && err.name === 'ForbiddenError') {
+    const unauthed = new ProblemDocument({
+      title: 'Forbidden',
+      detail: err.message,
+      status: 403,
     })
     res.status(401).json(unauthed)
   } else if (isProblemException(err)) {

@@ -1,8 +1,13 @@
 import { Router } from 'express'
 import { getAllThreadsForUser } from '~/data/threads.js'
 import z from 'zod'
-import { requireAuthOrError } from '../auth.js'
+import {
+  ForbiddenError,
+  requireAuthOrError,
+  UnauthorizedError,
+} from '../auth.js'
 import validate from '../middleware/middleware.js'
+import { getAllMessagesForThread } from '~/db/messages.js'
 
 const router: Router = Router()
 router.use(requireAuthOrError)
@@ -46,6 +51,20 @@ router.get(
       req.query.includeLastMessage,
     )
     res.send(userThreads)
+  },
+)
+
+router.get(
+  '/threads/:threadId/messages',
+  validate({ params: z.object({ threadId: z.string() }) }),
+  async (req, res) => {
+    const userId = res.locals.signedInAuth.userId
+    const { threadId } = req.params
+    const threadAndMessages = await getAllMessagesForThread(threadId)
+    if (threadAndMessages?.userId !== userId) {
+      throw new ForbiddenError('You do not have access to this thread')
+    }
+    res.send(threadAndMessages)
   },
 )
 

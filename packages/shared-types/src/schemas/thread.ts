@@ -1,4 +1,11 @@
 import { z } from 'zod'
+import { messagSchema } from './messages'
+
+export const threadsFilterSchema = z.object({
+  includeLastMessage: z.boolean().optional(),
+})
+
+export type ThreadsFilter = z.infer<typeof threadsFilterSchema>
 
 export const threadSchema = z.object({
   id: z.string(),
@@ -44,3 +51,10 @@ export const threadWithLastMessageSchema = threadSchema.extend({
 })
 
 export type ThreadWithLastMessage = z.infer<typeof threadWithLastMessageSchema>
+
+export const threadWithMessageSchema = threadSchema.extend({
+  messages: z.array(messagSchema)
+})
+
+
+export type ThreadWithMessages = z.infer<typeof threadWithMessageSchema>

@@ -24,18 +24,20 @@ export default function ChatNavigator() {
     <Stack.Navigator
       screenOptions={() => ({
         cardStyleInterpolator,
-        headerShown: false,
+        header: (props) => <AppBarHeader {...props} />,
       })}
     >
       <Stack.Screen
         name='Threads'
         component={ThreadsScreen}
-        options={{ title: 'Chat' }}
+        options={{ title: 'Chats' }}
       />
       <Stack.Screen
         name='Thread'
         component={ChatScreen}
-        options={{ title: 'Chat' }}
+        options={({ route }) => ({
+          title: 'Chat',
+        })}
       />
     </Stack.Navigator>
   )

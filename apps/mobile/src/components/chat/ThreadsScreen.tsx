@@ -8,8 +8,12 @@ import { getThreadsGrouped, ThreadGroup } from '@prompt-dev/client'
 import { ThreadWithLastMessage } from '@prompt-dev/shared-types'
 import EmptyCenteredView from '../ui/EmptyCenteredView'
 import { Style } from 'react-native-paper/lib/typescript/components/List/utils'
+import { useNavigation } from '@react-navigation/native'
+import { StackNavigationProp } from '@react-navigation/stack'
+import { ChatStackParamList } from './ChatNavigator'
 
 export default function ThreadsScreen() {
+  const navigation = useNavigation<StackNavigationProp<ChatStackParamList>>()
   const { data, error, refetch, isLoading, isRefetching } = useQuery(
     threads.getAll.queryOptions({ includeLastMessage: true }),
   )
@@ -55,11 +59,13 @@ export default function ThreadsScreen() {
             <Avatar.Text style={props.style} label='AI' size={40} />
           )}
           unstable_pressDelay={65}
-          onPress={() => {}}
+          onPress={() => {
+            navigation.navigate('Thread', { threadId: item.id })
+          }}
         />
       )
     },
-    [],
+    [navigation],
   )
 
   return (
