@@ -153,6 +153,9 @@ importers:
       '@prompt-dev/client':
         specifier: workspace:*
         version: link:../../packages/client
+      '@prompt-dev/shared-types':
+        specifier: workspace:*
+        version: link:../../packages/shared-types
       '@react-native-async-storage/async-storage':
         specifier: ^2.1.2
         version: 2.1.2(react-native@0.79.5(@babel/core@7.28.0)(@types/react@19.0.14)(react@19.0.0))

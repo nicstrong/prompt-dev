@@ -40,13 +40,11 @@ router.get(
   '/threads',
   validate({ query: threadsQuerySchema }),
   async (req, res) => {
-    console.log(`/threads called with query:`, req.query.includeLastMessage)
     const userId = res.locals.signedInAuth.userId
     const userThreads = await getAllThreadsForUser(
       userId,
       req.query.includeLastMessage,
     )
-    console.log(`/threads getAllThreadsForUser returned:`, userThreads)
     res.send(userThreads)
   },
 )

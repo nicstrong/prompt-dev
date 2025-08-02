@@ -5,7 +5,7 @@ import { Text } from 'react-native-paper'
 import ScreenWrapper from '../ScreenWrapper'
 import ChatInput from './ChatInput'
 import { useState } from 'react'
-import { StackNavigationProp, StackScreenProps } from '@react-navigation/stack'
+import { StackScreenProps } from '@react-navigation/stack'
 import { ChatStackParamList } from './ChatNavigator'
 
 type Props = StackScreenProps<ChatStackParamList, 'Thread'>
