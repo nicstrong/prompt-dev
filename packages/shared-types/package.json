@@ -14,7 +14,7 @@
     "@prompt-dev/prettier-config": "workspace:*",
     "@prompt-dev/typescript-config": "workspace:*",
     "tsup": "^8.5.0",
-    "typescript": "^5.8.3"
+    "typescript": "^5.9.2"
   },
   "dependencies": {
     "prettier": "^3.6.2",
