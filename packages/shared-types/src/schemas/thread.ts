@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { messagSchema } from './messages'
+import { messageSchema } from './messages'
 
 export const threadsFilterSchema = z.object({
   includeLastMessage: z.boolean().optional(),
@@ -53,7 +53,7 @@ export const threadWithLastMessageSchema = threadSchema.extend({
 export type ThreadWithLastMessage = z.infer<typeof threadWithLastMessageSchema>
 
 export const threadWithMessageSchema = threadSchema.extend({
-  messages: z.array(messagSchema)
+  messages: z.array(messageSchema)
 })
 
 

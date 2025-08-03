@@ -14,6 +14,7 @@ import { useAppTheme } from '../../hooks/useAppTheme'
 import Markdown from 'react-native-marked'
 
 import { Message } from '@prompt-dev/shared-types'
+import { MarkdownThemed } from '../ui/MarkdownThemed'
 
 type Props = StackScreenProps<ChatStackParamList, 'Thread'>
 
@@ -42,13 +43,7 @@ export default function ChatScreen(props: Props) {
     return isUser ? (
       <UserMessage content={item.content} styles={styles} />
     ) : (
-      <Markdown
-        styles={styles.assistantMessage}
-        value={item.content}
-        flatListProps={{
-          initialNumToRender: 8,
-        }}
-      />
+      <MarkdownThemed content={item.content} />
     )
   }
 
@@ -84,7 +79,7 @@ const createStyles = (theme: AppTheme) =>
   StyleSheet.create({
     wrapper: {
       display: 'flex',
-      margin: 16,
+      margin: 12,
       flex: 1,
       flexDirection: 'column',
     },
@@ -97,11 +92,9 @@ const createStyles = (theme: AppTheme) =>
       borderBottomRightRadius: 16,
       padding: 8,
     },
-    assistantMessage: {
-      backgroundColor: theme.colors.primaryContainer,
-    },
     separator: {
       height: 16,
       backgroundColor: 'transparent',
     },
+    input: {},
   })
