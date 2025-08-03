@@ -23,16 +23,7 @@ import { Link } from '@tanstack/react-router'
 import { useThreadMutations } from '@/hooks/threadMutations'
 import React from 'react'
 import { Threads } from '@/trpc/types'
-import {
-  startOfDay,
-  subDays,
-  isToday,
-  isYesterday,
-  isWithinInterval,
-} from 'date-fns'
-import { groupBy } from 'fp-ts/NonEmptyArray'
-import { pipe } from 'fp-ts/lib/function'
-import { Thread } from '@prompt-dev/shared-types'
+import { getThreadsGrouped } from '@prompt-dev/client'
 import { scopedLog } from 'scope-log'
 
 const log = scopedLog('UI:AppSidebar')
@@ -108,13 +99,6 @@ interface ThreadSidebarGroupContentProps {
   refreshThread: (arg: { threadId: string }) => Promise<void>
 }
 
-type ThreadGroup =
-  | 'Today'
-  | 'Yesterday'
-  | 'Last 7 Days'
-  | 'Last 30 Days'
-  | 'Older'
-
 const ThreadSidebarGroupContent = React.memo(
   ({
     threads,
@@ -123,58 +107,18 @@ const ThreadSidebarGroupContent = React.memo(
     setRenameDeleteThread,
     refreshThread,
   }: ThreadSidebarGroupContentProps) => {
-    const threadsGrouped = useMemo<Record<ThreadGroup, Thread[]>>(() => {
-      const today = new Date()
-      const startOfToday = startOfDay(today)
-      const startOfLast7Days = startOfDay(subDays(today, 6)) // Includes today
-      const startOfLast30Days = startOfDay(subDays(today, 29)) // Includes todayå
+    const threadsGrouped = useMemo(() => getThreadsGrouped(threads), [threads])
 
-      const groupThread = (item: Thread): ThreadGroup => {
-        const itemDate = item.updatedAt
-        log(`Grouping thread ${item.id} by date ${itemDate}`)
-
-        if (itemDate === null) {
-          return 'Older'
-        }
-
-        if (isToday(itemDate)) {
-          return 'Today'
-        }
-        if (isYesterday(itemDate)) {
-          return 'Yesterday'
-        }
-        if (
-          isWithinInterval(itemDate, {
-            start: startOfLast7Days,
-            end: startOfToday,
-          })
-        ) {
-          return 'Last 7 Days'
-        }
-        if (
-          isWithinInterval(itemDate, {
-            start: startOfLast30Days,
-            end: startOfToday,
-          })
-        ) {
-          return 'Last 30 Days'
-        }
-        return 'Older'
-      }
-
-      const data = pipe(threads, groupBy(groupThread))
-      return data as Record<ThreadGroup, Array<Thread>>
-    }, [threads])
     return (
       <SidebarGroupContent>
-        {Object.entries(threadsGrouped).map(([category, threadsInCategory]) =>
-          threadsInCategory.length > 0 ? (
-            <React.Fragment key={category}>
+        {threadsGrouped.map((threadGroup) =>
+          threadGroup.data.length > 0 ? (
+            <React.Fragment key={threadGroup.title}>
               <SidebarGroupLabel className='text-muted-foreground px-3 pt-2 text-xs first:pt-0'>
-                {category}
+                {threadGroup.title}
               </SidebarGroupLabel>
               <SidebarMenu>
-                {(threads ?? []).map((thread) => (
+                {(threadGroup.data ?? []).map((thread) => (
                   <MenuItem
                     key={thread.id}
                     thread={thread}
