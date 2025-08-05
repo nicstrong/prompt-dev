@@ -24,9 +24,6 @@ import { useThreadMutations } from '@/hooks/threadMutations'
 import React from 'react'
 import { Threads } from '@/trpc/types'
 import { getThreadsGrouped } from '@prompt-dev/client'
-import { scopedLog } from 'scope-log'
-
-const log = scopedLog('UI:AppSidebar')
 
 const AppSidebarImpl = ({ ...props }: React.ComponentProps<typeof Sidebar>) => {
   const { data: threads } = useQuery(trpc.threads.getAllForUser.queryOptions())

@@ -71,9 +71,9 @@ export const generateThreadName = async (
     model: openai('gpt-4.1-mini-2025-04-14'),
     prompt: `The following transcript is a conversation thread between a user and an AI assistant. Generate a thread title that can be used in a UI showing a list of threads.\n\n${transcript}`,
   })
-  await renameThread(threadId, result.text)
+  await renameThread(threadId, result.text.text)
 
-  console.log(`Generated thread name for user ${forUserId}:`, result.text)
+  console.log(`Generated thread name for user ${forUserId}:`, result.text.text)
 
   if (forUserId) {
     const sockets = await io.fetchSockets()
@@ -83,7 +83,7 @@ export const generateThreadName = async (
       socket.emit('item_updated', {
         kind: 'thread-name',
         itemId: threadId,
-        newName: result.text,
+        newName: result.text.text,
       })
     }
   }

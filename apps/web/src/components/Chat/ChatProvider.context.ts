@@ -1,19 +1,19 @@
-import { UseChatHelpers } from '@ai-sdk/react'
-import { ChatRequestOptions, UIMessage } from '@ai-sdk/ui-utils'
+import { ChatStatus } from 'ai'
 import { createContext, useContext } from 'react'
+import { ChatUIMessage } from './ChatProvider'
+import { UseChatHelpers } from '@ai-sdk/react'
+
+type SendMessageType = UseChatHelpers<ChatUIMessage>['sendMessage']
 
 export type ChatContextType = {
   threadId: string | null
   setThreadId: (threadId: string | null) => void
   newThread: () => void
-  handleSubmit: UseChatHelpers['handleSubmit']
-  handleInputChange: UseChatHelpers['handleInputChange']
-  input: string
-  setInput: UseChatHelpers['setInput']
-  createRequestOptions: () => Promise<ChatRequestOptions | undefined>
-  messages: UIMessage[]
+  messages: ChatUIMessage[]
   setModel: (updater: string | ((prev: string) => string)) => void
   model: string
+  status: ChatStatus
+  sendMessage: SendMessageType
 }
 
 export const ChatContext = createContext<ChatContextType | null>(null)

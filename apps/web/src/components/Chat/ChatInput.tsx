@@ -3,21 +3,15 @@ import { Button } from '../ui/button'
 import { Send } from 'lucide-react'
 import { useChatContext } from './ChatProvider.context'
 import { ModelSelect } from './ModelSelect'
+import { useState } from 'react'
 
 export const ChatInput = () => {
-  const {
-    handleSubmit,
-    createRequestOptions,
-    handleInputChange,
-    model,
-    setModel,
-    input,
-    setInput,
-  } = useChatContext()
+  const { sendMessage, model, setModel } = useChatContext()
+  const [text, setText] = useState('')
 
   const onSubmit = async () => {
-    const opts = await createRequestOptions()
-    handleSubmit({}, opts)
+    console.log('onSubmit called', sendMessage)
+    await sendMessage({ text })
   }
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -27,11 +21,11 @@ export const ChatInput = () => {
     } else if (e.key === 'Enter' && e.shiftKey) {
       e.preventDefault()
       const cursorPosition = (e.target as HTMLTextAreaElement).selectionStart
-      const textBeforeCursor = input.substring(0, cursorPosition)
-      const textAfterCursor = input.substring(cursorPosition)
+      const textBeforeCursor = text.substring(0, cursorPosition)
+      const textAfterCursor = text.substring(cursorPosition)
 
       const newValue = `${textBeforeCursor}\n${textAfterCursor}`
-      setInput(newValue)
+      setText(newValue)
 
       // Set cursor position after the inserted newline
       setTimeout(() => {
@@ -53,9 +47,9 @@ export const ChatInput = () => {
             className='bg-input-background dark:bg-input-background max-h-64 resize-none border-0 backdrop-blur-xl focus-visible:border-0 focus-visible:ring-0'
             id='chatMessage'
             name='chatMessage'
-            value={input}
+            value={text}
             onChange={(e) => {
-              handleInputChange(e)
+              setText(e.target.value)
             }}
             onKeyDown={(e) => handleKeyDown(e)}
             placeholder='Type your message here...'
@@ -74,7 +68,7 @@ export const ChatInput = () => {
           <Button
             className='absolute right-3 bottom-3 ml-auto rounded-lg border-1 border-sky-900 bg-[#0284c740] text-neutral-100 hover:bg-[#0284c790]'
             type='submit'
-            disabled={input.length === 0}
+            disabled={text.length === 0}
             onClick={onSubmit}
           >
             <Send />

@@ -1,13 +1,17 @@
 import {
+  DataUIPart,
+  DynamicToolUIPart,
   FileUIPart,
   ReasoningUIPart,
-  SourceUIPart,
+  SourceDocumentUIPart,
+  SourceUrlUIPart,
   StepStartUIPart,
   TextUIPart,
-  ToolInvocationUIPart,
-} from '@ai-sdk/ui-utils'
+  ToolUIPart,
+  UIMessagePart,
+} from 'ai'
 import { createId } from '@paralleldrive/cuid2'
-import { Message } from 'ai'
+import { UIMessage } from 'ai'
 import { desc, sql } from 'drizzle-orm'
 import {
   json,
@@ -37,13 +41,7 @@ export const threads = createTable('thread', {
   userId: text().notNull(),
 })
 
-export type PartType =
-  | TextUIPart
-  | ReasoningUIPart
-  | ToolInvocationUIPart
-  | SourceUIPart
-  | FileUIPart
-  | StepStartUIPart
+export type PartType = UIMessagePart<{}, {}>
 
 export const messages = createTable(
   'message',
@@ -51,7 +49,6 @@ export const messages = createTable(
     id: text()
       .primaryKey()
       .$defaultFn(() => createId()),
-    content: text(),
     createdAt: timestamp('created_at', { withTimezone: true })
       .defaultNow()
       .notNull(),

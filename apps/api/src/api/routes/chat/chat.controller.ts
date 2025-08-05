@@ -1,16 +1,22 @@
-import { createIdGenerator, pipeDataStreamToResponse, streamText } from 'ai'
+import {
+  convertToModelMessages,
+  createUIMessageStream,
+  createUIMessageStreamResponse,
+  streamText,
+} from 'ai'
 import { Router } from 'express'
 import { newChatSchema } from './chat.schemas.js'
 import { newThread, Thread } from '~/db/threads.js'
 import { createId } from '@paralleldrive/cuid2'
 import { newMessage } from '~/db/messages.js'
-import { convertResponseMessageToDbMessage } from './chat.services.js'
+import { convertUIMessageToDbMessage } from './chat.services.js'
+import { ChatUIMessage } from './chat.schemas.js'
 import { generateThreadName } from '~/api/routers/threads.js'
-import { threadMetadataAnnotationSchema } from '@prompt-dev/shared-types'
-import { z } from 'zod'
 import { createModel } from './modelFactory.js'
 import { requireAuthOrError } from '../auth.js'
 import validate from '../middleware/middleware.js'
+import { getUserMessageParts } from '~/utils/ui-messages.js'
+import { MessageMetadata } from '@prompt-dev/shared-types'
 
 const router: Router = Router()
 router.use(requireAuthOrError)
@@ -35,60 +41,51 @@ router.post('/chat', validate({ body: newChatSchema }), async (req, res) => {
   await newMessage({
     role: 'user',
     threadId,
-    content: messages[messages.length - 1].content,
-    parts: messages[messages.length - 1].parts,
+    parts: getUserMessageParts(messages[messages.length - 1]),
   })
 
-  pipeDataStreamToResponse(res, {
-    execute: async (dataStreamWriter) => {
+  const stream = createUIMessageStream<ChatUIMessage>({
+    execute: ({ writer }) => {
       if (createdThread) {
-        const evt: z.infer<typeof threadMetadataAnnotationSchema> = {
-          kind: 'thread-metadata',
-          content: {
-            threadId,
-            isNew: true,
-            name: createdThread.name,
-            createdAt: createdThread.createdAt.valueOf(),
-            updatedAt: createdThread.updatedAt?.valueOf() ?? null,
-            userId: createdThread.userId,
-          },
+        const meta: MessageMetadata = {
+          threadId,
+          isNew: true,
+          name: createdThread.name,
+          createdAt: createdThread.createdAt.valueOf(),
+          updatedAt: createdThread.updatedAt?.valueOf() ?? null,
+          userId: createdThread.userId,
         }
-        dataStreamWriter.writeMessageAnnotation(evt)
+        writer.write({
+          type: 'message-metadata',
+          messageMetadata: meta,
+        })
       } else {
-        const evt: z.infer<typeof threadMetadataAnnotationSchema> = {
-          kind: 'thread-metadata',
-          content: {
-            threadId,
-            isNew: false,
-          },
+        const meta: MessageMetadata = {
+          threadId,
+          isNew: false,
         }
-        dataStreamWriter.writeMessageAnnotation(evt)
+        writer.write({
+          type: 'message-metadata',
+          messageMetadata: meta,
+        })
       }
 
       const result = streamText({
         model: model,
-        messages,
-        // id format for server-side messages:
-        experimental_generateMessageId: createIdGenerator({
-          prefix: 'msgs',
-          size: 16,
-        }),
-        async onFinish({ response }) {
-          const responseMessage = convertResponseMessageToDbMessage(
-            response.messages,
-            threadId,
-          )
-          const newMsg = await newMessage(responseMessage)
-          if (createdThread) {
-            generateThreadName(threadId, userId).catch((err) => {
-              console.error('renameThread failed:', err)
-            })
-          }
-        },
+        messages: convertToModelMessages(messages),
       })
 
-      // result.consumeStream()
-      result.mergeIntoDataStream(dataStreamWriter, {})
+      writer.merge(result.toUIMessageStream())
+    },
+    onFinish: async ({ messages }) => {
+      const newMsg = await newMessage(
+        convertUIMessageToDbMessage(messages, threadId),
+      )
+      if (createdThread) {
+        generateThreadName(threadId, userId).catch((err) => {
+          console.error('renameThread failed:', err)
+        })
+      }
     },
     onError: (error) => {
       // Error messages are masked by default for security reasons.
@@ -96,6 +93,8 @@ router.post('/chat', validate({ body: newChatSchema }), async (req, res) => {
       return error instanceof Error ? error.message : String(error)
     },
   })
+
+  return createUIMessageStreamResponse({ stream })
 })
 
 export default router

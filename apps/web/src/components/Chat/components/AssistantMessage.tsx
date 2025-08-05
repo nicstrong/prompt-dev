@@ -1,13 +1,17 @@
-import { getTextFromDataUrl, UIMessage } from '@ai-sdk/ui-utils'
 import DOMPurify from 'dompurify'
 import { micromark } from 'micromark'
+import { ChatUIMessage } from '../ChatProvider'
 
 type Props = {
-  message: UIMessage
+  message: ChatUIMessage
 }
 
 export function AssistantMessage({ message }: Props) {
-  const htmlContent = micromark(message.content)
+  const htmlContent = micromark(
+    message.parts
+      .map((part) => (part.type === 'text' ? part.text : ''))
+      .join(''),
+  )
   const sanitizedHtml = DOMPurify.sanitize(htmlContent)
 
   return (
@@ -16,7 +20,7 @@ export function AssistantMessage({ message }: Props) {
       className='prose prose-neutral prose-invert flex flex-col gap-2'
     >
       <div dangerouslySetInnerHTML={{ __html: sanitizedHtml }} />
-      <div className='flex flex-row gap-2'>
+      {/* <div className='flex flex-row gap-2'>
         {message.experimental_attachments?.map((attachment, index) =>
           attachment.contentType?.includes('image/') ? (
             <img
@@ -31,7 +35,7 @@ export function AssistantMessage({ message }: Props) {
             </div>
           ) : null,
         )}
-      </div>
+      </div> */}
     </div>
   )
 }

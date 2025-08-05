@@ -1,7 +1,7 @@
-import { UIMessage } from '@ai-sdk/ui-utils'
+import { ChatUIMessage } from '../ChatProvider'
 
 type Props = {
-  message: UIMessage
+  message: ChatUIMessage
 }
 
 export function UserMessage({ message }: Props) {
@@ -11,7 +11,9 @@ export function UserMessage({ message }: Props) {
   return (
     <div data-message-id={message.id} className='flex justify-end'>
       <div className='prose prose-neutral prose-invert group text-left" relative inline-block max-w-[80%] rounded-2xl bg-neutral-700 p-4 break-words'>
-        {message.content}
+        {message.parts
+          .map((part) => (part.type === 'text' ? part.text : ''))
+          .join('')}
       </div>
     </div>
   )

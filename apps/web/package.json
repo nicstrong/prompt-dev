@@ -13,8 +13,7 @@
     "generate": "tsr generate"
   },
   "dependencies": {
-    "@ai-sdk/react": "^1.2.12",
-    "@ai-sdk/ui-utils": "^1.2.11",
+    "@ai-sdk/react": "^2.0.2",
     "@clerk/clerk-react": "^5.35.3",
     "@clerk/themes": "^2.3.3",
     "@clerk/types": "^4.68.0",
@@ -41,6 +40,7 @@
     "@tanstack/react-router": "^1.128.4",
     "@trpc/client": "11.4.3",
     "@trpc/tanstack-react-query": "11.4.3",
+    "ai": "^5.0.2",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
