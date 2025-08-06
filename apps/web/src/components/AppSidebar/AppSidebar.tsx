@@ -14,7 +14,6 @@ import {
 import { UserPanel } from '../UserPanel'
 import { trpc } from '@/trpc/trpc'
 import { Plus } from 'lucide-react'
-import { useChatContext } from '../Chat/ChatProvider.context'
 import { useMemo, useState } from 'react'
 import { ConfirmDeletedDialog } from './ConfirmDeletedDialog'
 import { MenuItem } from './MenuItem'
@@ -23,7 +22,7 @@ import { Link } from '@tanstack/react-router'
 import { useThreadMutations } from '@/hooks/threadMutations'
 import React from 'react'
 import { Threads } from '@/trpc/types'
-import { getThreadsGrouped } from '@prompt-dev/client'
+import { getThreadsGrouped, useChatContext } from '@prompt-dev/client'
 
 const AppSidebarImpl = ({ ...props }: React.ComponentProps<typeof Sidebar>) => {
   const { data: threads } = useQuery(trpc.threads.getAllForUser.queryOptions())

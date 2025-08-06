@@ -3,7 +3,6 @@ import { UIMessagePartSchema } from "./chat-parts";
 
 export const messageSchema = z.object({
   id: z.string(),
-  content: z.string(),
   createdAt: z.number(),
   updatedAt: z.number().nullable(),
   role: z.enum(['system', 'user', 'assistant']),

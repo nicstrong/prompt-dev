@@ -1,6 +1,6 @@
 import DOMPurify from 'dompurify'
 import { micromark } from 'micromark'
-import { ChatUIMessage } from '../ChatProvider'
+import { ChatUIMessage } from '../types'
 
 type Props = {
   message: ChatUIMessage

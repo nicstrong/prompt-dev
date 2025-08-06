@@ -1,4 +1,4 @@
-import { ChatUIMessage } from '../ChatProvider'
+import { ChatUIMessage } from '../types'
 
 type Props = {
   message: ChatUIMessage

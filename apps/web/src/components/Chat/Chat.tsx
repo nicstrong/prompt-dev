@@ -1,6 +1,6 @@
 import { UserMessage } from './components/UserMessage'
 import { AssistantMessage } from './components/AssistantMessage'
-import { useChatContext } from './ChatProvider.context'
+import { useChatContext } from '@prompt-dev/client'
 
 export function Chat() {
   const { messages } = useChatContext()

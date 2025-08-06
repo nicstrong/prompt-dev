@@ -10,8 +10,8 @@ export type ChatContextType = {
   setThreadId: (threadId: string | null) => void
   newThread: () => void
   messages: ChatUIMessage[]
-  setModel: (updater: string | ((prev: string) => string)) => void
-  model: string
+  setModel: (model: string) => void
+  model: string | null
   status: ChatStatus
   sendMessage: SendMessageType
 }

@@ -1,45 +1,52 @@
 import { UIMessage, useChat } from '@ai-sdk/react'
-import { useCallback, useEffect, useMemo } from 'react'
+import { useCallback, useMemo, useRef, useState } from 'react'
 import { ChatContext, ChatContextType } from './ChatProvider.context'
 import { atom, createStore, Provider, useAtom } from 'jotai'
-import { useAuth } from '@clerk/clerk-react'
-import { trpc, trpcClient } from '@/trpc/trpc'
 import { useQueryClient } from '@tanstack/react-query'
-import { useLocalStorageState } from '@/hooks/react'
 import { DefaultChatTransport } from 'ai'
-import { scopedLog } from 'scope-log'
-import { MessageMetadata, Thread } from '@prompt-dev/shared-types'
-export type Props = {
-  children: React.ReactNode
-}
+import { MessageMetadata } from '@prompt-dev/shared-types'
+import { ChatProviderOptions } from './ChatProvider.types'
+
 const chatStore = createStore()
 
 const threadIdAtom = atom<string | null>(null)
-const log = scopedLog('ChatProvider')
 
 export type ChatUIMessage = UIMessage<MessageMetadata>
 
-export function ChatProvider({ children }: Props) {
+export type Props = {
+  children: React.ReactNode
+  options: ChatProviderOptions
+}
+
+export function ChatProvider({ children, ...props }: Props) {
   return (
     <Provider store={chatStore}>
-      <InnerChatProvider children={children} />
+      <InnerChatProvider children={children} {...props} />
     </Provider>
   )
 }
 
-function InnerChatProvider({ children }: Props) {
+function InnerChatProvider({ children, options }: Props) {
   const [threadId, setThreadId] = useAtom(threadIdAtom)
-  const { getToken } = useAuth()
   const queryClient = useQueryClient()
-  const [model, setModel] = useLocalStorageState('model', 'gpt-4.1')
 
+  const [modelInState, setModelInState] = useState<string | null>(null)
+  const setModel = useRef(options?.setModel ?? setModelInState)
+  const model = useMemo(
+    () => (options?.model !== undefined ? options.model : modelInState),
+    [options?.model, modelInState],
+  )
+
+  const getAuthToken = options?.getAuthToken
   const { status, messages, setMessages, sendMessage } = useChat<ChatUIMessage>(
     {
       transport: new DefaultChatTransport({
-        api: 'https://ontrack.ipfx.dev/api/chat',
-        headers: async () => ({
-          Authorization: `Bearer ${await getToken()}`,
-        }),
+        api: options?.api,
+        headers: getAuthToken
+          ? async () => ({
+              Authorization: `Bearer ${await getAuthToken()}`,
+            })
+          : undefined,
         body: () => ({
           data: {
             threadId: threadId,
@@ -48,24 +55,17 @@ function InnerChatProvider({ children }: Props) {
         }),
       }),
       onFinish: ({ message }) => {
-        log('onFinish', message)
         if (message.metadata) {
           const metadata = message.metadata
           if (metadata.isNew === true) {
-            // add the thread to front of query cache
-            queryClient.setQueriesData(
-              trpc.threads.getAllForUser.queryFilter(),
-              (oldData: Thread[] | undefined) => {
-                const newThread = {
-                  id: metadata.threadId,
-                  name: metadata.name,
-                  createdAt: metadata.createdAt,
-                  updatedAt: metadata.updatedAt,
-                  userId: metadata.userId,
-                }
-                return oldData ? [newThread, ...oldData] : [newThread]
-              },
-            )
+            const newThread = {
+              id: metadata.threadId,
+              name: metadata.name,
+              createdAt: metadata.createdAt,
+              updatedAt: metadata.updatedAt,
+              userId: metadata.userId,
+            }
+            options.threadApi.updateThreadCache(newThread)
           } else {
             setThreadId(metadata.threadId)
           }
@@ -74,16 +74,10 @@ function InnerChatProvider({ children }: Props) {
     },
   )
 
-  useEffect(() => {
-    console.log('sendMessage: ', sendMessage)
-  }, [sendMessage])
-
   const setAndLoadThreadId = useCallback(
     async (threadId: string | null) => {
       if (threadId !== null) {
-        const thread = await trpcClient.messages.getAllForThreadId.query({
-          threadId,
-        })
+        const thread = await options.threadApi.getThreadWithMessages(threadId)
         setMessages(thread?.messages ?? [])
       }
       setThreadId(threadId)
@@ -99,7 +93,7 @@ function InnerChatProvider({ children }: Props) {
         setThreadId(null)
       },
       messages,
-      setModel: setModel,
+      setModel: (model) => setModel.current(model),
       model: model,
       status,
       sendMessage,

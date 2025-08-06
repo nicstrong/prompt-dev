@@ -1,16 +1,15 @@
 import { Textarea } from '../ui/textarea'
 import { Button } from '../ui/button'
 import { Send } from 'lucide-react'
-import { useChatContext } from './ChatProvider.context'
 import { ModelSelect } from './ModelSelect'
 import { useState } from 'react'
+import { useChatContext } from '@prompt-dev/client'
 
 export const ChatInput = () => {
   const { sendMessage, model, setModel } = useChatContext()
   const [text, setText] = useState('')
 
   const onSubmit = async () => {
-    console.log('onSubmit called', sendMessage)
     await sendMessage({ text })
   }
 
@@ -58,7 +57,7 @@ export const ChatInput = () => {
         </div>
         <div className='flex flex-1'>
           <ModelSelect
-            value={model}
+            value={model ?? ''}
             onValueChange={(v) => {
               console.log('Model changed to:', v)
               setModel(v)

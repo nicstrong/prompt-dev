@@ -53,14 +53,20 @@ function errorHandler(
       status: 401,
     })
     res.status(401).json(unauthed)
-  }
-  if (err && err.name === 'ForbiddenError') {
+  } else if (err && err.name === 'ForbiddenError') {
     const unauthed = new ProblemDocument({
       title: 'Forbidden',
       detail: err.message,
       status: 403,
     })
     res.status(401).json(unauthed)
+  } else if (err && err.name === 'NotFoundError') {
+    const unauthed = new ProblemDocument({
+      title: 'Not Found',
+      detail: err.message,
+      status: 404,
+    })
+    res.status(404).json(unauthed)
   } else if (isProblemException(err)) {
     res.status(err.status).json(
       new ProblemDocument({

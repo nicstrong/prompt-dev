@@ -3,6 +3,7 @@ import { getAllThreadsForUser } from '~/data/threads.js'
 import z from 'zod'
 import {
   ForbiddenError,
+  NotFoundError,
   requireAuthOrError,
   UnauthorizedError,
 } from '../auth.js'
@@ -64,7 +65,20 @@ router.get(
     if (threadAndMessages?.userId !== userId) {
       throw new ForbiddenError('You do not have access to this thread')
     }
-    res.send(threadAndMessages)
+    if (!threadAndMessages) {
+      throw new NotFoundError(`Thread with id '${threadId}' not found`)
+    }
+    const thread = {
+      ...threadAndMessages,
+      updatedAt: threadAndMessages.updatedAt?.valueOf() ?? null,
+      createdAt: threadAndMessages.createdAt.valueOf(),
+      messages: threadAndMessages.messages.map((message) => ({
+        ...message,
+        updatedAt: message.updatedAt?.valueOf() ?? null,
+        createdAt: message.createdAt.valueOf(),
+      })),
+    }
+    res.send(thread)
   },
 )
 
