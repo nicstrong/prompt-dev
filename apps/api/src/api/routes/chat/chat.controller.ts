@@ -2,6 +2,7 @@ import {
   convertToModelMessages,
   createUIMessageStream,
   createUIMessageStreamResponse,
+  pipeUIMessageStreamToResponse,
   streamText,
 } from 'ai'
 import { Router } from 'express'
@@ -17,6 +18,7 @@ import { requireAuthOrError } from '../auth.js'
 import validate from '../middleware/middleware.js'
 import { getUserMessageParts } from '~/utils/ui-messages.js'
 import { MessageMetadata } from '@prompt-dev/shared-types'
+import { scopedLog } from 'scope-log'
 
 const router: Router = Router()
 router.use(requireAuthOrError)
@@ -44,8 +46,13 @@ router.post('/chat', validate({ body: newChatSchema }), async (req, res) => {
     parts: getUserMessageParts(messages[messages.length - 1]),
   })
 
-  const stream = createUIMessageStream<ChatUIMessage>({
-    execute: ({ writer }) => {
+  const result = streamText({
+    model: model,
+    messages: convertToModelMessages(messages),
+  })
+
+  result.pipeUIMessageStreamToResponse<ChatUIMessage>(res, {
+    messageMetadata: () => {
       if (createdThread) {
         const meta: MessageMetadata = {
           threadId,
@@ -55,27 +62,14 @@ router.post('/chat', validate({ body: newChatSchema }), async (req, res) => {
           updatedAt: createdThread.updatedAt?.valueOf() ?? null,
           userId: createdThread.userId,
         }
-        writer.write({
-          type: 'message-metadata',
-          messageMetadata: meta,
-        })
+        return meta
       } else {
         const meta: MessageMetadata = {
           threadId,
           isNew: false,
         }
-        writer.write({
-          type: 'message-metadata',
-          messageMetadata: meta,
-        })
+        return meta
       }
-
-      const result = streamText({
-        model: model,
-        messages: convertToModelMessages(messages),
-      })
-
-      writer.merge(result.toUIMessageStream())
     },
     onFinish: async ({ messages }) => {
       const newMsg = await newMessage(
@@ -93,8 +87,6 @@ router.post('/chat', validate({ body: newChatSchema }), async (req, res) => {
       return error instanceof Error ? error.message : String(error)
     },
   })
-
-  return createUIMessageStreamResponse({ stream })
 })
 
 export default router

@@ -1,0 +1,9 @@
+{
+	"servers": {
+		"Vercel": {
+			"url": "https://mcp.vercel.com",
+			"type": "http"
+		}
+	},
+	"inputs": []
+}

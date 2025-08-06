@@ -7,7 +7,7 @@ import {
   UnauthorizedError,
 } from '../auth.js'
 import validate from '../middleware/middleware.js'
-import { getAllMessagesForThread } from '~/db/messages.js'
+import { getThreadAndMessages } from '~/db/messages.js'
 
 const router: Router = Router()
 router.use(requireAuthOrError)
@@ -60,7 +60,7 @@ router.get(
   async (req, res) => {
     const userId = res.locals.signedInAuth.userId
     const { threadId } = req.params
-    const threadAndMessages = await getAllMessagesForThread(threadId)
+    const threadAndMessages = await getThreadAndMessages(threadId)
     if (threadAndMessages?.userId !== userId) {
       throw new ForbiddenError('You do not have access to this thread')
     }

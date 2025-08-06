@@ -14,7 +14,7 @@ export async function newMessage(newMessage: NewMessage) {
   return db.insert(messages).values(newMessage)
 }
 
-export async function getAllMessagesForThread(
+export async function getThreadAndMessages(
   threadId: string,
 ): Promise<ThreadWithMessages | null> {
   const result = await db

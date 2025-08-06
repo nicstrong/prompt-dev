@@ -36,7 +36,7 @@ function InnerChatProvider({ children }: Props) {
   const { status, messages, setMessages, sendMessage } = useChat<ChatUIMessage>(
     {
       transport: new DefaultChatTransport({
-        api: 'http://localhost:3000/api/chat',
+        api: 'https://ontrack.ipfx.dev/api/chat',
         headers: async () => ({
           Authorization: `Bearer ${await getToken()}`,
         }),

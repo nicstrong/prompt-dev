@@ -7,7 +7,7 @@ import { createTRPCRouter, protectedProcedure } from '../trpc.js'
 import { z } from 'zod'
 import {
   deleteMessagesForThreadId,
-  getAllMessagesForThread,
+  getThreadAndMessages,
 } from '~/db/messages.js'
 import { generateText } from 'ai'
 import { openai } from '@ai-sdk/openai'
@@ -51,9 +51,11 @@ export const threadsRouter = createTRPCRouter({
     .output(z.void())
     .mutation(async (opts) => {
       const { threadId } = opts.input
-      generateThreadName(threadId, opts.ctx.auth?.userId).catch((err) => {
-        console.error('renameThread failed:', err)
-      })
+      generateThreadName(threadId, opts.ctx.auth?.userId ?? undefined).catch(
+        (err) => {
+          console.error('renameThread failed:', err)
+        },
+      )
     }),
 })
 
@@ -61,19 +63,24 @@ export const generateThreadName = async (
   threadId: string,
   forUserId: string | undefined,
 ): Promise<void> => {
-  const messages = await getAllMessagesForThread(threadId)
-  const transcript = messages
+  const thread = await getThreadAndMessages(threadId)
+  if (!thread) return
+  const transcript = thread.messages
     .map(
-      (m) => `${m.role === 'assistant' ? 'Assistant' : 'User'}: ${m.content}`,
+      (m) =>
+        `${m.role === 'assistant' ? 'Assistant' : 'User'}: ${m.parts
+          .filter((p) => p.type === 'text')
+          .map((p) => p.text)
+          .join('')}`,
     )
     .join('\n')
   const result = await generateText({
     model: openai('gpt-4.1-mini-2025-04-14'),
     prompt: `The following transcript is a conversation thread between a user and an AI assistant. Generate a thread title that can be used in a UI showing a list of threads.\n\n${transcript}`,
   })
-  await renameThread(threadId, result.text.text)
+  await renameThread(threadId, result.text)
 
-  console.log(`Generated thread name for user ${forUserId}:`, result.text.text)
+  console.log(`Generated thread name for user ${forUserId}:`, result.text)
 
   if (forUserId) {
     const sockets = await io.fetchSockets()
@@ -83,7 +90,7 @@ export const generateThreadName = async (
       socket.emit('item_updated', {
         kind: 'thread-name',
         itemId: threadId,
-        newName: result.text.text,
+        newName: result.text,
       })
     }
   }

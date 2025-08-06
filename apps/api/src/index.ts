@@ -11,10 +11,14 @@ import {
 } from '@prompt-dev/shared-types'
 import { verifyToken } from '@clerk/express'
 import { UnauthorizedError } from './api/routes/auth.js'
+import { RootNamespace, setLogLevel } from 'scope-log'
+import { LogLevel } from 'scope-log/dist/types.js'
 
 export * from './api/index.js'
 
 dotenv.config()
+
+setLogLevel(RootNamespace, LogLevel.DEBUG)
 
 const port = env.PORT || 5001
 const app = createServerApp()
