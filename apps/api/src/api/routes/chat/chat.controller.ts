@@ -18,7 +18,6 @@ import { requireAuthOrError } from '../auth.js'
 import validate from '../middleware/middleware.js'
 import { getUserMessageParts } from '~/utils/ui-messages.js'
 import { MessageMetadata } from '@prompt-dev/shared-types'
-import { scopedLog } from 'scope-log'
 
 const router: Router = Router()
 router.use(requireAuthOrError)
@@ -28,11 +27,12 @@ router.post('/chat', validate({ body: newChatSchema }), async (req, res) => {
   const data = req.body
   const { messages } = data
   let threadId = data.data?.threadId ?? null
+  const isNew = data.data?.isNew ?? false
   let createdThread: Thread | null = null
 
   const model = await createModel(data.data?.model ?? null)
-  if (threadId === null) {
-    threadId = createId()
+  if (isNew || threadId === null) {
+    threadId = threadId ?? createId()
     createdThread = await newThread({
       id: threadId,
       userId,

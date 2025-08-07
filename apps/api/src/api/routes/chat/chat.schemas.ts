@@ -11,6 +11,7 @@ export const newChatSchema = z.object({
     .object({
       threadId: z.string().nullable(),
       model: z.string().nullable(),
+      isNew: z.boolean().optional(),
     })
     .nullable(),
 })

@@ -10,6 +10,8 @@ export type ChatProviderOptions = {
   // If not provided will be stored in local state (not persistent)
   model?: string | null
   setModel?: (model: string) => void
+
+  onMessageComplete?: (threadId: string, isNew: boolean, messageId: string) => void
 }
 
 export type ThreadApi = {

@@ -7,5 +7,5 @@ export const Route = createFileRoute('/_authed/threads/$threadId')({
 
 function ThreadsComponent() {
   const { threadId } = Route.useParams()
-  return <Layout threadId={threadId} />
+  return <Layout threadId={threadId} isNew={false} autoResume={false} />
 }

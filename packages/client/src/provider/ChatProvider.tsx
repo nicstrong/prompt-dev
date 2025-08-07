@@ -1,15 +1,12 @@
 import { UIMessage, useChat } from '@ai-sdk/react'
-import { useCallback, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { ChatContext, ChatContextType } from './ChatProvider.context'
-import { atom, createStore, Provider, useAtom } from 'jotai'
-import { useQueryClient } from '@tanstack/react-query'
-import { DefaultChatTransport } from 'ai'
+import { createStore, Provider } from 'jotai'
+import { createIdGenerator, DefaultChatTransport } from 'ai'
 import { MessageMetadata } from '@prompt-dev/shared-types'
 import { ChatProviderOptions } from './ChatProvider.types'
 
 const chatStore = createStore()
-
-const threadIdAtom = atom<string | null>(null)
 
 export type ChatUIMessage = UIMessage<MessageMetadata>
 
@@ -25,10 +22,16 @@ export function ChatProvider({ children, ...props }: Props) {
     </Provider>
   )
 }
+const generateId = createIdGenerator({ size: 24 })
+
+type ThreadState = { threadId: string; isNew: boolean }
 
 function InnerChatProvider({ children, options }: Props) {
-  const [threadId, setThreadId] = useAtom(threadIdAtom)
-  const queryClient = useQueryClient()
+  const [threadState, setThreadState] = useState<ThreadState>({
+    threadId: generateId(),
+    isNew: true,
+  })
+  const [autoResume, setAutoResume] = useState<boolean>(false)
 
   const [modelInState, setModelInState] = useState<string | null>(null)
   const setModel = useRef(options?.setModel ?? setModelInState)
@@ -37,9 +40,12 @@ function InnerChatProvider({ children, options }: Props) {
     [options?.model, modelInState],
   )
 
+  const threadStateRef = useRef(threadState)
+  threadStateRef.current = threadState
+
   const getAuthToken = options?.getAuthToken
-  const { status, messages, setMessages, sendMessage } = useChat<ChatUIMessage>(
-    {
+  const { status, messages, setMessages, sendMessage, stop } =
+    useChat<ChatUIMessage>({
       transport: new DefaultChatTransport({
         api: options?.api,
         headers: getAuthToken
@@ -49,12 +55,18 @@ function InnerChatProvider({ children, options }: Props) {
           : undefined,
         body: () => ({
           data: {
-            threadId: threadId,
+            threadId: threadStateRef.current.threadId,
+            isNew: threadStateRef.current.isNew,
             model,
           },
         }),
       }),
+      onData: (data) => {
+        console.log(`[ChatProvider] onData: `, data)
+      },
       onFinish: ({ message }) => {
+        console.log(`[ChatProvider] onFinish: `, message.metadata)
+
         if (message.metadata) {
           const metadata = message.metadata
           if (metadata.isNew === true) {
@@ -67,46 +79,64 @@ function InnerChatProvider({ children, options }: Props) {
             }
             options.threadApi.updateThreadCache(newThread)
           } else {
-            setThreadId(metadata.threadId)
+            const isNew = threadState.isNew
+            setThreadState((prev) => ({ ...prev, isNew: false }))
           }
+          options.onMessageComplete?.(
+            message.metadata.threadId,
+            message.metadata.isNew,
+            message.id,
+          )
         }
       },
-    },
-  )
+    })
+
+  useEffect(() => {
+    console.log(`[ChatProvider] Status=${status}`)
+  }, [status])
 
   const setAndLoadThreadId = useCallback(
-    async (threadId: string | null) => {
-      if (threadId !== null) {
+    async (threadId: string, isNew: boolean) => {
+      if (isNew) {
+        console.log(`[ChatPrrovider] New thread: ${threadId}`)
+        setThreadState({ threadId: threadId, isNew: true })
+        setMessages([])
+      } else {
         const thread = await options.threadApi.getThreadWithMessages(threadId)
+        console.log(
+          `[ChatPrrovider] Loaded thread: ${threadId} with messages: ${thread?.messages.length}`,
+        )
+        setThreadState({ threadId: threadId, isNew: false })
         setMessages(thread?.messages ?? [])
       }
-      setThreadId(threadId)
     },
-    [setMessages, setThreadId],
+    [setMessages, setThreadState],
   )
 
   const value = useMemo<ChatContextType>(
     () => ({
-      threadId,
+      threadId: threadState.threadId,
       setThreadId: setAndLoadThreadId,
-      newThread: () => {
-        setThreadId(null)
-      },
       messages,
       setModel: (model) => setModel.current(model),
       model: model,
       status,
       sendMessage,
+      setAutoResume,
+      autoResume,
+      stop,
     }),
     [
-      threadId,
+      threadState.threadId,
       setAndLoadThreadId,
       messages,
       setModel,
       model,
       status,
       sendMessage,
-      setThreadId,
+      setAutoResume,
+      autoResume,
+      stop,
     ],
   )
 

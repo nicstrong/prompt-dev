@@ -4,21 +4,29 @@ import { Main } from './Main'
 import { SidebarInset, SidebarProvider } from './ui/sidebar'
 import { SocketProvider } from '@/contexts/SocketContext'
 import { useSocketEventListener } from '@/hooks/useSocketEventListener'
-import { ChatProvider, useChatContext } from '@prompt-dev/client'
+import {
+  ChatProvider,
+  ChatProviderOptions,
+  useChatContext,
+} from '@prompt-dev/client'
 import { useTRPCThreadApi } from './Chat/use-trpc-api'
 import { useAuth } from '@clerk/clerk-react'
 import { useLocalStorageState } from '@/hooks/react'
+import { useNavigate } from '@tanstack/react-router'
 
 type Props = {
-  threadId?: string
+  threadId: string
+  isNew?: boolean
+  autoResume: boolean
 }
 
 function Layout(props: Props) {
   const threadApi = useTRPCThreadApi()
   const { getToken } = useAuth()
   const [model, setModel] = useLocalStorageState('model', 'gpt-4.1')
+  const navigate = useNavigate()
 
-  const chatOptions = useMemo(
+  const chatOptions = useMemo<ChatProviderOptions>(
     () => ({
       threadApi,
       api: 'http://localhost:3000/api/chat',
@@ -31,8 +39,13 @@ function Layout(props: Props) {
       },
       model,
       setModel,
+      onMessageComplete: (threadId, isNew) => {
+        if (isNew) {
+          navigate({ to: `/threads/${threadId}` })
+        }
+      },
     }),
-    [threadApi, getToken, model, setModel],
+    [threadApi, model, setModel, getToken, navigate],
   )
   return (
     <SocketProvider>
@@ -45,13 +58,14 @@ function Layout(props: Props) {
   )
 }
 
-function InnerLayout({ threadId }: Props) {
+function InnerLayout({ threadId, autoResume, isNew }: Props) {
   useSocketEventListener()
-  const { setThreadId } = useChatContext()
+  const { setThreadId, setAutoResume } = useChatContext()
 
   useEffect(() => {
-    setThreadId(threadId ?? null)
-  }, [setThreadId, threadId])
+    setThreadId(threadId, !!isNew)
+    setAutoResume(autoResume)
+  }, [setThreadId, threadId, setAutoResume, isNew, autoResume])
 
   return (
     <>
