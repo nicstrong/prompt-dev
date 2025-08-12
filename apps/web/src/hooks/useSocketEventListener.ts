@@ -4,9 +4,6 @@ import { Thread } from '@/trpc/types'
 import { ItemUpdatePayload } from '@prompt-dev/shared-types'
 import { useQueryClient } from '@tanstack/react-query'
 import { useEffect } from 'react'
-import { scopedLog } from 'scope-log'
-
-const log = scopedLog('SocketEventListener')
 
 export const useSocketEventListener = () => {
   const { socket, isConnected } = useSocket()
