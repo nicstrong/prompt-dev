@@ -1,6 +1,6 @@
-import { defaultShouldDehydrateQuery, QueryClient } from '@tanstack/react-query'
+import { QueryClient } from '@tanstack/react-query'
 
-export const createQueryClient = () =>
+const createQueryClient = () =>
   new QueryClient({
     defaultOptions: {
       queries: {
@@ -19,3 +19,9 @@ export const createQueryClient = () =>
       // },
     },
   })
+
+let clientQueryClientSingleton: QueryClient | undefined = undefined
+
+export const getQueryClient = () => {
+  return (clientQueryClientSingleton ??= createQueryClient())
+}

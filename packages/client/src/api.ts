@@ -1,16 +1,11 @@
-import {
-  ensureSuccess,
-  HttpError,
-  RequestEnricher,
-  withEnricher,
-} from './utils/fetch'
+import { ChatProviderOptions } from './chat-provider'
+import { getConfig } from './chat-provider/ChatProvider.atom'
+import { ensureSuccess, RequestEnricher, withEnricher } from './utils/fetch'
 import { urlConcat } from './utils/url'
-import { getConfig } from './config'
-import { ApiOptions } from './types'
 
 export const execute = async (path: string, init?: RequestInit) => {
   const config = getConfig()
-  const url = urlConcat(config.baseUrl, path)
+  const url = config.api ? urlConcat(config.api, path) : path
 
   console.log(`${init?.method ?? 'UNK'} ${url}`)
   let resp: Response
@@ -102,14 +97,14 @@ export const patch = async <TBody, TResponse>(
   return (await resp.json()) as TResponse
 }
 
-function createEnricher(options: ApiOptions): RequestEnricher {
+function createEnricher(options: ChatProviderOptions): RequestEnricher {
   return async (init: RequestInit) => {
     let headers: Record<string, string> = {}
     if (options.getHeaders) {
       headers = await options.getHeaders()
     }
-    if (options.getToken) {
-      headers['Authorization'] = 'Bearer ' + (await options.getToken())
+    if (options.getAuthToken) {
+      headers['Authorization'] = 'Bearer ' + (await options.getAuthToken())
     }
     if (!(init.headers instanceof Headers)) {
       init.headers = new Headers(init.headers)

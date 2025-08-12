@@ -1,12 +1,13 @@
 import { UIMessage, useChat } from '@ai-sdk/react'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { ChatContext, ChatContextType } from './ChatProvider.context'
-import { createStore, Provider } from 'jotai'
 import { createIdGenerator, DefaultChatTransport } from 'ai'
 import { MessageMetadata } from '@prompt-dev/shared-types'
-import { ChatProviderOptions } from './ChatProvider.types'
 
-const chatStore = createStore()
+import { ChatProviderOptions } from './ChatProvider.types'
+import { createStore, Provider as JotaiProvider } from 'jotai'
+
+export const chatStore = createStore()
 
 export type ChatUIMessage = UIMessage<MessageMetadata>
 
@@ -15,18 +16,11 @@ export type Props = {
   options: ChatProviderOptions
 }
 
-export function ChatProvider({ children, ...props }: Props) {
-  return (
-    <Provider store={chatStore}>
-      <InnerChatProvider children={children} {...props} />
-    </Provider>
-  )
-}
 const generateId = createIdGenerator({ size: 24 })
 
 type ThreadState = { threadId: string; isNew: boolean }
 
-function InnerChatProvider({ children, options }: Props) {
+export function ChatProvider({ children, options }: Props) {
   const [threadState, setThreadState] = useState<ThreadState>({
     threadId: generateId(),
     isNew: true,
@@ -140,5 +134,9 @@ function InnerChatProvider({ children, options }: Props) {
     ],
   )
 
-  return <ChatContext.Provider value={value}>{children}</ChatContext.Provider>
+  return (
+    <JotaiProvider store={chatStore}>
+      <ChatContext.Provider value={value}>{children}</ChatContext.Provider>
+    </JotaiProvider>
+  )
 }

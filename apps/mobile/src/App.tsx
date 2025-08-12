@@ -20,18 +20,15 @@ import { StatusBar } from 'expo-status-bar'
 import RootStackNavigator from './RootStackNavigator'
 import { ClerkProvider, useAuth } from '@clerk/clerk-expo'
 import { tokenCache } from '@clerk/clerk-expo/token-cache'
-import { PromptDevProvider } from '@prompt-dev/client'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { createQueryClient } from './query-client'
-
+import {
+  ChatProvider,
+  ChatProviderOptions,
+  useThreadApi,
+} from '@prompt-dev/client'
+import { QueryClientProvider } from '@tanstack/react-query'
+import { getQueryClient } from './query-client'
 const PERSISTENCE_KEY = 'NAVIGATION_STATE'
 const PREFERENCES_KEY = 'APP_PREFERENCES'
-
-let clientQueryClientSingleton: QueryClient | undefined = undefined
-
-export const getQueryClient = () => {
-  return (clientQueryClientSingleton ??= createQueryClient())
-}
 
 export function App() {
   const [themeVersion, setThemeVersion] = useState<2 | 3>(3)
@@ -135,10 +132,12 @@ type AppNavigationProps = {
 }
 function AppNavigation({ theme, initialState }: AppNavigationProps) {
   const { getToken } = useAuth()
+  const threadApi = useThreadApi()
 
-  const options = useMemo(() => {
+  const options = useMemo<ChatProviderOptions>(() => {
     return {
-      baseUrl: getBaseUrl(),
+      threadApi,
+      api: getBaseUrl(),
       getToken: async () => {
         const token = await getToken()
         if (!token) {
@@ -146,7 +145,6 @@ function AppNavigation({ theme, initialState }: AppNavigationProps) {
         }
         return token
       },
-      queryClient: getQueryClient(),
     }
   }, [])
 
@@ -158,11 +156,11 @@ function AppNavigation({ theme, initialState }: AppNavigationProps) {
         AsyncStorage.setItem(PERSISTENCE_KEY, JSON.stringify(state))
       }
     >
-      <PromptDevProvider options={options}>
-        <QueryClientProvider client={getQueryClient()}>
+      <QueryClientProvider client={getQueryClient()}>
+        <ChatProvider options={options}>
           <RootStackNavigator />
-        </QueryClientProvider>
-      </PromptDevProvider>
+        </ChatProvider>
+      </QueryClientProvider>
       <StatusBar style={!theme.isV3 || theme.dark ? 'light' : 'dark'} />
     </NavigationContainer>
   )
