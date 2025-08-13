@@ -1,4 +1,11 @@
-import { Thread, ThreadWithMessages } from '@prompt-dev/shared-types'
+import {
+  MessageMetadata,
+  Thread,
+  ThreadWithMessages,
+} from '@prompt-dev/shared-types'
+import { UIMessage } from 'ai'
+
+export type ChatUIMessage = UIMessage<MessageMetadata>
 
 export type ChatProviderOptions = {
   threadApi: ThreadApi

@@ -1,13 +1,11 @@
 import { Thread } from '@prompt-dev/shared-types'
-import { useQueryClient } from '@tanstack/react-query'
+import { QueryClient, useQueryClient } from '@tanstack/react-query'
 import { useCallback, useMemo } from 'react'
 import { ThreadApi } from '~/chat-provider'
 import { threads } from './threads'
 import { messages } from './messages'
 
-export function useThreadApi(): ThreadApi {
-  const queryClient = useQueryClient()
-
+export function useThreadApi(queryClient: QueryClient): ThreadApi {
   const updateThreadCache = useCallback(
     (thread: Thread) => {
       // add the thread to front of query cache

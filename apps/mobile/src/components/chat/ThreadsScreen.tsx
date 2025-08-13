@@ -60,7 +60,7 @@ export default function ThreadsScreen() {
           )}
           unstable_pressDelay={65}
           onPress={() => {
-            navigation.navigate('Thread', { threadId: item.id })
+            navigation.navigate('Thread', { threadId: item.id, isNew: false })
           }}
         />
       )

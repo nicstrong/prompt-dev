@@ -1,4 +1,8 @@
-export type { ChatProviderOptions, ThreadApi } from './ChatProvider.types'
+export type {
+  ChatProviderOptions,
+  ThreadApi,
+  ChatUIMessage,
+} from './ChatProvider.types'
 
 export { ChatProvider } from './ChatProvider'
 

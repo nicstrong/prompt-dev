@@ -1,15 +1,11 @@
-import { UIMessage, useChat } from '@ai-sdk/react'
+import { useChat } from '@ai-sdk/react'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { ChatContext, ChatContextType } from './ChatProvider.context'
 import { createIdGenerator, DefaultChatTransport } from 'ai'
-import { MessageMetadata } from '@prompt-dev/shared-types'
 
-import { ChatProviderOptions } from './ChatProvider.types'
-import { createStore, Provider as JotaiProvider } from 'jotai'
-
-export const chatStore = createStore()
-
-export type ChatUIMessage = UIMessage<MessageMetadata>
+import { ChatProviderOptions, ChatUIMessage } from './ChatProvider.types'
+import { Provider as JotaiProvider } from 'jotai'
+import { chatStore, setConfig } from './ChatProvider.atom'
 
 export type Props = {
   children: React.ReactNode
@@ -33,6 +29,10 @@ export function ChatProvider({ children, options }: Props) {
     () => (options?.model !== undefined ? options.model : modelInState),
     [options?.model, modelInState],
   )
+
+  useEffect(() => {
+    setConfig(options)
+  }, [options])
 
   const threadStateRef = useRef(threadState)
   threadStateRef.current = threadState
@@ -92,13 +92,13 @@ export function ChatProvider({ children, options }: Props) {
   const setAndLoadThreadId = useCallback(
     async (threadId: string, isNew: boolean) => {
       if (isNew) {
-        console.log(`[ChatPrrovider] New thread: ${threadId}`)
+        console.log(`[ChatProvider] New thread: ${threadId}`)
         setThreadState({ threadId: threadId, isNew: true })
         setMessages([])
       } else {
         const thread = await options.threadApi.getThreadWithMessages(threadId)
         console.log(
-          `[ChatPrrovider] Loaded thread: ${threadId} with messages: ${thread?.messages.length}`,
+          `[ChatProvider] Loaded thread: ${threadId} with messages: ${thread?.messages.length}`,
         )
         setThreadState({ threadId: threadId, isNew: false })
         setMessages(thread?.messages ?? [])

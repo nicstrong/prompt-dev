@@ -35,7 +35,6 @@ export async function getAllThreadsForUserWithLastMessage(userId: string) {
       thread: threads,
       lastMessage: {
         id: messages.id,
-        content: messages.content,
         parts: messages.parts,
         createdAt: messages.createdAt,
         updatedAt: messages.updatedAt,

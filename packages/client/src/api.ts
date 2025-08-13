@@ -99,6 +99,7 @@ export const patch = async <TBody, TResponse>(
 
 function createEnricher(options: ChatProviderOptions): RequestEnricher {
   return async (init: RequestInit) => {
+    console.log('Building enricher with', options)
     let headers: Record<string, string> = {}
     if (options.getHeaders) {
       headers = await options.getHeaders()

@@ -1,7 +1,7 @@
 import { QueryClient } from '@tanstack/react-query'
 
-const createQueryClient = () =>
-  new QueryClient({
+const createQueryClient = () => {
+  const newClient = new QueryClient({
     defaultOptions: {
       queries: {
         // With SSR, we usually want to set some default staleTime
@@ -19,9 +19,14 @@ const createQueryClient = () =>
       // },
     },
   })
+  return newClient
+}
 
 let clientQueryClientSingleton: QueryClient | undefined = undefined
 
 export const getQueryClient = () => {
-  return (clientQueryClientSingleton ??= createQueryClient())
+  if (!clientQueryClientSingleton) {
+    clientQueryClientSingleton = createQueryClient()
+  }
+  return clientQueryClientSingleton
 }

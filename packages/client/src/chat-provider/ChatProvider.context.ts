@@ -1,7 +1,7 @@
 import { ChatStatus } from 'ai'
 import { createContext, useContext } from 'react'
-import { ChatUIMessage } from './ChatProvider'
 import { UseChatHelpers } from '@ai-sdk/react'
+import { ChatUIMessage } from './ChatProvider.types'
 
 type SendMessageType = UseChatHelpers<ChatUIMessage>['sendMessage']
 

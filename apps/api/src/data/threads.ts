@@ -27,7 +27,6 @@ export async function getAllThreadsForUser(
     }))
     return result
   }
-
   const threadsWithLastMessage =
     await getAllThreadsForUserWithLastMessageDb(userId)
 
@@ -38,7 +37,9 @@ export async function getAllThreadsForUser(
     lastMessage: thread.lastMessage
       ? {
           id: thread.lastMessage.id!,
-          content: thread.lastMessage.content!,
+          content: thread.lastMessage.parts
+            .map((part) => (part.type === 'text' ? part.text : ''))
+            .join(''),
           createdAt: thread.lastMessage.createdAt.valueOf(),
           updatedAt: thread.lastMessage.updatedAt?.valueOf() ?? null,
         }

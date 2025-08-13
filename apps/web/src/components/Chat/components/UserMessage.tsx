@@ -1,3 +1,4 @@
+import { getMessageContent } from '@prompt-dev/client'
 import { ChatUIMessage } from '../types'
 
 type Props = {
@@ -11,9 +12,7 @@ export function UserMessage({ message }: Props) {
   return (
     <div data-message-id={message.id} className='flex justify-end'>
       <div className='prose prose-neutral prose-invert group text-left" relative inline-block max-w-[80%] rounded-2xl bg-neutral-700 p-4 break-words'>
-        {message.parts
-          .map((part) => (part.type === 'text' ? part.text : ''))
-          .join('')}
+        {getMessageContent(message)}
       </div>
     </div>
   )

@@ -7,13 +7,14 @@ import ChatInput from './ChatInput'
 import { useState, useMemo, useEffect } from 'react'
 import { StackScreenProps } from '@react-navigation/stack'
 import { ChatStackParamList } from './ChatNavigator'
-import { useQuery } from '@tanstack/react-query'
-import { messages as messagesQueries } from '@prompt-dev/client'
+import {
+  ChatUIMessage,
+  getMessageContent,
+  useChatContext,
+} from '@prompt-dev/client'
 import { AppTheme } from '../../utils/themes'
 import { useAppTheme } from '../../hooks/useAppTheme'
-import Markdown from 'react-native-marked'
 
-import { Message } from '@prompt-dev/shared-types'
 import { MarkdownThemed } from '../ui/MarkdownThemed'
 
 type Props = StackScreenProps<ChatStackParamList, 'Thread'>
@@ -21,29 +22,27 @@ type Props = StackScreenProps<ChatStackParamList, 'Thread'>
 export default function ChatScreen(props: Props) {
   const theme = useAppTheme()
   const styles = useMemo(() => createStyles(theme), [theme])
-  const { data, error, refetch, isLoading, isRefetching } = useQuery(
-    messagesQueries.getByThreadId.queryOptions(props.route.params.threadId),
-  )
+  const { setThreadId, setAutoResume, messages } = useChatContext()
+
+  const { threadId, isNew } = props.route.params
+
+  useEffect(() => {
+    setThreadId(threadId, isNew)
+    setAutoResume(false)
+  }, [setThreadId, threadId, setAutoResume, isNew])
 
   useEffect(() => {
     console.log('theme', theme)
   }, [theme])
 
-  const messages = useMemo(
-    () =>
-      data?.messages.filter(
-        (msg) => msg.role === 'user' || msg.role === 'assistant',
-      ),
-    [data],
-  )
   const [text, setText] = useState('')
 
-  const renderMessage = ({ item }: { item: Message }) => {
+  const renderMessage = ({ item }: { item: ChatUIMessage }) => {
     const isUser = item.role === 'user'
     return isUser ? (
-      <UserMessage content={item.content} styles={styles} />
+      <UserMessage content={getMessageContent(item)} styles={styles} />
     ) : (
-      <MarkdownThemed content={item.content} />
+      <MarkdownThemed content={getMessageContent(item)} />
     )
   }
 
@@ -51,7 +50,6 @@ export default function ChatScreen(props: Props) {
     <ScreenWrapper style={styles.wrapper} withScrollView={false}>
       <FlatList
         data={messages}
-        refreshing={isRefetching || isLoading}
         keyExtractor={(item) => item.id}
         renderItem={renderMessage}
         ItemSeparatorComponent={() => <View style={styles.separator} />}

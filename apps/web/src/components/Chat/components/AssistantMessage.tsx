@@ -1,17 +1,14 @@
 import DOMPurify from 'dompurify'
 import { micromark } from 'micromark'
 import { ChatUIMessage } from '../types'
+import { getMessageContent } from '@prompt-dev/client'
 
 type Props = {
   message: ChatUIMessage
 }
 
 export function AssistantMessage({ message }: Props) {
-  const htmlContent = micromark(
-    message.parts
-      .map((part) => (part.type === 'text' ? part.text : ''))
-      .join(''),
-  )
+  const htmlContent = micromark(getMessageContent(message))
   const sanitizedHtml = DOMPurify.sanitize(htmlContent)
 
   return (

@@ -25,7 +25,7 @@ import {
   ChatProviderOptions,
   useThreadApi,
 } from '@prompt-dev/client'
-import { QueryClientProvider } from '@tanstack/react-query'
+import { QueryClientProvider, useQueryClient } from '@tanstack/react-query'
 import { getQueryClient } from './query-client'
 const PERSISTENCE_KEY = 'NAVIGATION_STATE'
 const PREFERENCES_KEY = 'APP_PREFERENCES'
@@ -111,34 +111,42 @@ export function App() {
   }
 
   const combinedTheme = isDarkMode ? CombinedDarkTheme : CombinedDefaultTheme
-
   return (
     <PaperProvider
       settings={{ rippleEffectEnabled: preferences.rippleEffectEnabled }}
       theme={theme}
     >
-      <PreferencesContext.Provider value={preferences}>
-        <ClerkProvider tokenCache={tokenCache}>
-          <AppNavigation theme={combinedTheme} initialState={initialState} />
-        </ClerkProvider>
-      </PreferencesContext.Provider>
+      <QueryClientProvider client={getQueryClient()}>
+        <PreferencesContext.Provider value={preferences}>
+          <ClerkProvider tokenCache={tokenCache}>
+            <NavigationContainer
+              theme={theme}
+              initialState={initialState}
+              onStateChange={(state) =>
+                AsyncStorage.setItem(PERSISTENCE_KEY, JSON.stringify(state))
+              }
+            >
+              <RootNavigator />
+              <StatusBar style={!theme.isV3 || theme.dark ? 'light' : 'dark'} />
+            </NavigationContainer>
+          </ClerkProvider>
+        </PreferencesContext.Provider>
+      </QueryClientProvider>
     </PaperProvider>
   )
 }
 
-type AppNavigationProps = {
-  theme: AppTheme
-  initialState?: InitialState
-}
-function AppNavigation({ theme, initialState }: AppNavigationProps) {
+function RootNavigator() {
+  const queryClient = useQueryClient()
+
   const { getToken } = useAuth()
-  const threadApi = useThreadApi()
+  const threadApi = useThreadApi(queryClient)
 
   const options = useMemo<ChatProviderOptions>(() => {
     return {
       threadApi,
       api: getBaseUrl(),
-      getToken: async () => {
+      getAuthToken: async () => {
         const token = await getToken()
         if (!token) {
           throw new Error('No token available')
@@ -149,20 +157,9 @@ function AppNavigation({ theme, initialState }: AppNavigationProps) {
   }, [])
 
   return (
-    <NavigationContainer
-      theme={theme}
-      initialState={initialState}
-      onStateChange={(state) =>
-        AsyncStorage.setItem(PERSISTENCE_KEY, JSON.stringify(state))
-      }
-    >
-      <QueryClientProvider client={getQueryClient()}>
-        <ChatProvider options={options}>
-          <RootStackNavigator />
-        </ChatProvider>
-      </QueryClientProvider>
-      <StatusBar style={!theme.isV3 || theme.dark ? 'light' : 'dark'} />
-    </NavigationContainer>
+    <ChatProvider options={options}>
+      <RootStackNavigator />
+    </ChatProvider>
   )
 }
 

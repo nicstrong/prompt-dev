@@ -3,7 +3,7 @@ import ScreenWrapper from './components/ScreenWrapper'
 import { Button, Text } from 'react-native-paper'
 import { useCallback, useEffect } from 'react'
 import * as WebBrowser from 'expo-web-browser'
-import { useSSO } from '@clerk/clerk-expo'
+import { StartSSOFlowParams, useSSO } from '@clerk/clerk-expo'
 import { ActivityIndicator, StyleSheet } from 'react-native'
 import GoogleIcon from './components/icons/GoogleIcon'
 import { useAppTheme } from './hooks/useAppTheme'
@@ -20,33 +20,36 @@ export default function SignInScreen({ isLoaded }: { isLoaded: boolean }) {
   // Use the `useSSO()` hook to access the `startSSOFlow()` method
   const { startSSOFlow } = useSSO()
 
-  const onPress = useCallback(async () => {
-    try {
-      // Start the authentication process by calling `startSSOFlow()`
-      const { createdSessionId, setActive, signIn, signUp } =
-        await startSSOFlow({
-          strategy: 'oauth_google',
-          // For web, defaults to current path
-          // For native, you must pass a scheme, like AuthSession.makeRedirectUri({ scheme, path })
-          // For more info, see https://docs.expo.dev/versions/latest/sdk/auth-session/#authsessionmakeredirecturioptions
-          redirectUrl: AuthSession.makeRedirectUri(),
-        })
+  const onPress = useCallback(
+    async (strategy: 'oauth_google' | 'oauth_apple') => {
+      try {
+        // Start the authentication process by calling `startSSOFlow()`
+        const { createdSessionId, setActive, signIn, signUp } =
+          await startSSOFlow({
+            strategy,
+            // For web, defaults to current path
+            // For native, you must pass a scheme, like AuthSession.makeRedirectUri({ scheme, path })
+            // For more info, see https://docs.expo.dev/versions/latest/sdk/auth-session/#authsessionmakeredirecturioptions
+            redirectUrl: AuthSession.makeRedirectUri(),
+          })
 
-      // If sign in was successful, set the active session
-      if (createdSessionId) {
-        setActive!({ session: createdSessionId })
-      } else {
-        // If there is no `createdSessionId`,
-        // there are missing requirements, such as MFA
-        // Use the `signIn` or `signUp` returned from `startSSOFlow`
-        // to handle next steps
+        // If sign in was successful, set the active session
+        if (createdSessionId) {
+          setActive!({ session: createdSessionId })
+        } else {
+          // If there is no `createdSessionId`,
+          // there are missing requirements, such as MFA
+          // Use the `signIn` or `signUp` returned from `startSSOFlow`
+          // to handle next steps
+        }
+      } catch (err) {
+        // See https://clerk.com/docs/custom-flows/error-handling
+        // for more info on error handling
+        console.error(JSON.stringify(err, null, 2))
       }
-    } catch (err) {
-      // See https://clerk.com/docs/custom-flows/error-handling
-      // for more info on error handling
-      console.error(JSON.stringify(err, null, 2))
-    }
-  }, [])
+    },
+    [],
+  )
 
   return (
     <ScreenWrapper
@@ -61,7 +64,7 @@ export default function SignInScreen({ isLoaded }: { isLoaded: boolean }) {
           </Text>
           <Button
             icon={() => <GoogleIcon width={20} height={20} />}
-            onPress={onPress}
+            onPress={() => onPress('oauth_google')}
             mode='contained-tonal'
             style={styles.button}
             textColor={theme.colors.onBackground}
@@ -71,7 +74,7 @@ export default function SignInScreen({ isLoaded }: { isLoaded: boolean }) {
           </Button>
           <Button
             icon='apple'
-            onPress={onPress}
+            onPress={() => onPress('oauth_apple')}
             mode='contained-tonal'
             style={styles.button}
             textColor={theme.colors.onBackground}

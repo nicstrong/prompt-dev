@@ -6,10 +6,18 @@ import {
 import ChatScreen from './ChatScreen'
 import ThreadsScreen from './ThreadsScreen'
 import AppBarHeader from '../../AppBarHeader'
+import { useQueryClient } from '@tanstack/react-query'
+import { useAuth } from '@clerk/clerk-expo'
+import {
+  ChatProvider,
+  ChatProviderOptions,
+  useThreadApi,
+} from '@prompt-dev/client'
+import { useMemo } from 'react'
 
 export type ChatStackParamList = {
   Threads: undefined
-  Thread: { threadId: string }
+  Thread: { threadId: string; isNew: boolean }
 }
 
 const Stack = createStackNavigator<ChatStackParamList>()
