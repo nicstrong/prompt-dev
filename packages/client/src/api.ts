@@ -64,6 +64,7 @@ export const post = async <TBody, TResponse>(
     headers.set('Content-Type', 'application/json')
     requestInit.headers = headers
   }
+
   const resp = await execute(path, requestInit)
   return (await resp.json()) as TResponse
 }

@@ -8,7 +8,6 @@ import {
 import { useMaterial3Theme } from '@pchmn/expo-material3-theme'
 import React, { useEffect, useMemo, useState } from 'react'
 import {
-  AppTheme,
   CombinedDarkTheme,
   CombinedDefaultTheme,
   deviceColorsSupported,
@@ -27,6 +26,11 @@ import {
 } from '@prompt-dev/client'
 import { QueryClientProvider, useQueryClient } from '@tanstack/react-query'
 import { getQueryClient } from './query-client'
+import './utils/polyfills'
+import { fetch as expoFetch, FetchRequestInit } from 'expo/fetch'
+import { generateAPIUrl } from './utils/url'
+import { FetchResponse } from 'expo/build/winter/fetch/FetchResponse'
+
 const PERSISTENCE_KEY = 'NAVIGATION_STATE'
 const PREFERENCES_KEY = 'APP_PREFERENCES'
 
@@ -145,7 +149,8 @@ function RootNavigator() {
   const options = useMemo<ChatProviderOptions>(() => {
     return {
       threadApi,
-      api: getBaseUrl(),
+      fetch: fetchThunk as unknown as typeof globalThis.fetch,
+      api: generateAPIUrl('/api'),
       getAuthToken: async () => {
         const token = await getToken()
         if (!token) {
@@ -163,9 +168,9 @@ function RootNavigator() {
   )
 }
 
-function getBaseUrl() {
-  if (process.env.EXPO_PUBLIC_API_URL) {
-    return process.env.EXPO_PUBLIC_API_URL
-  }
-  throw new Error('EXPO_PUBLIC_API_URL is not defined')
+function fetchThunk(
+  url: string,
+  init?: FetchRequestInit | undefined,
+): Promise<FetchResponse> {
+  return expoFetch(url, init)
 }

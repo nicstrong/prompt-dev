@@ -6,6 +6,7 @@ import { createIdGenerator, DefaultChatTransport } from 'ai'
 import { ChatProviderOptions, ChatUIMessage } from './ChatProvider.types'
 import { Provider as JotaiProvider } from 'jotai'
 import { chatStore, setConfig } from './ChatProvider.atom'
+import { urlConcat } from '~/utils/url'
 
 export type Props = {
   children: React.ReactNode
@@ -32,16 +33,18 @@ export function ChatProvider({ children, options }: Props) {
 
   useEffect(() => {
     setConfig(options)
+    console.log('[ChatProvider] options=', options)
   }, [options])
 
   const threadStateRef = useRef(threadState)
   threadStateRef.current = threadState
 
   const getAuthToken = options?.getAuthToken
-  const { status, messages, setMessages, sendMessage, stop } =
+  const { status, messages, setMessages, sendMessage, stop, error } =
     useChat<ChatUIMessage>({
       transport: new DefaultChatTransport({
-        api: options?.api,
+        api: options?.api ? urlConcat(options.api, 'chat') : undefined,
+        fetch: options?.fetch,
         headers: getAuthToken
           ? async () => ({
               Authorization: `Bearer ${await getAuthToken()}`,
@@ -87,7 +90,10 @@ export function ChatProvider({ children, options }: Props) {
 
   useEffect(() => {
     console.log(`[ChatProvider] Status=${status}`)
-  }, [status])
+    if (status === 'error' && error) {
+      console.error(`[ChatProvider] Error: ${error.message}`)
+    }
+  }, [status, error])
 
   const setAndLoadThreadId = useCallback(
     async (threadId: string, isNew: boolean) => {

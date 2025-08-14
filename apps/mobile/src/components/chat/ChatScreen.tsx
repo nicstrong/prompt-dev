@@ -22,7 +22,7 @@ type Props = StackScreenProps<ChatStackParamList, 'Thread'>
 export default function ChatScreen(props: Props) {
   const theme = useAppTheme()
   const styles = useMemo(() => createStyles(theme), [theme])
-  const { setThreadId, setAutoResume, messages } = useChatContext()
+  const { setThreadId, setAutoResume, messages, sendMessage } = useChatContext()
 
   const { threadId, isNew } = props.route.params
 
@@ -46,6 +46,11 @@ export default function ChatScreen(props: Props) {
     )
   }
 
+  const onSend = async () => {
+    await sendMessage({ text })
+    setText('')
+  }
+
   return (
     <ScreenWrapper style={styles.wrapper} withScrollView={false}>
       <FlatList
@@ -54,7 +59,12 @@ export default function ChatScreen(props: Props) {
         renderItem={renderMessage}
         ItemSeparatorComponent={() => <View style={styles.separator} />}
       />
-      <ChatInput style={styles.input} onChangeText={setText} text={text} />
+      <ChatInput
+        style={styles.input}
+        onChangeText={setText}
+        text={text}
+        onSend={onSend}
+      />
     </ScreenWrapper>
   )
 }

@@ -7,9 +7,15 @@ type Props = {
   style?: StyleProp<ViewStyle>
   onChangeText: (text: string) => void
   text: string
+  onSend: () => void
 }
 
-export default function ChatInput({ style, onChangeText, text }: Props) {
+export default function ChatInput({
+  style,
+  onChangeText,
+  text,
+  onSend,
+}: Props) {
   const theme = useAppTheme()
   const styles = createStyles(theme)
 
@@ -26,7 +32,7 @@ export default function ChatInput({ style, onChangeText, text }: Props) {
           icon='send'
           iconColor={theme.colors.primary}
           size={20}
-          onPress={() => console.log('Pressed')}
+          onPress={onSend}
           disabled={!text.trim()}
         />
       </View>

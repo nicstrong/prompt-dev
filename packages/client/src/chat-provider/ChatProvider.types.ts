@@ -9,7 +9,7 @@ export type ChatUIMessage = UIMessage<MessageMetadata>
 
 export type ChatProviderOptions = {
   threadApi: ThreadApi
-
+  fetch?: typeof globalThis.fetch
   api?: string
   // if the chat api requires auth
   getAuthToken?: () => Promise<string>

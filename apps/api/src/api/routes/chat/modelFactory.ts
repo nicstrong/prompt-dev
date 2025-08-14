@@ -16,7 +16,7 @@ const cache = new LRUCache<string, Model>({
 })
 
 const log = scopedLog('modelFactory')
-const DEFAULT_OPENAI_MODEL = 'gpt-4.1-mini'
+const DEFAULT_OPENAI_MODEL = 'gpt-5-mini'
 
 export async function createModel(model: string | null) {
   if (model === null) {
