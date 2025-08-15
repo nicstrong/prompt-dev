@@ -1,10 +1,15 @@
 packages:
   - apps/*
   - packages/*
+
 onlyBuiltDependencies:
   - '@clerk/shared'
+  - '@parcel/watcher'
   - '@tailwindcss/oxide'
+  - browser-tabs-lock
+  - core-js
   - esbuild
+
 updateConfig:
   ignoreDependencies:
     - '@types/node'
