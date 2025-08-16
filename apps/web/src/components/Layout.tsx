@@ -29,7 +29,7 @@ function Layout(props: Props) {
   const chatOptions = useMemo<ChatProviderOptions>(
     () => ({
       threadApi,
-      api: 'http://localhost:3000/api/chat',
+      api: 'http://localhost:3000/api',
       getAuthToken: async () => {
         const res = await getToken()
         if (!res) {
@@ -50,7 +50,7 @@ function Layout(props: Props) {
   return (
     <SocketProvider>
       <ChatProvider options={chatOptions}>
-        <SidebarProvider>
+        <SidebarProvider className='h-svh'>
           <InnerLayout {...props} />
         </SidebarProvider>
       </ChatProvider>
@@ -70,7 +70,7 @@ function InnerLayout({ threadId, autoResume, isNew }: Props) {
   return (
     <>
       <AppSidebar />
-      <SidebarInset>
+      <SidebarInset className='min-h-0 md:peer-data-[variant=inset]:!m-0 md:peer-data-[variant=inset]:rounded-xl md:peer-data-[variant=inset]:p-2 md:peer-data-[variant=inset]:shadow-sm'>
         <Main />
       </SidebarInset>
     </>

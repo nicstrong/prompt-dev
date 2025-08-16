@@ -10,6 +10,7 @@ export const ChatInput = () => {
   const [text, setText] = useState('')
 
   const onSubmit = async () => {
+    setText('')
     await sendMessage({ text })
   }
 
@@ -64,20 +65,25 @@ export const ChatInput = () => {
             }}
           />
 
-          {!(status === 'streaming' || status ==='submitted') &&  <Button
-            className='absolute right-3 bottom-3 ml-auto rounded-lg border-1 border-sky-900 bg-[#0284c740] text-neutral-100 hover:bg-[#0284c790]'
-            type='submit'
-            disabled={text.length === 0}
-            onClick={onSubmit}
-          >
-            <ArrowUp />
-          </Button>}
-          {status === 'streaming' || status ==='submitted' && <Button
-            className='absolute right-3 bottom-3 ml-auto rounded-lg border-1 border-sky-900 bg-[#0284c740] text-neutral-100 hover:bg-[#0284c790]'
-            onClick={() => stop()}
-          >
-            <Square />
-          </Button>}
+          {!(status === 'streaming' || status === 'submitted') && (
+            <Button
+              className='absolute right-3 bottom-3 ml-auto rounded-lg border-1 border-sky-900 bg-[#0284c740] text-neutral-100 hover:bg-[#0284c790]'
+              type='submit'
+              disabled={text.length === 0}
+              onClick={onSubmit}
+            >
+              <ArrowUp />
+            </Button>
+          )}
+          {status === 'streaming' ||
+            (status === 'submitted' && (
+              <Button
+                className='absolute right-3 bottom-3 ml-auto rounded-lg border-1 border-sky-900 bg-[#0284c740] text-neutral-100 hover:bg-[#0284c790]'
+                onClick={() => stop()}
+              >
+                <Square />
+              </Button>
+            ))}
         </div>
       </div>
     </div>

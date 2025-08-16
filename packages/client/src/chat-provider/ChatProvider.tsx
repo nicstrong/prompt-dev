@@ -62,8 +62,7 @@ export function ChatProvider({ children, options }: Props) {
         console.log(`[ChatProvider] onData: `, data)
       },
       onFinish: ({ message }) => {
-        console.log(`[ChatProvider] onFinish: `, message.metadata)
-
+        console.log(`[ChatProvider] onFinish: `, message)
         if (message.metadata) {
           const metadata = message.metadata
           if (metadata.isNew === true) {

@@ -40,6 +40,8 @@ router.post('/chat', validate({ body: newChatSchema }), async (req, res) => {
     })
   }
 
+  console.log(`[Chat] Using model ${model.modelId} for thread ${threadId}`)
+
   await newMessage({
     role: 'user',
     threadId,

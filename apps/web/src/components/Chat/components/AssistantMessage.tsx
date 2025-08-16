@@ -1,38 +1,28 @@
-import DOMPurify from 'dompurify'
-import { micromark } from 'micromark'
 import { ChatUIMessage } from '../types'
-import { getMessageContent } from '@prompt-dev/client'
+import { Message, MessageContent } from '@/components/ai-elements/message'
+import { Response } from '@/components/ai-elements/response'
 
 type Props = {
   message: ChatUIMessage
 }
 
 export function AssistantMessage({ message }: Props) {
-  const htmlContent = micromark(getMessageContent(message))
-  const sanitizedHtml = DOMPurify.sanitize(htmlContent)
+  if (message.role !== 'assistant') {
+    return null
+  }
 
   return (
-    <div
-      data-message-id={message.id}
-      className='prose prose-neutral prose-invert flex flex-col gap-2'
-    >
-      <div dangerouslySetInnerHTML={{ __html: sanitizedHtml }} />
-      {/* <div className='flex flex-row gap-2'>
-        {message.experimental_attachments?.map((attachment, index) =>
-          attachment.contentType?.includes('image/') ? (
-            <img
-              key={`${message.id}-${index}`}
-              className='w-24 rounded-md'
-              src={attachment.url}
-              alt={attachment.name}
-            />
-          ) : attachment.contentType?.includes('text/') ? (
-            <div className='ellipsis h-24 w-32 overflow-hidden rounded-md border p-2 text-xs text-zinc-500'>
-              {getTextFromDataUrl(attachment.url)}
-            </div>
-          ) : null,
-        )}
-      </div> */}
-    </div>
+    <Message from={message.role} key={message.id}>
+      <MessageContent className='group-[.is-assistant]:text-neutral prose-invert group-[.is-assistant]:bg-transparent'>
+        {message.parts.map((part, i) => {
+          switch (part.type) {
+            case 'text':
+              return <Response key={`${message.id}-${i}`}>{part.text}</Response>
+            default:
+              return null
+          }
+        })}
+      </MessageContent>
+    </Message>
   )
 }
