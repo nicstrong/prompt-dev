@@ -15,16 +15,16 @@
   },
   "peerDependencies": {
     "@tanstack/react-query": "^5.0.0",
-    "react": "^19.0.0"
+    "react": "^19.2.4"
   },
   "devDependencies": {
     "@prompt-dev/prettier-config": "workspace:*",
     "@prompt-dev/typescript-config": "workspace:*",
     "@tanstack/react-query": "^5.84.2",
-    "@types/react": "^19.1.10",
+    "@types/react": "^19.2.14",
     "prettier": "^3.6.2",
     "tsup": "^8.5.0",
-    "typescript": "^5.9.2"
+    "typescript": "^5.9.3"
   },
   "dependencies": {
     "@ai-sdk/react": "^3.0.99",

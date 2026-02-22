@@ -34,8 +34,8 @@
     "expo-updates": "~0.28.17",
     "expo-web-browser": "~14.2.0",
     "prettier": "^3.5.3",
-    "react": "19.0.0",
-    "react-dom": "19.0.0",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
     "react-native": "0.79.5",
     "react-native-marked": "^7.0.2",
     "react-native-paper": "^5.14.5",
@@ -46,8 +46,8 @@
   "devDependencies": {
     "@babel/core": "^7.25.2",
     "@prompt-dev/prettier-config": "workspace:*",
-    "@types/react": "~19.0.10",
-    "typescript": "~5.8.3"
+    "@types/react": "~19.2.14",
+    "typescript": "~5.9.3"
   },
   "private": true
 }
