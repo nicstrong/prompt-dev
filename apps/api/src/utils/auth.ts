@@ -3,14 +3,23 @@ import { SignedInAuthObject, TokenType } from '@clerk/backend/internal'
 
 export type RolesType = 'admin'
 
+type AuthWithRoles = {
+  sessionClaims?: unknown
+} | null
+
 export function hasRole(
-  user: SignedInAuthObject | null,
+  user: AuthWithRoles,
   role: RolesType,
 ): boolean {
-  if (!user || !user.sessionClaims.roles) {
+  const claims = user?.sessionClaims
+  const roles =
+    claims && typeof claims === 'object'
+      ? (claims as Record<string, unknown>).roles
+      : undefined
+  if (!Array.isArray(roles)) {
     return false
   }
-  return (user.sessionClaims.roles as string[]).includes(role)
+  return roles.includes(role)
 }
 
 export function isSessionObject(

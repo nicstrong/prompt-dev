@@ -20,11 +20,13 @@ const descriptor = Object.getOwnPropertyDescriptor(express.request, 'query')
 if (descriptor) {
   Object.defineProperty(express.request, 'query', {
     get(this: Request) {
-      if (Object.hasOwn(this, '_query')) return this._query
+      const req = this as Request & { _query?: unknown }
+      if (Object.hasOwn(req, '_query')) return req._query
       return descriptor?.get?.call(this)
     },
     set(this: Request, query: unknown) {
-      this._query = query
+      const req = this as Request & { _query?: unknown }
+      req._query = query
     },
     configurable: true,
     enumerable: true,

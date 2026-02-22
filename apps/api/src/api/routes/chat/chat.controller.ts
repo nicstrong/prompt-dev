@@ -1,7 +1,6 @@
 import {
   convertToModelMessages,
   createUIMessageStream,
-  createUIMessageStreamResponse,
   pipeUIMessageStreamToResponse,
   streamText,
 } from 'ai'
@@ -50,44 +49,58 @@ router.post('/chat', validate({ body: newChatSchema }), async (req, res) => {
 
   const result = streamText({
     model: model,
-    messages: convertToModelMessages(messages),
+    messages: await convertToModelMessages(messages),
   })
 
-  result.pipeUIMessageStreamToResponse<ChatUIMessage>(res, {
-    messageMetadata: () => {
-      if (createdThread) {
-        const meta: MessageMetadata = {
-          threadId,
-          isNew: true,
-          name: createdThread.name,
-          createdAt: createdThread.createdAt.valueOf(),
-          updatedAt: createdThread.updatedAt?.valueOf() ?? null,
-          userId: createdThread.userId,
-        }
-        return meta
-      } else {
-        const meta: MessageMetadata = {
-          threadId,
-          isNew: false,
-        }
-        return meta
+  const messageMetadata: MessageMetadata = createdThread
+    ? {
+        threadId,
+        isNew: true,
+        name: createdThread.name,
+        createdAt: createdThread.createdAt.valueOf(),
+        updatedAt: createdThread.updatedAt?.valueOf() ?? null,
+        userId: createdThread.userId,
       }
-    },
-    onFinish: async ({ messages }) => {
-      const newMsg = await newMessage(
-        convertUIMessageToDbMessage(messages, threadId),
+    : {
+        threadId,
+        isNew: false,
+      }
+
+  const stream = createUIMessageStream<ChatUIMessage>({
+    execute: ({ writer }) => {
+      writer.write({ type: 'start' })
+      // Send thread metadata as a custom data part for express clients.
+      writer.write({
+        type: 'data-thread-metadata',
+        data: messageMetadata,
+        transient: true,
+      } as never)
+
+      writer.merge(
+        result.toUIMessageStream({
+          sendStart: false,
+          messageMetadata: () => messageMetadata,
+          onFinish: async ({ messages }) => {
+            await newMessage(convertUIMessageToDbMessage(messages, threadId))
+            if (createdThread) {
+              generateThreadName(threadId, userId).catch((err) => {
+                console.error('renameThread failed:', err)
+              })
+            }
+          },
+          onError: (error) => {
+            // Error messages are masked by default for security reasons.
+            // If you want to expose the error message to the client, you can do so here:
+            return error instanceof Error ? error.message : String(error)
+          },
+        }),
       )
-      if (createdThread) {
-        generateThreadName(threadId, userId).catch((err) => {
-          console.error('renameThread failed:', err)
-        })
-      }
     },
-    onError: (error) => {
-      // Error messages are masked by default for security reasons.
-      // If you want to expose the error message to the client, you can do so here:
-      return error instanceof Error ? error.message : String(error)
-    },
+  })
+
+  pipeUIMessageStreamToResponse({
+    response: res,
+    stream,
   })
 })
 
