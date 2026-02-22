@@ -16,26 +16,31 @@ export function useStableMessages<TMessage extends UIMessage>(
   const stableRef = useRef<TMessage[]>(stableMessages)
   stableRef.current = stableMessages
 
+  const equalById = (a: TMessage[], b: TMessage[]) => {
+    if (a === b) return true
+    if (a.length !== b.length) return false
+    for (let i = 0; i < a.length; i++) {
+      if (a[i]?.id !== b[i]?.id) return false
+    }
+    return true
+  }
+
   useEffect(() => {
     const isGeneratingState = status === 'submitted' || status === 'streaming'
     const last = messages.length > 0 ? messages[messages.length - 1] : undefined
 
     if (isGeneratingState && last && last.role === 'assistant') {
-      const nextStableLength = messages.length - 1
+      const nextStable = messages.slice(0, messages.length - 1)
 
-      // Only update stable messages if the stable portion has grown
-      // (elements 0..n-2 never change, so length comparison is sufficient)
-      if (stableRef.current.length !== nextStableLength) {
-        setStableMessages(messages.slice(0, nextStableLength))
+      if (!equalById(stableRef.current, nextStable)) {
+        setStableMessages(nextStable)
       }
 
       setGeneratingMessage(last)
       return
     }
 
-    // Only update if the total message count has changed
-    // (since elements never mutate once added, length comparison is sufficient)
-    if (stableRef.current.length !== messages.length) {
+    if (!equalById(stableRef.current, messages)) {
       setStableMessages(messages)
     }
     if (generatingMessage !== undefined) setGeneratingMessage(undefined)

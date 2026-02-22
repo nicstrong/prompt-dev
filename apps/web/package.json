@@ -52,6 +52,7 @@
     "jotai": "^2.13.1",
     "katex": "^0.16.22",
     "lucide-react": "^0.539.0",
+    "micromark": "^4.0.2",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-markdown": "^10.1.0",

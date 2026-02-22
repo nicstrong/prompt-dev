@@ -1,45 +1,27 @@
 import { ChatUIMessage } from '../types'
 import { Message, MessageContent } from '@/components/ai-elements/message'
 import { Response } from '@/components/ai-elements/response'
-import { useEffect, useState } from 'react'
 
 type Props = {
   message: ChatUIMessage
-  debug?: boolean
 }
 
-export function AssistantMessage({ message, debug }: Props) {
-  // Internal state to force re-renders
-
-  const text = message.parts
-    .filter((part) => part.type === 'text')
-    .map((part) => part.text)
-    .join('')
-
-  if (debug) {
-    console.log(
-      `[AssistantMessage] Rendering with text: ${JSON.stringify(text)}`,
-    )
+export function AssistantMessage({ message }: Props) {
+  if (message.role !== 'assistant') {
+    return null
   }
 
   return (
-    <Message from={message.role}>
+    <Message from={message.role} key={message.id}>
       <MessageContent className='group-[.is-assistant]:text-neutral prose-invert group-[.is-assistant]:bg-transparent'>
-        <div>{text}</div>
-        {/* {message.parts
-          .filter((part) => part.type === 'text')
-          .map((part, textIndex) => {
-            if (debug)
-              console.log(
-                `[AssistantMessage] Rendering with key: ${message.id}-text-${textIndex}: ${JSON.stringify(part.text)}`,
-              )
-            return (
-              // <Response key={`${message.id}-text-${textIndex}`}>
-              //   {part.text}
-              // </Response>
-              <div key={`${message.id}-text-${textIndex}`}>{part.text}</div>
-            )
-          })} */}
+        {message.parts.map((part, i) => {
+          switch (part.type) {
+            case 'text':
+              return <Response key={`${message.id}-${i}`}>{part.text}</Response>
+            default:
+              return null
+          }
+        })}
       </MessageContent>
     </Message>
   )
