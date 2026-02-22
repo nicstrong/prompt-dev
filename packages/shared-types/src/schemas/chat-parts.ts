@@ -13,8 +13,8 @@ export const JSONValueSchema: z.ZodType<JSONValue> = z.lazy(() =>
     z.number(),
     z.boolean(),
     z.record(z.string(), JSONValueSchema),
-    z.record(JSONValueSchema),
-  ]),
+    z.array(JSONValueSchema as z.ZodType<JSONValue>),
+  ]) as z.ZodType<JSONValue>,
 )
 
 export const ProviderMetadataSchema = z.record(

@@ -1,6 +1,9 @@
 import { ChatUIMessage } from '../types'
-import { Message, MessageContent } from '@/components/ai-elements/message'
-import { Response } from '@/components/ai-elements/response'
+import {
+  Message,
+  MessageContent,
+  MessageResponse,
+} from '@/components/ai-elements/message'
 
 type Props = {
   message: ChatUIMessage
@@ -17,7 +20,11 @@ export function AssistantMessage({ message }: Props) {
         {message.parts.map((part, i) => {
           switch (part.type) {
             case 'text':
-              return <Response key={`${message.id}-${i}`}>{part.text}</Response>
+              return (
+                <MessageResponse key={`${message.id}-${i}`}>
+                  {part.text}
+                </MessageResponse>
+              )
             default:
               return null
           }

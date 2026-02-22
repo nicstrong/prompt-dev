@@ -41,9 +41,9 @@ const AuthedThreadsThreadIdRoute = AuthedThreadsThreadIdRouteImport.update({
 } as any)
 
 export interface FileRoutesByFullPath {
+  '/': typeof AuthedIndexRoute
   '/login': typeof LoginRoute
   '/settings': typeof AuthedSettingsRoute
-  '/': typeof AuthedIndexRoute
   '/threads/$threadId': typeof AuthedThreadsThreadIdRoute
 }
 export interface FileRoutesByTo {
@@ -62,7 +62,7 @@ export interface FileRoutesById {
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/login' | '/settings' | '/' | '/threads/$threadId'
+  fullPaths: '/' | '/login' | '/settings' | '/threads/$threadId'
   fileRoutesByTo: FileRoutesByTo
   to: '/login' | '/settings' | '/' | '/threads/$threadId'
   id:
@@ -91,7 +91,7 @@ declare module '@tanstack/react-router' {
     '/_authed': {
       id: '/_authed'
       path: ''
-      fullPath: ''
+      fullPath: '/'
       preLoaderRoute: typeof AuthedRouteImport
       parentRoute: typeof rootRouteImport
     }
