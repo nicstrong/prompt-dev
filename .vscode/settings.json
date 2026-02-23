@@ -12,6 +12,9 @@
     "/^cd /home/nic/src/prompt-dev && node -e \"const z = require\\('zod'\\); console\\.log\\(Object\\.keys\\(z\\)\\.filter\\(k => k\\.includes\\('ZodType'\\) \\|\\| k\\.includes\\('lazy'\\)\\)\\)\"  2>/dev/null \\|\\| node --input-type=module <<'EOF'\nimport z from '\\./node_modules/zod/dist/esm/index\\.js'\nconsole\\.log\\(typeof z\\.ZodType, typeof z\\.lazy\\)\nEOF$/": {
       "approve": true,
       "matchCommandLine": true
-    }
+    },
+    "Test-Path": true,
+    "ConvertFrom-Json": true,
+    "Get-Item": true
   }
 }
