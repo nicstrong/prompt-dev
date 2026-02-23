@@ -11,7 +11,7 @@ if (Platform.OS !== 'web') {
       '@stardazed/streams-text-encoding'
     )
 
-    if (!('structuredClone' in global)) {
+    if (!('structuredClone' in globalThis)) {
       polyfillGlobal('structuredClone', () => structuredClone)
     }
 

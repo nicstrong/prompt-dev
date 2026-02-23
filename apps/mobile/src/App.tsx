@@ -124,7 +124,7 @@ export function App() {
         <PreferencesContext.Provider value={preferences}>
           <ClerkProvider tokenCache={tokenCache}>
             <NavigationContainer
-              theme={theme}
+              theme={combinedTheme}
               initialState={initialState}
               onStateChange={(state) =>
                 AsyncStorage.setItem(PERSISTENCE_KEY, JSON.stringify(state))
